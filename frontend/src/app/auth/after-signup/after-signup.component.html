@@ -1,0 +1,66 @@
+<!-- src/app/auth/after-signup/after-signup.component.html -->
+<div class="auth-layout">
+
+  <!-- Left: Form -->
+  <div class="auth-left">
+    <div class="form-group">
+
+      @if (errorMsg) {
+        <div class="error-banner">{{ errorMsg }}</div>
+      }
+
+      <!-- Brand Name -->
+      <div class="input-wrap">
+        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <input type="text" placeholder="Brand Name"
+          [formControl]="$any(form.get('brandName'))"
+          (input)="onBrandNameInput($event)"
+          [class.ng-invalid]="form.get('brandName')?.invalid"
+          [class.ng-touched]="form.get('brandName')?.touched" />
+      </div>
+
+      <!-- Subdomain -->
+      <div class="subdomain-row">
+        <div class="input-wrap">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <input type="text" placeholder="Subdomain"
+            [formControl]="$any(form.get('subdomain'))"
+            (input)="onSubdomainInput($event)"
+            [class.ng-invalid]="form.get('subdomain')?.invalid"
+            [class.ng-touched]="form.get('subdomain')?.touched"
+            style="border-radius: 14px 0 0 14px;" />
+        </div>
+        <span class="subdomain-suffix">{{ subdomainSuffix }}</span>
+      </div>
+
+      @if (form.get('subdomain')?.hasError('pattern') && form.get('subdomain')?.touched) {
+        <div class="error-banner">
+          Subdomain can only contain lowercase letters, numbers, and hyphens.
+        </div>
+      }
+
+      <!-- Let's Start -->
+      <button class="btn-primary" (click)="onSubmit()" [disabled]="loading">
+        @if (loading) { <span class="spinner"></span> } @else { Let's Start! }
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Right: Brand -->
+  <div class="auth-right">
+    <img class="brand-logo" src="assets/icons/pasal-e-logo.svg" alt="Pasal-E Logo"
+      onerror="this.style.display='none'" />
+    <div class="brand-name">Pasal-E</div>
+    <div class="brand-tagline">"Build, run, and grow your store."</div>
+  </div>
+
+</div>

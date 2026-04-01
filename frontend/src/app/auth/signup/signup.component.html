@@ -1,0 +1,104 @@
+<!-- src/app/auth/signup/signup.component.html -->
+<div class="auth-layout">
+
+  <!-- Left: Form -->
+  <div class="auth-left">
+    <div class="form-group">
+
+      @if (errorMsg) {
+        <div class="error-banner">{{ errorMsg }}</div>
+      }
+
+      <!-- Name row -->
+      <div class="form-row">
+        <div class="input-wrap">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+          <input type="text" placeholder="First Name"
+            [formControl]="$any(form.get('firstName'))"
+            [class.ng-invalid]="form.get('firstName')?.invalid"
+            [class.ng-touched]="form.get('firstName')?.touched" />
+        </div>
+        <div class="input-wrap">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+          <input type="text" placeholder="Last Name"
+            [formControl]="$any(form.get('lastName'))"
+            [class.ng-invalid]="form.get('lastName')?.invalid"
+            [class.ng-touched]="form.get('lastName')?.touched" />
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="input-wrap">
+        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+        </svg>
+        <input type="email" placeholder="Email Address"
+          [formControl]="$any(form.get('email'))"
+          [class.ng-invalid]="form.get('email')?.invalid"
+          [class.ng-touched]="form.get('email')?.touched" />
+      </div>
+
+      <!-- Password -->
+      <div class="input-wrap">
+        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <input type="password" placeholder="Password"
+          [formControl]="$any(form.get('password'))"
+          [class.ng-invalid]="form.get('password')?.invalid"
+          [class.ng-touched]="form.get('password')?.touched" />
+      </div>
+
+
+<!-- Password length error -->
+<div class="error-banner" *ngIf="form.get('password')?.errors?.['minlength'] && form.get('password')?.touched">
+  Password must be at least 8 characters.
+</div>
+
+      <!-- Confirm Password -->
+      <div class="input-wrap">
+        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <input type="password" placeholder="Confirm Password"
+          [formControl]="$any(form.get('confirmPassword'))"
+          [class.ng-invalid]="form.get('confirmPassword')?.invalid || mismatch"
+          [class.ng-touched]="form.get('confirmPassword')?.touched" />
+      </div>
+
+      @if (mismatch) {
+        <div class="error-banner">Passwords do not match.</div>
+      }
+
+      <!-- Sign In button -->
+      <button class="btn-primary" (click)="onSubmit()" [disabled]="loading">
+        @if (loading) { <span class="spinner"></span> } @else { Sign In }
+      </button>
+
+      <!-- Login link -->
+      <p class="auth-link">
+        Already have an account? <a routerLink="/login">Log in</a>
+      </p>
+
+    </div>
+  </div>
+
+  <!-- Right: Brand -->
+  <div class="auth-right">
+    <img class="brand-logo" src="assets/icons/pasal-e-logo.svg" alt="Pasal-E Logo"
+      onerror="this.style.display='none'" />
+    <div class="brand-name">Pasal-E</div>
+    <div class="brand-tagline">"Build, run, and grow your store."</div>
+  </div>
+
+</div>
