@@ -1,5 +1,4 @@
-/* src/styles.css */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
 
 :root {
   --olive:       #5a6e2e;
@@ -21,7 +20,7 @@
 
 html, body {
   height: 100%;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   background: var(--olive);
   color: var(--text-dark);
   -webkit-font-smoothing: antialiased;
@@ -118,7 +117,7 @@ html, body {
   background: var(--cream-input);
   border: 2px solid transparent;
   border-radius: var(--radius);
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: var(--text-dark);
@@ -176,7 +175,7 @@ html, body {
   color: var(--white);
   border: none;
   border-radius: var(--radius);
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Baloo 2', sans-serif;
   font-size: 18px;
   font-weight: 800;
   cursor: pointer;

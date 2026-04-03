@@ -10,10 +10,12 @@ public static class ServiceExtensions
         // Repositories
         services.AddScoped<IOwnerRepository, OwnerRepository>();
         services.AddScoped<IShopRepository, ShopRepository>();
+        services.AddScoped<IInventoryRepository, InventoryRepository>();
 
         // Services
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IInventoryService, InventoryService>();
 
         return services;
     }

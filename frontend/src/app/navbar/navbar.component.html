@@ -1,0 +1,76 @@
+<!-- src/app/navbar/navbar.component.html -->
+<nav class="navbar">
+
+  <!-- Brand -->
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <img src="assets/icons/pasal-e-logo.svg" alt="Pasal-E" onerror="this.style.display='none'" />
+    </div>
+    <span class="nav-brand-name">Pasal-E</span>
+  </div>
+
+  <!-- Links -->
+  <ul class="nav-links">
+    <li>
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/inventory" routerLinkActive="active" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+        </svg>
+        <span>Inventory</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/orders" routerLinkActive="active" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span>Orders</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/foresight" routerLinkActive="active" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span>Foresight</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/your-shop" routerLinkActive="active" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Your Shop</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- Logout -->
+  <div class="nav-footer">
+    <button class="nav-item logout-btn" (click)="auth.logout()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      <span>Log Out</span>
+    </button>
+  </div>
+
+</nav>

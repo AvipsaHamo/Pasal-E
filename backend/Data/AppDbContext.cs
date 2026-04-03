@@ -7,16 +7,19 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    public DbSet<Owner> Owners => Set<Owner>();
-    public DbSet<Shop>  Shops  => Set<Shop>();
+    public DbSet<Owner>     Owners     => Set<Owner>();
+    public DbSet<Shop>      Shops      => Set<Shop>();
+    public DbSet<Category>  Categories => Set<Category>();
+    public DbSet<Product>   Products   => Set<Product>();
+    public DbSet<Variation> Variations => Set<Variation>();
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder mb)
     {
-        modelBuilder.Entity<Owner>(e =>
+        mb.Entity<Owner>(e =>
         {
             e.ToTable("owner");
             e.HasKey(o => o.OwnerId);
-            e.Property(o => o.OwnerId).HasColumnName("owner_id");
+            e.Property(o => o.OwnerId).HasColumnName("owner_id").UseIdentityByDefaultColumn();
             e.Property(o => o.FirstName).HasColumnName("first_name").IsRequired();
             e.Property(o => o.LastName).HasColumnName("last_name").IsRequired();
             e.Property(o => o.Email).HasColumnName("email").IsRequired();
@@ -25,14 +28,14 @@ public class AppDbContext : DbContext
             e.Property(o => o.AuthProvider).HasColumnName("auth_provider").IsRequired();
             e.Property(o => o.CreatedAt).HasColumnName("created_at");
             e.HasIndex(o => o.Email).IsUnique();
-            e.HasIndex(o => o.GoogleId).IsUnique();
+            e.HasIndex(o => o.GoogleId).IsUnique().HasFilter("google_id IS NOT NULL");
         });
 
-        modelBuilder.Entity<Shop>(e =>
+        mb.Entity<Shop>(e =>
         {
             e.ToTable("shop");
             e.HasKey(s => s.ShopId);
-            e.Property(s => s.ShopId).HasColumnName("shop_id");
+            e.Property(s => s.ShopId).HasColumnName("shop_id").UseIdentityByDefaultColumn();
             e.Property(s => s.OwnerId).HasColumnName("owner_id");
             e.Property(s => s.ShopName).HasColumnName("shop_name").IsRequired();
             e.Property(s => s.BrandName).HasColumnName("brand_name");
@@ -43,8 +46,47 @@ public class AppDbContext : DbContext
             e.Property(s => s.BannerImage).HasColumnName("banner_image");
             e.Property(s => s.PhysicalLocation).HasColumnName("physical_location");
             e.Property(s => s.BankAccountDetails).HasColumnName("bank_account_details");
-            e.HasIndex(s => s.Subdomain).IsUnique();
+            e.HasIndex(s => s.Subdomain).IsUnique().HasFilter("subdomain IS NOT NULL");
+            e.HasIndex(s => s.OwnerId).IsUnique();
             e.HasOne<Owner>().WithOne().HasForeignKey<Shop>(s => s.OwnerId);
+        });
+
+        mb.Entity<Category>(e =>
+        {
+            e.ToTable("category");
+            e.HasKey(c => c.CategoryId);
+            e.Property(c => c.CategoryId).HasColumnName("category_id").UseIdentityByDefaultColumn();
+            e.Property(c => c.ShopId).HasColumnName("shop_id");
+            e.Property(c => c.Name).HasColumnName("name").IsRequired();
+            e.Property(c => c.Image).HasColumnName("image");
+        });
+
+        mb.Entity<Product>(e =>
+        {
+            e.ToTable("product");
+            e.HasKey(p => p.ProductId);
+            e.Property(p => p.ProductId).HasColumnName("product_id").UseIdentityByDefaultColumn();
+            e.Property(p => p.ShopId).HasColumnName("shop_id");
+            e.Property(p => p.CategoryId).HasColumnName("category_id");
+            e.Property(p => p.Name).HasColumnName("name").IsRequired();
+            e.Property(p => p.Description).HasColumnName("description");
+            e.Property(p => p.Image).HasColumnName("image");
+            e.Property(p => p.VendorName).HasColumnName("vendor_name");
+            e.Property(p => p.Stock).HasColumnName("stock");
+            e.Property(p => p.CostPrice).HasColumnName("cost_price").HasPrecision(10,2);
+            e.Property(p => p.SellingPrice).HasColumnName("selling_price").HasPrecision(10,2);
+            e.Property(p => p.OnlineAvailable).HasColumnName("online_available");
+        });
+
+        mb.Entity<Variation>(e =>
+        {
+            e.ToTable("variation");
+            e.HasKey(v => v.VariationId);
+            e.Property(v => v.VariationId).HasColumnName("variation_id").UseIdentityByDefaultColumn();
+            e.Property(v => v.ProductId).HasColumnName("product_id");
+            e.Property(v => v.Name).HasColumnName("name");
+            e.Property(v => v.Image).HasColumnName("image");
+            e.Property(v => v.SellingPrice).HasColumnName("selling_price").HasPrecision(10,2);
         });
     }
 }

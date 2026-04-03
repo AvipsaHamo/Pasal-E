@@ -1,0 +1,232 @@
+<!-- src/app/inventory/inventory.component.html -->
+<div class="inventory-page">
+
+  <!-- Header -->
+  <div class="inv-header">
+    <h1 class="inv-title">Inventory</h1>
+    <div class="inv-search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" placeholder="Search for a specific product" class="inv-search"
+        (input)="onSearch($event)" />
+    </div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="inv-actions">
+    <!-- Disabled -->
+    <button class="action-btn action-btn--disabled" disabled>
+      <div class="action-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+      </div>
+      <span class="action-divider"></span>
+      <span class="action-label">Scan and Upload<br>Receipt</span>
+    </button>
+
+    <!-- Manual Entry -->
+    <button class="action-btn" (click)="openManualEntry()">
+      <div class="action-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </div>
+      <span class="action-divider"></span>
+      <span class="action-label">Manual<br>Entry</span>
+    </button>
+
+    <!-- Disabled -->
+    <button class="action-btn action-btn--disabled" disabled>
+      <div class="action-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+      </div>
+      <span class="action-divider"></span>
+      <span class="action-label">Receipt<br>Gallery</span>
+    </button>
+  </div>
+
+  <!-- Table -->
+  <div class="inv-table-wrap">
+    <table class="inv-table">
+      <thead>
+        <tr>
+          <th>Product_id</th>
+          <th>Product Name</th>
+          <th>Vendor</th>
+          <th>In Stock</th>
+          <th>Product Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (loadingProducts) {
+          <tr><td colspan="5" class="table-empty">Loading...</td></tr>
+        } @else if (products.length === 0) {
+          <tr><td colspan="5" class="table-empty">No products yet. Add one using Manual Entry.</td></tr>
+        } @else {
+          @for (p of products; track p.productId) {
+            <tr class="inv-row">
+              <td>{{ p.productId }}</td>
+              <td class="product-name">{{ p.name }}</td>
+              <td>{{ p.vendorName ?? '—' }}</td>
+              <td>{{ p.stock }}</td>
+              <td>
+                <button class="view-details-btn" disabled title="Coming soon">View Details</button>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ── Manual Entry Overlay ─────────────────────────────────────────────── -->
+@if (showManualEntry) {
+  <div class="overlay-backdrop" (click)="closeManualEntry()"></div>
+
+  <div class="manual-panel" (click)="$event.stopPropagation()">
+    <div class="manual-scroll">
+
+      <h2 class="panel-title">Manually Enter New Product</h2>
+
+      <!-- Image + Name/Category row -->
+      <div class="panel-top-row">
+        <div class="img-upload-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+          <span>Add product image</span>
+        </div>
+
+        <div class="panel-name-cat">
+          <div class="panel-field">
+            <label>Product Name:</label>
+            <input type="text" placeholder="Name of Product"
+              [formControl]="$any(productForm.get('name'))"
+              [class.invalid]="productForm.get('name')?.invalid && productForm.get('name')?.touched" />
+          </div>
+          <div class="panel-field">
+            <label>Category:</label>
+            <select [formControl]="$any(productForm.get('categoryId'))">
+              <option [ngValue]="null">Select Category</option>
+              @for (cat of categories; track cat.categoryId) {
+                <option [ngValue]="cat.categoryId">{{ cat.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="panel-section">
+        <label class="section-label">Product Description</label>
+        <textarea placeholder="Add a Description......." rows="3"
+          [formControl]="$any(productForm.get('description'))"></textarea>
+      </div>
+
+      <!-- Vendor -->
+      <div class="panel-section">
+        <label class="section-label">Vendor</label>
+        <input type="text" placeholder="Vendor's Name"
+          [formControl]="$any(productForm.get('vendorName'))" />
+      </div>
+
+      <!-- In Stock -->
+      <div class="panel-section">
+        <label class="section-label">In Stock</label>
+        <input type="number" placeholder="eg. 1" min="0"
+          [formControl]="$any(productForm.get('stock'))" />
+      </div>
+
+      <!-- Cost Price -->
+      <div class="panel-section">
+        <label class="section-label">Cost Price</label>
+        <input type="number" placeholder="Type your Cost Price" min="0" step="0.01"
+          [formControl]="$any(productForm.get('costPrice'))" />
+      </div>
+
+      <!-- Selling Price -->
+      <div class="panel-section">
+        <label class="section-label">Selling Price</label>
+        <input type="number" placeholder="Type your selling price..." min="0" step="0.01"
+          [formControl]="$any(productForm.get('sellingPrice'))" />
+      </div>
+
+      <!-- Add Variation checkbox -->
+      <div class="panel-checkbox-row">
+        <label class="custom-checkbox">
+          <input type="checkbox" [formControl]="$any(productForm.get('addVariations'))"
+            (change)="onAddVariationsChange()" />
+          <span class="checkmark"></span>
+          <span class="checkbox-label">Add Product Variation</span>
+        </label>
+      </div>
+
+      <!-- Variations (shown only when checkbox is checked) -->
+      @if (showVariations) {
+        <div class="variations-section">
+          @for (varCtrl of variationsArray.controls; track varCtrl; let i = $index) {
+            <div class="variation-row">
+              <div class="variation-img-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="9"/>
+                  <line x1="12" y1="8" x2="12" y2="16"/>
+                  <line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
+              </div>
+              <input type="text" placeholder="Option"
+                [formControl]="$any(varCtrl.get('name'))" class="var-name-input" />
+              <span class="var-price-label">Price:</span>
+              <input type="number" placeholder="Price" min="0" step="0.01"
+                [formControl]="$any(varCtrl.get('sellingPrice'))" class="var-price-input" />
+              @if (variationsArray.length > 1) {
+                <button class="remove-var-btn" (click)="removeVariation(i)" title="Remove">✕</button>
+              }
+            </div>
+          }
+
+          <button class="add-more-btn" (click)="addVariationRow()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            More Variation
+          </button>
+        </div>
+      }
+
+      <!-- Online shop checkbox -->
+      <div class="panel-checkbox-row">
+        <label class="custom-checkbox">
+          <input type="checkbox" [formControl]="$any(productForm.get('onlineAvailable'))" />
+          <span class="checkmark"></span>
+          <span class="checkbox-label">Show it in your Online Shop.</span>
+        </label>
+      </div>
+
+      @if (saveError) {
+        <div class="save-error">{{ saveError }}</div>
+      }
+      @if (saveSuccess) {
+        <div class="save-success">Product saved successfully!</div>
+      }
+
+      <!-- Submit -->
+      <div class="panel-footer">
+        <button class="add-product-btn" (click)="onSubmit()" [disabled]="saving">
+          {{ saving ? 'Saving...' : (showVariations ? 'Save Changes' : 'Add New Product') }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

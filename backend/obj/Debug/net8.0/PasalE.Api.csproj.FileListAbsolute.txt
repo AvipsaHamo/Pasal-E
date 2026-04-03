@@ -113,3 +113,4 @@
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/PasalE.Api.MvcApplicationPartsAssemblyInfo.cs
+/home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/PasalE.Api.sourcelink.json
