@@ -18,13 +18,24 @@ var jwtSecret   = Environment.GetEnvironmentVariable("JWT_SECRET")!;
 var jwtIssuer   = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "pasal-e";
 var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "pasal-e-users";
 var dbUrl       = Environment.GetEnvironmentVariable("DATABASE_URL")!;
-var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL") ?? "http://localhost:4200";
+
+// Supports multiple origins via FRONTEND_URLS and a single FRONTEND_URL fallback.
+var rawFrontendUrls =
+    Environment.GetEnvironmentVariable("FRONTEND_URLS")
+    ?? Environment.GetEnvironmentVariable("FRONTEND_URL")
+    ?? "http://localhost:4200";
+
+var frontendUrls = rawFrontendUrls
+    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+    .Select(url => url.Trim().TrimEnd('/'))
+    .Where(url => !string.IsNullOrWhiteSpace(url))
+    .Distinct(StringComparer.OrdinalIgnoreCase)
+    .ToArray();
 
 // ── Services ───────────────────────────────────────────────────────────────
 builder.Services.AddControllers()
     .AddJsonOptions(opts =>
     {
-        // Use camelCase property names for JSON
         opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         opts.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
     });
@@ -55,15 +66,15 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
-// CORS — allow Angular dev server
+
 builder.Services.AddCors(opts =>
     opts.AddPolicy("Frontend", policy =>
-        policy.WithOrigins(frontendUrl)
+        policy.WithOrigins(frontendUrls) 
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials()));
 
-// App services (see Configuration/ServiceExtensions.cs)
+// App services
 builder.Services.AddApplicationServices();
 
 var app = builder.Build();
@@ -75,6 +86,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // ── Middleware pipeline ────────────────────────────────────────────────────
+app.UseRouting();
 app.UseCors("Frontend");
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseAuthentication();

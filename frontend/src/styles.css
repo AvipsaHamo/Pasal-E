@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Poppins:wght@400;500;600;700;800&display=swap');
 
 :root {
   --olive:       #5a6e2e;
@@ -20,7 +20,7 @@
 
 html, body {
   height: 100%;
-  font-family: 'Baloo 2', sans-serif;
+  font-family: 'Poppins', sans-serif;
   background: var(--olive);
   color: var(--text-dark);
   -webkit-font-smoothing: antialiased;
@@ -61,6 +61,7 @@ html, body {
 }
 
 .brand-name {
+  font-family: 'Baloo 2', sans-serif;
   font-size: 64px;
   font-weight: 900;
   color: var(--olive-dark);
@@ -80,7 +81,7 @@ html, body {
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 50px;
   width: 100%;
   max-width: 440px;
 }
@@ -117,7 +118,7 @@ html, body {
   background: var(--cream-input);
   border: 2px solid transparent;
   border-radius: var(--radius);
-  font-family: 'Baloo 2', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: var(--text-dark);
@@ -175,7 +176,7 @@ html, body {
   color: var(--white);
   border: none;
   border-radius: var(--radius);
-  font-family: 'Baloo 2', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 18px;
   font-weight: 800;
   cursor: pointer;
@@ -209,7 +210,7 @@ html, body {
   transition: box-shadow .2s, transform .1s;
 }
 
-.btn-google:hover {
+/* .btn-google:hover {
   box-shadow: 0 4px 16px rgba(0,0,0,.12);
 }
 
@@ -220,7 +221,7 @@ html, body {
 .btn-google img {
   width: 32px;
   height: 32px;
-}
+} */
 
 /* ── Divider ───────────────────────────────────────────────────────────── */
 .divider {

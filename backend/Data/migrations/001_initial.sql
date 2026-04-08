@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS shop (
     currency VARCHAR(10),
     subdomain VARCHAR(255) UNIQUE,
     theme VARCHAR(100),
+    colour VARCHAR(100),
     logo_image TEXT,
     banner_image TEXT,
     physical_location TEXT,
