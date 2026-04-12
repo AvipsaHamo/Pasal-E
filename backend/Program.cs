@@ -32,6 +32,12 @@ var frontendUrls = rawFrontendUrls
     .Distinct(StringComparer.OrdinalIgnoreCase)
     .ToArray();
 
+var allowPasalMeSubdomains =
+    string.Equals(
+        Environment.GetEnvironmentVariable("CORS_ALLOW_PASAL_ME_SUBDOMAINS") ?? "true",
+        "true",
+        StringComparison.OrdinalIgnoreCase);
+
 // ── Services ───────────────────────────────────────────────────────────────
 builder.Services.AddControllers()
     .AddJsonOptions(opts =>
@@ -69,7 +75,24 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddCors(opts =>
     opts.AddPolicy("Frontend", policy =>
-        policy.WithOrigins(frontendUrls) 
+        policy.SetIsOriginAllowed(origin =>
+              {
+                  var normalized = origin.TrimEnd('/');
+
+                  if (frontendUrls.Contains(normalized, StringComparer.OrdinalIgnoreCase))
+                      return true;
+
+                  if (!allowPasalMeSubdomains)
+                      return false;
+
+                  if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                      return false;
+
+                  // Accept root domain and all shop subdomains over HTTPS.
+                  return string.Equals(uri.Scheme, "https", StringComparison.OrdinalIgnoreCase)
+                      && (string.Equals(uri.Host, "pasal-e.me", StringComparison.OrdinalIgnoreCase)
+                          || uri.Host.EndsWith(".pasal-e.me", StringComparison.OrdinalIgnoreCase));
+              })
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials()));

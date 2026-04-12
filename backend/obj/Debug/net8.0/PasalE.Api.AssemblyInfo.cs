@@ -7,13 +7,15 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+// ok bro do your thing
+
 using System;
 using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("PasalE.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c37c448d6e7e43a654006d96a965d51c67a4ba96")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b42023205d40f7e707f54cbf9eb3009c58b53ff5")]
 [assembly: System.Reflection.AssemblyProductAttribute("PasalE.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PasalE.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

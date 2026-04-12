@@ -216,6 +216,92 @@ export const environment = {
 
 ---
 
+## Cloud Deployment Runbook
+
+Use this as the source of truth when deploying to Azure.
+
+### A. Core rules
+
+- CORS is checked at 2 places: app policy (ASP.NET Core) and Container Apps ingress policy.
+- Ingress CORS can override app CORS behavior.
+- For this project, allow these production origins:
+  - `https://pasal-e.me`
+  - `https://www.pasal-e.me`
+  - `https://<shop>.pasal-e.me`
+  - `https://pasal-e-frontend.lemonforest-193fbb66.southeastasia.azurecontainerapps.io`
+
+### B. Backend env vars (Container App)
+
+```env
+FRONTEND_URLS=https://pasal-e.me,https://www.pasal-e.me,https://pasal-e-frontend.lemonforest-193fbb66.southeastasia.azurecontainerapps.io
+CORS_ALLOW_PASAL_ME_SUBDOMAINS=true
+```
+
+### C. Deploy backend image
+
+Preferred:
+
+```bash
+az acr build -r pasaleregistry -t pasal-e-backend:latest ./backend
+az containerapp update -n pasal-e-backend -g pasal-e-rg --image pasaleregistry.azurecr.io/pasal-e-backend:latest
+```
+
+If ACR build fails with `TasksOperationsNotAllowed` (common on Azure for Students), use local Docker:
+
+```bash
+docker build -t pasaleregistry.azurecr.io/pasal-e-backend:latest ./backend
+docker push pasaleregistry.azurecr.io/pasal-e-backend:latest
+az containerapp update -n pasal-e-backend -g pasal-e-rg --image pasaleregistry.azurecr.io/pasal-e-backend:latest
+```
+
+If `az acr login` fails with Docker socket permission:
+
+```bash
+sudo usermod -aG docker "$USER"
+newgrp docker
+az acr login --name pasaleregistry
+```
+
+### D. Force a new revision when needed
+
+If image tag is unchanged (`:latest`) and rollout seems stale:
+
+```bash
+az containerapp update -n pasal-e-backend -g pasal-e-rg --set-env-vars FORCE_ROLLOUT="$(date +%s)"
+```
+
+### E. Verify CORS quickly
+
+Root domain preflight:
+
+```bash
+curl -i -X OPTIONS "https://pasal-e-backend.lemonforest-193fbb66.southeastasia.azurecontainerapps.io/api/auth/register" \
+  -H "Origin: https://pasal-e.me" \
+  -H "Access-Control-Request-Method: POST" \
+  -H "Access-Control-Request-Headers: content-type"
+```
+
+Subdomain preflight:
+
+```bash
+curl -i -X OPTIONS "https://pasal-e-backend.lemonforest-193fbb66.southeastasia.azurecontainerapps.io/api/auth/register" \
+  -H "Origin: https://abc.pasal-e.me" \
+  -H "Access-Control-Request-Method: POST" \
+  -H "Access-Control-Request-Headers: content-type"
+```
+
+Expected: response includes `Access-Control-Allow-Origin` with the same origin sent in the request.
+
+### F. Pre-release checklist
+
+- Frontend production API URL is correct.
+- Backend env vars are updated (`FRONTEND_URLS`, `CORS_ALLOW_PASAL_ME_SUBDOMAINS`).
+- Ingress CORS is intentionally configured (or intentionally disabled).
+- Latest backend revision is active and serving 100% traffic.
+
+
+---
+
 ## Per-Component CSS Convention
 
 Each screen has its own CSS file — **no shared stylesheet for app pages** (auth pages share `styles.css` only):
