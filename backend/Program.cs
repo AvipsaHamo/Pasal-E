@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using PasalE.Api.Configuration;
 using PasalE.Api.Data;
 using PasalE.Api.Middleware;
+using PasalE.Api.Repositories;
+using PasalE.Api.Services;
 using System.Text;
 using System.Text.Json;
 
@@ -99,6 +101,8 @@ builder.Services.AddCors(opts =>
 
 // App services
 builder.Services.AddApplicationServices();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 var app = builder.Build();
 

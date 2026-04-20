@@ -1,1 +1,173 @@
-<div class="stub-page"><h1>Orders</h1><p class="coming-soon">Coming soon.</p></div>
+<div class="orders-page">
+
+  <!-- Header -->
+  <div class="orders-header">
+    <h1 class="orders-title">Orders</h1>
+    <div class="header-controls">
+
+      <!-- Filter dropdown -->
+      <div class="filter-wrap">
+        <button class="filter-btn" (click)="toggleDropdown()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+          </svg>
+          <span>{{ activeFilter || 'Filter' }}</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+
+        @if (showDropdown) {
+          <div class="filter-dropdown">
+            <button class="dropdown-item" [class.active]="activeFilter === ''"
+              (click)="setFilter('')">All</button>
+            <button class="dropdown-item" [class.active]="activeFilter === 'Pending'"
+              (click)="setFilter('Pending')">Pending</button>
+            <button class="dropdown-item" [class.active]="activeFilter === 'In Progress'"
+              (click)="setFilter('In Progress')">In Progress</button>
+            <button class="dropdown-item" [class.active]="activeFilter === 'Delivered'"
+              (click)="setFilter('Delivered')">Delivered</button>
+            <button class="dropdown-item" [class.active]="activeFilter === 'Dismissed'"
+              (click)="setFilter('Dismissed')">Dismissed</button>
+          </div>
+        }
+      </div>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" placeholder="Search by customer" (input)="onSearch($event)" />
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Table header -->
+  <div class="table-header">
+    <span class="col-id">OrderID</span>
+    <span class="col-name">Customer Name</span>
+    <span class="col-date">Date</span>
+    <span class="col-contact">Contact No.</span>
+    <span class="col-status">Status</span>
+    <span class="col-action">Order Details</span>
+  </div>
+
+  <!-- Rows -->
+  @if (loading) {
+    <div class="loading-msg">Loading orders...</div>
+  } @else if (orders.length === 0) {
+    <div class="empty-msg">No orders found.</div>
+  } @else {
+    @for (order of orders; track order.orderId) {
+
+      <div class="order-card" [class.expanded]="isExpanded(order.orderId)">
+
+        <!-- Collapsed row -->
+        <div class="order-row">
+          <span class="col-id">{{ order.orderId }}</span>
+          <span class="col-name">{{ order.customerName }}</span>
+          <span class="col-date">{{ order.orderDate }}</span>
+          <span class="col-contact">{{ order.phone ?? '—' }}</span>
+          <span class="col-status">
+            <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+              {{ order.status }}
+            </span>
+          </span>
+          <span class="col-action">
+            <button class="view-btn" (click)="toggleExpand(order)">
+              {{ isExpanded(order.orderId) ? 'View less' : 'View more' }}
+            </button>
+          </span>
+        </div>
+
+        <!-- Expanded detail -->
+        @if (isExpanded(order.orderId)) {
+          <div class="order-detail">
+
+            @if (isLoading(order.orderId)) {
+              <div class="detail-loading">Loading details...</div>
+            } @else {
+              @if (getFullOrder(order.orderId); as full) {
+
+                <div class="detail-divider"></div>
+                <h3 class="detail-title">Order Details</h3>
+
+                <!-- Detail table -->
+                <table class="detail-table">
+                  <thead>
+                    <tr>
+                      <th>Product_id</th>
+                      <th>Product Name</th>
+                      <th>Variant</th>
+                      <th>Quantity</th>
+                      <th>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (line of full.details; track $index) {
+                      <tr>
+                        <td>{{ line.productId ?? '—' }}</td>
+                        <td>{{ line.productName ?? '—' }}</td>
+                        <td>{{ line.variationName ?? '—' }}</td>
+                        <td>{{ line.quantity }}</td>
+                        <td>{{ line.price ?? 0 }}</td>
+                      </tr>
+                    }
+                    @if (full.details.length === 0) {
+                      <tr>
+                        <td colspan="5">No line items found for this order.</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+
+                <!-- Footer: customer info + total + status buttons -->
+                <div class="detail-footer">
+                  <div class="customer-info">
+                    <p><strong>Email:</strong> {{ full.email ?? '—' }}</p>
+                    <p><strong>Address:</strong> {{ full.address ?? '—' }}</p>
+                    <p><strong>Landmark:</strong> {{ full.landmark ?? '—' }}</p>
+                  </div>
+
+                  <div class="footer-right">
+                    <div class="total-amount">Total Amount: {{ full.totalAmount ?? 0 }}</div>
+                    <div class="status-actions">
+                      <button class="status-btn btn-dismiss"
+                        [class.active-status]="full.status === 'Dismissed'"
+                        [disabled]="isUpdating(order.orderId)"
+                        (click)="updateStatus(order.orderId, 'Dismissed')">
+                        Dismiss
+                      </button>
+                      <button class="status-btn btn-inprogress"
+                        [class.active-status]="full.status === 'In Progress'"
+                        [disabled]="isUpdating(order.orderId)"
+                        (click)="updateStatus(order.orderId, 'In Progress')">
+                        In Progress
+                      </button>
+                      <button class="status-btn btn-delivered"
+                        [class.active-status]="full.status === 'Delivered'"
+                        [disabled]="isUpdating(order.orderId)"
+                        (click)="updateStatus(order.orderId, 'Delivered')">
+                        Delivered
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              }
+            }
+          </div>
+        }
+
+      </div>
+    }
+  }
+
+</div>
+
+<!-- Close dropdown on outside click -->
+@if (showDropdown) {
+  <div class="dropdown-backdrop" (click)="showDropdown = false"></div>
+}

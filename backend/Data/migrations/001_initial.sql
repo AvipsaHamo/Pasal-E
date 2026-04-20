@@ -129,3 +129,26 @@ CREATE TABLE IF NOT EXISTS forecast (
     predicted_income DECIMAL(10,2),
     predicted_expense DECIMAL(10,2)
 );
+
+-- ============================================================
+-- 002_orders_defaults.sql (appended to 001)
+-- Adds DEFAULT 'Pending' to orders.status and ensures
+-- order_details has product_name snapshot for display
+-- ============================================================
+
+-- Add default status to orders (safe to run multiple times)
+ALTER TABLE orders
+  ALTER COLUMN status SET DEFAULT 'Pending';
+
+-- Update any existing NULL statuses
+UPDATE orders SET status = 'Pending' WHERE status IS NULL;
+
+-- Add NOT NULL constraint after backfill
+ALTER TABLE orders
+  ALTER COLUMN status SET NOT NULL;
+
+-- Add product_name snapshot to order_details so product name
+-- is preserved even if product is deleted later
+ALTER TABLE order_details
+  ADD COLUMN IF NOT EXISTS product_name VARCHAR(255),
+  ADD COLUMN IF NOT EXISTS variation_name VARCHAR(255);

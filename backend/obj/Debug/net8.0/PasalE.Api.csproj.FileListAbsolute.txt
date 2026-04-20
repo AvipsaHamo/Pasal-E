@@ -24,9 +24,13 @@
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.dll
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
+/home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Microsoft.OpenApi.dll
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Mono.TextTemplating.dll
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Npgsql.dll
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
+/home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
+/home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/System.CodeDom.dll
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/System.Composition.AttributedModel.dll
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/System.Composition.Convention.dll
@@ -92,7 +96,9 @@
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/PasalE.Api.AssemblyInfoInputs.cache
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/PasalE.Api.AssemblyInfo.cs
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/PasalE.Api.csproj.CoreCompileInputs.cache
+/home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/PasalE.Api.MvcApplicationPartsAssemblyInfo.cs
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/PasalE.Api.MvcApplicationPartsAssemblyInfo.cache
+/home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/PasalE.Api.sourcelink.json
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/rjimswa.dswa.cache.json
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/rjsmrazor.dswa.cache.json
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/rjsmcshtml.dswa.cache.json
@@ -108,9 +114,3 @@
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/PasalE.Api.pdb
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/PasalE.Api.genruntimeconfig.cache
 /home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/ref/PasalE.Api.dll
-/home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Microsoft.OpenApi.dll
-/home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
-/home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
-/home/wassabee/Projects/Pasal-e/pasal-e/backend/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
-/home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/PasalE.Api.MvcApplicationPartsAssemblyInfo.cs
-/home/wassabee/Projects/Pasal-e/pasal-e/backend/obj/Debug/net8.0/PasalE.Api.sourcelink.json

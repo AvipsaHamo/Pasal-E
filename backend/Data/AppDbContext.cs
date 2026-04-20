@@ -7,11 +7,14 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    public DbSet<Owner>     Owners     => Set<Owner>();
-    public DbSet<Shop>      Shops      => Set<Shop>();
-    public DbSet<Category>  Categories => Set<Category>();
-    public DbSet<Product>   Products   => Set<Product>();
-    public DbSet<Variation> Variations => Set<Variation>();
+    public DbSet<Owner>       Owners       => Set<Owner>();
+    public DbSet<Shop>        Shops        => Set<Shop>();
+    public DbSet<Category>    Categories   => Set<Category>();
+    public DbSet<Product>     Products     => Set<Product>();
+    public DbSet<Variation>   Variations   => Set<Variation>();
+    public DbSet<Customer>    Customers    => Set<Customer>();
+    public DbSet<Order>       Orders       => Set<Order>();
+    public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
 
     protected override void OnModelCreating(ModelBuilder mb)
     {
@@ -73,8 +76,8 @@ public class AppDbContext : DbContext
             e.Property(p => p.Image).HasColumnName("image");
             e.Property(p => p.VendorName).HasColumnName("vendor_name");
             e.Property(p => p.Stock).HasColumnName("stock");
-            e.Property(p => p.CostPrice).HasColumnName("cost_price").HasPrecision(10,2);
-            e.Property(p => p.SellingPrice).HasColumnName("selling_price").HasPrecision(10,2);
+            e.Property(p => p.CostPrice).HasColumnName("cost_price").HasPrecision(10, 2);
+            e.Property(p => p.SellingPrice).HasColumnName("selling_price").HasPrecision(10, 2);
             e.Property(p => p.OnlineAvailable).HasColumnName("online_available");
         });
 
@@ -86,7 +89,51 @@ public class AppDbContext : DbContext
             e.Property(v => v.ProductId).HasColumnName("product_id");
             e.Property(v => v.Name).HasColumnName("name");
             e.Property(v => v.Image).HasColumnName("image");
-            e.Property(v => v.SellingPrice).HasColumnName("selling_price").HasPrecision(10,2);
+            e.Property(v => v.SellingPrice).HasColumnName("selling_price").HasPrecision(10, 2);
+        });
+
+        mb.Entity<Customer>(e =>
+        {
+            e.ToTable("customer");
+            e.HasKey(c => c.CustomerId);
+            e.Property(c => c.CustomerId).HasColumnName("customer_id").UseIdentityByDefaultColumn();
+            e.Property(c => c.FirstName).HasColumnName("first_name").IsRequired();
+            e.Property(c => c.LastName).HasColumnName("last_name").IsRequired();
+            e.Property(c => c.Phone).HasColumnName("phone");
+            e.Property(c => c.Email).HasColumnName("email");
+            e.Property(c => c.Address).HasColumnName("address");
+            e.Property(c => c.Landmark).HasColumnName("landmark");
+            e.Property(c => c.CreatedAt).HasColumnName("created_at");
+            e.HasIndex(c => c.Email).IsUnique().HasFilter("email IS NOT NULL");
+        });
+
+        mb.Entity<Order>(e =>
+        {
+            e.ToTable("orders");
+            e.HasKey(o => o.OrderId);
+            e.Property(o => o.OrderId).HasColumnName("order_id").UseIdentityByDefaultColumn();
+            e.Property(o => o.CustomerId).HasColumnName("customer_id");
+            e.Property(o => o.ShopId).HasColumnName("shop_id");
+            e.Property(o => o.OrderDate).HasColumnName("order_date");
+            e.Property(o => o.TotalAmount).HasColumnName("total_amount").HasPrecision(10, 2);
+            e.Property(o => o.PaymentScreenshot).HasColumnName("payment_screenshot");
+            e.Property(o => o.PaymentType).HasColumnName("payment_type");
+            e.Property(o => o.Status).HasColumnName("status").IsRequired()
+                .HasDefaultValue("Pending");
+        });
+
+        mb.Entity<OrderDetail>(e =>
+        {
+            e.ToTable("order_details");
+            e.HasKey(od => od.OrderDetailsId);
+            e.Property(od => od.OrderDetailsId).HasColumnName("order_details_id").UseIdentityByDefaultColumn();
+            e.Property(od => od.OrderId).HasColumnName("order_id");
+            e.Property(od => od.ProductId).HasColumnName("product_id");
+            e.Property(od => od.VariationId).HasColumnName("variation_id");
+            e.Property(od => od.Quantity).HasColumnName("quantity");
+            e.Property(od => od.Price).HasColumnName("price").HasPrecision(10, 2);
+            e.Property(od => od.ProductName).HasColumnName("product_name");
+            e.Property(od => od.VariationName).HasColumnName("variation_name");
         });
     }
 }
