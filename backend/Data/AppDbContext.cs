@@ -79,6 +79,7 @@ public class AppDbContext : DbContext
             e.Property(p => p.CostPrice).HasColumnName("cost_price").HasPrecision(10, 2);
             e.Property(p => p.SellingPrice).HasColumnName("selling_price").HasPrecision(10, 2);
             e.Property(p => p.OnlineAvailable).HasColumnName("online_available");
+            e.Property(p => p.DateAdded).HasColumnName("date_added");
         });
 
         mb.Entity<Variation>(e =>

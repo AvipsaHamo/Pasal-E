@@ -1,5 +1,168 @@
-<div class="stub-page">
-  <h1>Dashboard</h1>
-  <!-- <p>Welcome back, {{ auth.owner()?.firstName }}! 👋</p>
-  <p class="coming-soon">Hello World.</p>
-</div> -->
+<!-- src/app/dashboard/dashboard.component.html -->
+<div class="dashboard-page" (click)="closeDropdowns()">
+
+  <!-- ── Title Row ─────────────────────────────────────────────────────── -->
+  <div class="dash-header">
+    <h1 class="dash-title">Dashboard</h1>
+
+    <!-- Summary period dropdown -->
+    <div class="period-wrap" (click)="$event.stopPropagation()">
+      <button class="period-btn" (click)="showSummaryDropdown = !showSummaryDropdown">
+        <span>{{ summaryPeriodLabel }}</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+      @if (showSummaryDropdown) {
+        <div class="period-dropdown">
+          <button class="period-option" [class.active]="summaryPeriod === 'month'"
+            (click)="setSummaryPeriod('month')">Month</button>
+          <button class="period-option" [class.active]="summaryPeriod === 'year'"
+            (click)="setSummaryPeriod('year')">Year</button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ── Summary Cards ─────────────────────────────────────────────────── -->
+  <div class="cards-row">
+
+    <!-- Revenue -->
+    <div class="summary-card">
+      <div class="card-top">
+        <span class="card-label">Revenue</span>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+      </div>
+      @if (summaryLoading) {
+        <div class="card-skeleton"></div>
+      } @else if (summary) {
+        <div class="card-value">Rs {{ summary.revenue.toLocaleString() }}</div>
+        <div class="card-delta" [class.positive]="isDeltaPositive(summary.revenueDelta)"
+          [class.negative]="!isDeltaPositive(summary.revenueDelta)">
+          {{ formatDelta(summary.revenueDelta) }} {{ deltaLabel }}
+        </div>
+      }
+    </div>
+
+    <!-- Total Customers -->
+    <div class="summary-card">
+      <div class="card-top">
+        <span class="card-label">Total Customers</span>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+      </div>
+      @if (summaryLoading) {
+        <div class="card-skeleton"></div>
+      } @else if (summary) {
+        <div class="card-value">{{ summary.totalCustomers.toLocaleString() }}</div>
+        <div class="card-delta" [class.positive]="isDeltaPositive(summary.customersDelta)"
+          [class.negative]="!isDeltaPositive(summary.customersDelta)">
+          {{ formatDelta(summary.customersDelta) }} {{ deltaLabel }}
+        </div>
+      }
+    </div>
+
+    <!-- Total Orders -->
+    <div class="summary-card">
+      <div class="card-top">
+        <span class="card-label">Total Orders</span>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+        </div>
+      </div>
+      @if (summaryLoading) {
+        <div class="card-skeleton"></div>
+      } @else if (summary) {
+        <div class="card-value">{{ summary.totalOrders.toLocaleString() }}</div>
+        <div class="card-delta" [class.positive]="isDeltaPositive(summary.ordersDelta)"
+          [class.negative]="!isDeltaPositive(summary.ordersDelta)">
+          {{ formatDelta(summary.ordersDelta) }} {{ deltaLabel }}
+        </div>
+      }
+    </div>
+
+  </div>
+
+  <!-- ── Income vs Expense Chart ───────────────────────────────────────── -->
+  <div class="chart-section">
+    <div class="chart-header">
+      <h2 class="chart-title">Income vs Expense</h2>
+
+      <div class="chart-filters" (click)="$event.stopPropagation()">
+
+        <!-- Year dropdown -->
+        <div class="filter-wrap">
+          <button class="filter-btn" (click)="showYearDropdown = !showYearDropdown">
+            <span>{{ selectedYear }}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          @if (showYearDropdown) {
+            <div class="filter-dropdown">
+              @for (y of availableYears; track y) {
+                <button class="filter-option" [class.active]="y === selectedYear"
+                  (click)="setYear(y)">{{ y }}</button>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Month dropdown -->
+        <div class="filter-wrap">
+          <button class="filter-btn" (click)="showMonthDropdown = !showMonthDropdown">
+            <span>{{ selectedMonthName }}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          @if (showMonthDropdown) {
+            <div class="filter-dropdown filter-dropdown--month">
+              @for (m of monthNames; track $index) {
+                <button class="filter-option" [class.active]="($index + 1) === selectedMonth"
+                  (click)="setMonth($index + 1)">{{ m }}</button>
+              }
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Chart card -->
+    <div class="chart-card">
+      <!-- Legend -->
+      <div class="chart-legend">
+        <span class="legend-item">
+          <span class="legend-dot legend-income"></span> Income
+        </span>
+        <span class="legend-item">
+          <span class="legend-dot legend-expense"></span> Expense
+        </span>
+      </div>
+
+      <!-- Canvas -->
+      <div class="chart-wrap">
+        @if (chartLoading) {
+          <div class="chart-loader">Loading chart...</div>
+        }
+        <canvas #chartCanvas></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>

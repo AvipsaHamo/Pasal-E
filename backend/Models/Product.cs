@@ -12,4 +12,5 @@ public class Product
     public decimal? CostPrice        { get; set; }
     public decimal? SellingPrice     { get; set; }
     public bool     OnlineAvailable  { get; set; } = true;
+    public DateTime DateAdded        { get; set; } = DateTime.UtcNow;
 }
