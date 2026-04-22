@@ -1,0 +1,20 @@
+# =========================
+# FRONTEND (Angular)
+# =========================
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/*.tsbuildinfo
+
+# =========================
+# BACKEND (.NET)
+# =========================
+backend/bin/
+backend/obj/
+
+# =========================
+# ENV / SYSTEM
+# =========================
+.env
+.vscode/
+.DS_Store
