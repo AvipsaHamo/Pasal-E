@@ -131,10 +131,6 @@ CREATE TABLE IF NOT EXISTS forecast (
 );
 
 -- ============================================================
--- 002_orders_defaults.sql (appended to 001)
--- Adds DEFAULT 'Pending' to orders.status and ensures
--- order_details has product_name snapshot for display
--- ============================================================
 
 -- Add default status to orders (safe to run multiple times)
 ALTER TABLE orders
@@ -152,3 +148,15 @@ ALTER TABLE orders
 ALTER TABLE order_details
   ADD COLUMN IF NOT EXISTS product_name VARCHAR(255),
   ADD COLUMN IF NOT EXISTS variation_name VARCHAR(255);
+
+
+-- ============================================================
+-- 003_dashboard_additions (appended)
+-- Add date_added to product for expense tracking
+-- ============================================================
+ALTER TABLE product
+  ADD COLUMN IF NOT EXISTS date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+-- Backfill existing products with a placeholder date
+UPDATE product SET date_added = CURRENT_TIMESTAMP WHERE date_added IS NULL;
+

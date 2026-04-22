@@ -9,8 +9,11 @@ public interface IInventoryRepository
     Task<List<Category>> GetCategoriesAsync(int shopId);
     Task<List<Product>>  GetProductsAsync(int shopId, string? search = null);
     Task<Product?>       GetProductByIdAsync(int productId, int shopId);
+    Task<List<Variation>> GetVariationsByProductIdAsync(int productId);
     Task<Product>        CreateProductAsync(Product product);
     Task<Variation>      CreateVariationAsync(Variation variation);
+    Task<Variation?>     GetVariationByIdAsync(int variationId, int productId);
+    Task                 DeleteVariationAsync(Variation variation);
     Task                 SaveChangesAsync();
 }
 
@@ -33,6 +36,9 @@ public class InventoryRepository : IInventoryRepository
     public Task<Product?> GetProductByIdAsync(int productId, int shopId) =>
         _db.Products.FirstOrDefaultAsync(p => p.ProductId == productId && p.ShopId == shopId);
 
+    public Task<List<Variation>> GetVariationsByProductIdAsync(int productId) =>
+        _db.Variations.Where(v => v.ProductId == productId).ToListAsync();
+
     public async Task<Product> CreateProductAsync(Product product)
     {
         _db.Products.Add(product);
@@ -45,6 +51,15 @@ public class InventoryRepository : IInventoryRepository
         _db.Variations.Add(variation);
         await _db.SaveChangesAsync();
         return variation;
+    }
+
+    public Task<Variation?> GetVariationByIdAsync(int variationId, int productId) =>
+        _db.Variations.FirstOrDefaultAsync(v => v.VariationId == variationId && v.ProductId == productId);
+
+    public async Task DeleteVariationAsync(Variation variation)
+    {
+        _db.Variations.Remove(variation);
+        await _db.SaveChangesAsync();
     }
 
     public Task SaveChangesAsync() => _db.SaveChangesAsync();

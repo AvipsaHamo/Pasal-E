@@ -15,6 +15,7 @@ A multi-tenant e-commerce management platform for small shop owners. Each owner 
 | Auth | JWT (local) |
 | Hosting | Azure (student) — 2 Docker containers |
 | Domain | `.me` with wildcard subdomain per shop |
+| Charts | Chart.js 4 (via npm) |
 
 ---
 
@@ -22,86 +23,87 @@ A multi-tenant e-commerce management platform for small shop owners. Each owner 
 
 ```
 pasal-e/
-├── frontend/                          # Angular 17 SPA
+├── frontend/
 │   ├── angular.json
-│   ├── tsconfig.json
-│   ├── tsconfig.app.json
-│   ├── package.json
+│   ├── tsconfig.json / tsconfig.app.json
+│   ├── package.json                   # includes chart.js ^4.4.2
 │   └── src/
-│       ├── main.ts                    # Bootstrap
+│       ├── main.ts
 │       ├── styles.css                 # Auth layout globals only
 │       ├── index.html
 │       ├── environments/
 │       │   ├── environment.ts         # Dev: apiBaseUrl = localhost:5000
 │       │   └── environment.prod.ts    # Prod: apiBaseUrl = Azure backend URL
 │       └── app/
-│           ├── app.component.ts       # Root shell (<router-outlet>)
+│           ├── app.component.ts
 │           ├── app.config.ts          # provideRouter, provideHttpClient, jwtInterceptor
 │           ├── app.routes.ts          # All routes — lazy loaded
 │           ├── layout/
-│           │   └── layout.component.ts    # Authenticated shell: navbar + <router-outlet>
+│           │   └── layout.component.ts
 │           ├── navbar/
-│           │   ├── navbar.component.ts    # Sidebar nav with routerLinkActive
-│           │   ├── navbar.component.html
-│           │   └── navbar.component.css   # Own CSS — dark olive sidebar
+│           │   ├── navbar.component.ts/html/css
 │           ├── auth/
-│           │   ├── login/             # Email + password login
-│           │   ├── signup/            # Registration with password confirm
-│           │   └── after-signup/      # Shop setup: brand name + subdomain
+│           │   ├── login/
+│           │   ├── signup/
+│           │   └── after-signup/
 │           ├── core/
-│           │   ├── guards/
-│           │   │   └── auth.guard.ts  # authGuard (requires JWT) + guestGuard (redirects if logged in)
-│           │   ├── interceptors/
-│           │   │   └── jwt.interceptor.ts  # Attaches Bearer token to every HTTP request
+│           │   ├── guards/auth.guard.ts
+│           │   ├── interceptors/jwt.interceptor.ts
 │           │   ├── models/
-│           │   │   ├── auth.models.ts      # Owner, Shop, AuthResponse, RegisterRequest, LoginRequest
-│           │   │   └── inventory.models.ts # Category, ProductListItem, CreateProductRequest, ProductDto
+│           │   │   ├── auth.models.ts
+│           │   │   ├── inventory.models.ts
+│           │   │   ├── order.models.ts
+│           │   │   └── dashboard.models.ts
 │           │   └── services/
-│           │       ├── auth.service.ts     # Signals-based auth state, localStorage persistence
-│           │       └── inventory.service.ts
-│           ├── inventory/
-│           │   ├── inventory.component.ts  # Product table + manual entry panel logic
-│           │   ├── inventory.component.html
-│           │   └── inventory.component.css # Own CSS — cream/olive inventory page
-│           ├── dashboard/             # Stub — shows welcome message
-│           ├── orders/                # Stub
+│           │       ├── auth.service.ts
+│           │       ├── inventory.service.ts
+│           │       ├── order.service.ts
+│           │       └── dashboard.service.ts
+│           ├── dashboard/             # Revenue/Customers/Orders cards + line chart
+│           ├── inventory/             # Product table + manual entry slide panel
+│           ├── orders/                # Orders table with expandable row detail
 │           ├── foresight/             # Stub
 │           └── your-shop/             # Stub
 │
-└── backend/                           # ASP.NET Core 8 Web API
+└── backend/
     ├── PasalE.Api.csproj
-    ├── Program.cs                     # DI wiring, JWT config, CORS, middleware pipeline
-    ├── .env.example                   # Copy to .env and fill in values
-    ├── Properties/
-    │   └── launchSettings.json        # Runs on http://localhost:5000
-    ├── Configuration/
-    │   └── ServiceExtensions.cs       # Registers all repos + services in one place
+    ├── Program.cs
+    ├── .env.example
+    ├── Properties/launchSettings.json
+    ├── Configuration/ServiceExtensions.cs
     ├── Controllers/
-    │   ├── AuthController.cs          # POST /api/auth/register|login|setup-shop, GET /api/auth/me
-    │   └── InventoryController.cs     # GET /api/inventory/categories|products, POST /api/inventory/products
+    │   ├── AuthController.cs
+    │   ├── InventoryController.cs
+    │   ├── OrderController.cs
+    │   └── DashboardController.cs
     ├── Services/
-    │   ├── AuthService.cs             # Register, Login, SetupShop business logic
-    │   ├── JwtService.cs              # GenerateToken, ValidateAndGetOwnerId
-    │   └── InventoryService.cs        # GetCategories, GetProducts, CreateProduct+Variations
+    │   ├── AuthService.cs
+    │   ├── JwtService.cs
+    │   ├── InventoryService.cs
+    │   ├── OrderService.cs
+    │   └── DashboardService.cs        # Live SQL aggregation — no caching needed at this scale
     ├── Repositories/
-    │   ├── OwnerRepository.cs         # CRUD on owner table
-    │   ├── ShopRepository.cs          # Lookup by owner_id or subdomain
-    │   └── InventoryRepository.cs     # Products, categories, variations
-    ├── Models/                        # EF Core entity classes (map 1:1 to DB tables)
-    │   ├── Owner.cs
-    │   ├── Shop.cs
-    │   ├── Category.cs
-    │   ├── Product.cs
-    │   └── Variation.cs
+    │   ├── OwnerRepository.cs
+    │   ├── ShopRepository.cs
+    │   ├── InventoryRepository.cs
+    │   └── OrderRepository.cs
+    ├── Models/
+    │   ├── Owner.cs / Shop.cs
+    │   ├── Category.cs / Product.cs / Variation.cs
+    │   ├── Customer.cs
+    │   ├── Order.cs / OrderDetail.cs
     ├── DTOs/
-    │   ├── AuthDTOs.cs                # RegisterRequest, LoginRequest, AuthResponse, OwnerDto, ShopDto
-    │   └── InventoryDTOs.cs           # CategoryDto, ProductListItemDto, CreateProductRequest, VariationDto
+    │   ├── AuthDTOs.cs
+    │   ├── InventoryDTOs.cs
+    │   ├── OrderDTOs.cs
+    │   └── DashboardDTOs.cs
     ├── Data/
-    │   ├── AppDbContext.cs            # EF Core DbContext — all table mappings
+    │   ├── AppDbContext.cs
     │   └── migrations/
-    │       └── 001_initial.sql        # Full schema — run manually against PostgreSQL
+    │       ├── 001_initial.sql        # Full schema + ALTER TABLE additions
+    │       └── 002_dummy_data.sql     # Test data for owner_id=5, shop_id=2
     └── Middleware/
-        └── GlobalExceptionMiddleware.cs  # Maps exceptions to HTTP status codes; surfaces real errors in Development
+        └── GlobalExceptionMiddleware.cs
 ```
 
 ---
@@ -119,10 +121,12 @@ owner ──< shop ──< category
 
 Key design decisions:
 - Each `owner` has exactly one `shop` (1:1, `UNIQUE` FK)
-- `google_id` has a partial unique index (`WHERE google_id IS NOT NULL`) to allow multiple NULL rows
-- `subdomain` has a partial unique index too — same reason
-- `auth_provider` is a CHECK constraint: `'local'` or `'google'`
-- Variations are optional per product — selling price on variation overrides product price
+- `google_id` / `subdomain` — partial unique indexes (`WHERE col IS NOT NULL`)
+- `auth_provider` CHECK constraint: `'local'` or `'google'`
+- `orders.status` DEFAULT `'Pending'`, NOT NULL
+- `product.date_added` TIMESTAMP DEFAULT `CURRENT_TIMESTAMP` — used for expense tracking on dashboard
+- `order_details` has `product_name` / `variation_name` snapshot columns — product name is preserved even if product is later deleted
+- Variations are optional — variation selling price overrides product price
 
 ---
 
@@ -130,12 +134,38 @@ Key design decisions:
 
 ```
 Register → JWT issued → needsShopSetup: true → /setup-shop → /dashboard
-Login    → JWT issued → needsShopSetup: false (if shop exists) → /dashboard
+Login    → JWT issued → needsShopSetup: false (shop exists) → /dashboard
 ```
 
 - JWT secret must be **32+ characters** (HS256 = 256-bit minimum)
-- `JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear()` is called in `Program.cs` so `sub` stays as `sub` (not remapped to a Microsoft URI claim)
-- All authenticated endpoints resolve `shopId` from the JWT `sub` → owner → shop lookup
+- `JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear()` in `Program.cs` keeps `sub` as `sub`
+- All authenticated endpoints resolve `shopId` via: JWT `sub` → owner → shop lookup
+
+---
+
+## Dashboard Logic
+
+### Compute-on-the-fly decision
+Dashboard data is **computed live** via SQL aggregates (no cached/stored summary). Rationale:
+- At this scale (hundreds to low thousands of orders per shop), `SUM`/`COUNT`/`DATE_TRUNC` queries run in <10ms
+- Storing precomputed data would require invalidation logic on every order insert/update/delete
+- The `forecast` table is reserved for ML-generated predictions (Foresight page), not live aggregates
+- If a single shop exceeds ~100k orders, revisit with PostgreSQL materialized views
+
+### Card calculations
+| Card | Current period | Comparison |
+|------|---------------|------------|
+| Revenue | `SUM(total_amount)` from `orders` | vs same range last period |
+| Total Customers | `COUNT(DISTINCT customer_id)` from `orders` | vs same range last period |
+| Total Orders | `COUNT(*)` from `orders` | vs same range last period |
+
+**Month mode:** current calendar month vs previous calendar month  
+**Year mode:** current year YTD vs same date range last year
+
+### Chart data (Income vs Expense)
+- **Income:** `SUM(total_amount)` from `orders` grouped by day for selected year+month
+- **Expense:** `SUM(cost_price * stock)` from `product` grouped by `date_added` day
+- Rendered as a smooth line chart via Chart.js 4
 
 ---
 
@@ -156,6 +186,20 @@ Login    → JWT issued → needsShopSetup: false (if shop exists) → /dashboar
 | GET | `/products?search=` | JWT | All products, optional search |
 | POST | `/products` | JWT | Create product + optional variations |
 
+### Orders — `/api/orders`
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/?status=&search=` | JWT | List orders (sorted: Pending→In Progress→Delivered→Dismissed) |
+| GET | `/{id}` | JWT | Full order detail with customer info |
+| PATCH | `/{id}/status` | JWT | Update order status |
+
+### Dashboard — `/api/dashboard`
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/summary?period=month\|year` | JWT | Revenue, customers, orders + deltas |
+| GET | `/chart?year=&month=` | JWT | Daily income vs expense data for chart |
+| GET | `/years` | JWT | Available years (from orders + products) |
+
 ---
 
 ## Local Development Setup
@@ -172,7 +216,13 @@ psql -U postgres -c "CREATE DATABASE pasale_db;"
 psql -U postgres -d pasale_db -f backend/Data/migrations/001_initial.sql
 ```
 
-### 2. Backend
+### 2. Load dummy data (optional — for testing dashboard with shop_id=2)
+```bash
+psql -U postgres -d pasale_db -f backend/Data/migrations/002_dummy_data.sql
+# Then login with: priya@pasal-e.me  (set a real password hash or create via /api/auth/register)
+```
+
+### 3. Backend
 ```bash
 cd backend
 cp .env.example .env
@@ -183,10 +233,10 @@ dotnet run
 # Swagger UI: http://localhost:5000/swagger
 ```
 
-### 3. Frontend
+### 4. Frontend
 ```bash
 cd frontend
-npm install
+npm install          # installs chart.js too
 ng serve
 # Runs on http://localhost:4200
 ```
@@ -209,7 +259,7 @@ FRONTEND_URL=http://localhost:4200
 ```typescript
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:5000/api',  // All modules point here — easy to split later
+  apiBaseUrl: 'http://localhost:5000/api',
   subdomainSuffix: '.pasal-e.me'
 };
 ```
@@ -218,36 +268,28 @@ export const environment = {
 
 ## Cloud Deployment Runbook
 
-Use this as the source of truth when deploying to Azure.
-
 ### A. Core rules
-
-- CORS is checked at 2 places: app policy (ASP.NET Core) and Container Apps ingress policy.
-- Ingress CORS can override app CORS behavior.
-- For this project, allow these production origins:
+- CORS is checked at 2 places: ASP.NET Core app policy and Container Apps ingress policy
+- Allow these production origins:
   - `https://pasal-e.me`
   - `https://www.pasal-e.me`
   - `https://<shop>.pasal-e.me`
   - `https://pasal-e-frontend.lemonforest-193fbb66.southeastasia.azurecontainerapps.io`
 
 ### B. Backend env vars (Container App)
-
 ```env
 FRONTEND_URLS=https://pasal-e.me,https://www.pasal-e.me,https://pasal-e-frontend.lemonforest-193fbb66.southeastasia.azurecontainerapps.io
 CORS_ALLOW_PASAL_ME_SUBDOMAINS=true
 ```
 
 ### C. Deploy backend image
-
 Preferred:
-
 ```bash
 az acr build -r pasaleregistry -t pasal-e-backend:latest ./backend
 az containerapp update -n pasal-e-backend -g pasal-e-rg --image pasaleregistry.azurecr.io/pasal-e-backend:latest
 ```
 
 If ACR build fails with `TasksOperationsNotAllowed` (common on Azure for Students), use local Docker:
-
 ```bash
 docker build -t pasaleregistry.azurecr.io/pasal-e-backend:latest ./backend
 docker push pasaleregistry.azurecr.io/pasal-e-backend:latest
@@ -255,7 +297,6 @@ az containerapp update -n pasal-e-backend -g pasal-e-rg --image pasaleregistry.a
 ```
 
 If `az acr login` fails with Docker socket permission:
-
 ```bash
 sudo usermod -aG docker "$USER"
 newgrp docker
@@ -263,82 +304,128 @@ az acr login --name pasaleregistry
 ```
 
 ### D. Force a new revision when needed
-
-If image tag is unchanged (`:latest`) and rollout seems stale:
-
 ```bash
 az containerapp update -n pasal-e-backend -g pasal-e-rg --set-env-vars FORCE_ROLLOUT="$(date +%s)"
 ```
 
 ### E. Verify CORS quickly
-
-Root domain preflight:
-
 ```bash
 curl -i -X OPTIONS "https://pasal-e-backend.lemonforest-193fbb66.southeastasia.azurecontainerapps.io/api/auth/register" \
   -H "Origin: https://pasal-e.me" \
   -H "Access-Control-Request-Method: POST" \
   -H "Access-Control-Request-Headers: content-type"
 ```
-
-Subdomain preflight:
-
-```bash
-curl -i -X OPTIONS "https://pasal-e-backend.lemonforest-193fbb66.southeastasia.azurecontainerapps.io/api/auth/register" \
-  -H "Origin: https://abc.pasal-e.me" \
-  -H "Access-Control-Request-Method: POST" \
-  -H "Access-Control-Request-Headers: content-type"
-```
-
-Expected: response includes `Access-Control-Allow-Origin` with the same origin sent in the request.
+Expected: response includes `Access-Control-Allow-Origin` matching the origin sent.
 
 ### F. Pre-release checklist
-
-- Frontend production API URL is correct.
-- Backend env vars are updated (`FRONTEND_URLS`, `CORS_ALLOW_PASAL_ME_SUBDOMAINS`).
-- Ingress CORS is intentionally configured (or intentionally disabled).
-- Latest backend revision is active and serving 100% traffic.
-
+- [ ] Frontend production API URL is correct
+- [ ] Backend env vars updated (`FRONTEND_URLS`, `CORS_ALLOW_PASAL_ME_SUBDOMAINS`)
+- [ ] Ingress CORS intentionally configured
+- [ ] Latest backend revision is active and serving 100% traffic
 
 ---
 
 ## Per-Component CSS Convention
 
-Each screen has its own CSS file — **no shared stylesheet for app pages** (auth pages share `styles.css` only):
+Each screen has its own CSS file — **no shared stylesheet for app pages**:
 
 | Component | CSS File |
 |-----------|----------|
 | Login / Signup / After-Signup | `src/styles.css` (auth layout globals) |
 | Navbar | `navbar/navbar.component.css` |
+| Dashboard | `dashboard/dashboard.component.css` |
 | Inventory | `inventory/inventory.component.css` |
-| Dashboard / Orders / Foresight / Your Shop | Own `.css` file per component |
+| Orders | `orders/orders.component.css` |
+| Foresight / Your Shop | Own `.css` per component |
 
-Use `styleUrl` (singular, Angular 17+) in the decorator — not `styleUrls` (plural, old syntax).
+Use `styleUrl` (singular, Angular 17+) — not `styleUrls` (plural, old syntax).
 
 ---
 
-## Known Disabled Features (Planned)
+## Feature Status
 
 | Feature | Status |
 |---------|--------|
+| Auth (register/login/setup-shop) | ✅ Done |
+| Inventory — product list | ✅ Done |
+| Inventory — manual entry panel | ✅ Done |
+| Inventory — product variations | ✅ Done |
+| Orders — list with filter/search | ✅ Done |
+| Orders — expandable detail view | ✅ Done |
+| Orders — status update (PATCH) | ✅ Done |
+| Dashboard — summary cards | ✅ Done |
+| Dashboard — income vs expense chart | ✅ Done |
 | Scan & Upload Receipt | UI present, disabled |
 | Receipt Gallery | UI present, disabled |
 | View Product Details | Button present, disabled |
-| Dashboard charts | Stub page |
-| Orders management | Stub page |
+| Product / variation image upload | Input present, no backend yet |
 | Foresight / forecasting | Stub page |
 | Your Shop settings | Stub page |
-| Product image upload | Input present, no backend yet |
-| Variation image upload | Input present, no backend yet |
 
 ---
 
 ## Planned: Distributed Architecture
 
-Currently monolithic — one backend handles everything. The `apiBaseUrl` in `environment.ts` is intentionally a single value. To split into microservices later:
+Currently monolithic — one backend URL handles everything. To split into microservices:
 
-1. Each module (auth, inventory, orders, foresight) gets its own `apiBaseUrl` in the environment files
+1. Each module (auth, inventory, orders, dashboard/foresight) gets its own `apiBaseUrl` in environment files
 2. Each gets its own backend service/container
 3. A gateway or subdomain routing handles traffic
 
 No code changes needed inside services — only the environment URLs change.
+
+---
+
+## Changelog — Shop Customization & Product Details
+
+### New backend files
+| File | Description |
+|------|-------------|
+| `Models/Shop.cs` | Added `Colour` field |
+| `DTOs/ShopDTOs.cs` | `ShopInfoDto`, `UpdateShopRequest`, `CreateCategoryRequest`, `CategoryDetailDto`, `ProductDetailDto`, `UpdateProductRequest`, `UpsertVariationRequest` |
+| `Repositories/ShopRepository.cs` | Added `ICategoryRepository` / `CategoryRepository` |
+| `Repositories/InventoryRepository.cs` | Added `GetVariationsByProductIdAsync`, `GetVariationByIdAsync`, `DeleteVariationAsync` |
+| `Services/ShopService.cs` | Get/update shop info, category CRUD |
+| `Services/InventoryService.cs` | Added `GetProductDetailAsync`, `UpdateProductAsync` |
+| `Controllers/ShopController.cs` | `GET/PATCH /api/shop`, `GET/POST /api/shop/categories`, `DELETE /api/shop/categories/{id}` |
+| `Controllers/InventoryController.cs` | Added `GET /api/inventory/products/{id}`, `PUT /api/inventory/products/{id}` |
+
+### New API endpoints
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/shop` | Get current shop info |
+| PATCH | `/api/shop` | Update brand name, location, theme, colour, images |
+| GET | `/api/shop/categories` | List categories for this shop |
+| POST | `/api/shop/categories` | Add a new category |
+| DELETE | `/api/shop/categories/{id}` | Delete a category |
+| GET | `/api/inventory/products/{id}` | Get full product detail with variations |
+| PUT | `/api/inventory/products/{id}` | Update product + upsert variations |
+
+### New frontend files
+| File | Description |
+|------|-------------|
+| `core/models/shop.models.ts` | `ShopInfo`, `CategoryDetail`, `ProductDetail`, `UpdateProductRequest`, etc. |
+| `core/services/shop.service.ts` | All shop + product detail HTTP calls |
+| `inventory/product-detail/*` | Centered two-column modal: left col scrollable (description/vendor/stock/prices), right col scrollable (name/category/variations) |
+| `your-shop/*` | Shop Customization page: logo, brand name, location, subdomain+copy, theme, colour, banner, category table with delete |
+
+### Migration additions
+```sql
+-- Add colour column to shop table
+ALTER TABLE shop ADD COLUMN IF NOT EXISTS colour VARCHAR(50);
+```
+
+### Product Detail modal behaviour
+- Opens centered over the page (offset for 220px navbar)
+- Backdrop click → close without saving
+- "Return To Inventory" button → close without saving
+- Left column: image placeholder, description, vendor, stock, cost/selling price — scrolls independently if content overflows
+- Right column: product name, category dropdown, variation checkbox+list — right col scrolls when variations expand
+- "Update Changes" button → PUT to backend, refreshes inventory list on success
+
+### Your Shop behaviour
+- Brand name change → updates both `shop_name` and `brand_name` in DB
+- Subdomain shown as `subdomain.pasal-e.me` (read-only, copy to clipboard)
+- Theme: Light / Dark; Colour: Green/Blue/Red/Purple/Pink/Brown/Gray
+- Logo and Banner image: URL stored in DB (Azure Blob integration planned)
+- Categories: live list with delete; Add Category → small centered modal (name + image URL)

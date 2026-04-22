@@ -45,6 +45,7 @@ public class AppDbContext : DbContext
             e.Property(s => s.Currency).HasColumnName("currency");
             e.Property(s => s.Subdomain).HasColumnName("subdomain");
             e.Property(s => s.Theme).HasColumnName("theme");
+            e.Property(s => s.Colour).HasColumnName("colour");
             e.Property(s => s.LogoImage).HasColumnName("logo_image");
             e.Property(s => s.BannerImage).HasColumnName("banner_image");
             e.Property(s => s.PhysicalLocation).HasColumnName("physical_location");

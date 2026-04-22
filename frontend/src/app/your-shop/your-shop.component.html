@@ -1,1 +1,173 @@
-<div class="stub-page"><h1>YourShop</h1><p class="coming-soon">Coming soon.</p></div>
+<div class="shop-page">
+  @if (loading) {
+    <div class="shop-loading">Loading your shop...</div>
+  } @else {
+    <h1 class="shop-title">Your Shop</h1>
+
+    <div class="shop-top">
+      <div class="logo-area">
+        <div class="logo-upload-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"></circle>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+        </div>
+        <span class="logo-label">Shop Logo</span>
+      </div>
+
+      <div class="shop-fields">
+        <div class="shop-field-row">
+          <span class="shop-field-label">Brand Name:</span>
+          <input type="text" placeholder="Enter brand name" [formControl]="shopForm.controls.brandName" />
+        </div>
+
+        <div class="shop-field-row">
+          <span class="shop-field-label">Physical Location:</span>
+          <input type="text" placeholder="Enter location" [formControl]="shopForm.controls.physicalLocation" />
+        </div>
+
+        <div class="shop-field-row">
+          <span class="shop-field-label">Theme:</span>
+          <select [formControl]="shopForm.controls.theme">
+            <option value="">Select Theme</option>
+            @for (theme of themes; track theme) {
+              <option [value]="theme">{{ theme }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="shop-field-row">
+          <span class="shop-field-label">Colour:</span>
+          <select [formControl]="shopForm.controls.colour">
+            <option value="">Select Colour</option>
+            @for (colour of colours; track colour) {
+              <option [value]="colour">{{ colour }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="shop-field-row">
+          <span class="shop-field-label">Subdomain:</span>
+          <div class="subdomain-row">
+            <span class="subdomain-link">{{ subdomainUrl }}</span>
+            <button class="copy-btn" (click)="copySubdomain()" type="button">Copy</button>
+          </div>
+        </div>
+
+        <div class="shop-field-row">
+          <span class="shop-field-label">Banner:</span>
+          <div class="banner-upload-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="shop-save-row">
+      @if (copySuccess) { <span class="save-ok">Link copied</span> }
+      @if (saveMsg) { <span class="save-ok">{{ saveMsg }}</span> }
+      @if (saveError) { <span class="save-err">{{ saveError }}</span> }
+      <button class="save-btn" type="button" (click)="onSaveShop()" [disabled]="saving">
+        {{ saving ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="category-header">
+      <h2 class="category-title">Categories</h2>
+      <button class="add-category-btn" type="button" (click)="openAddCategory()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Add Category
+      </button>
+    </div>
+
+    <table class="category-table">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (categories.length === 0) {
+          <tr>
+            <td colspan="3" class="cat-empty">No categories yet.</td>
+          </tr>
+        } @else {
+          @for (category of categories; track category.categoryId) {
+            <tr class="cat-row">
+              <td>
+                @if (category.image) {
+                  <img class="cat-img" [src]="category.image" [alt]="category.name" />
+                } @else {
+                  <div class="cat-img-placeholder">-</div>
+                }
+              </td>
+              <td>{{ category.name }}</td>
+              <td>
+                <button class="delete-cat-btn" type="button" (click)="deleteCategory(category.categoryId)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  }
+</div>
+
+@if (showAddCategory) {
+  <div class="modal-backdrop" (click)="closeAddCategory()"></div>
+  <div class="add-cat-modal" (click)="$event.stopPropagation()">
+    <h3 class="modal-title">Add Category</h3>
+
+    <div class="modal-img-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="9"></circle>
+        <line x1="12" y1="8" x2="12" y2="16"></line>
+        <line x1="8" y1="12" x2="16" y2="12"></line>
+      </svg>
+      <span>Add image</span>
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Category name</label>
+      <input
+        type="text"
+        placeholder="e.g. Beverages"
+        [formControl]="categoryForm.controls.name"
+        [class.invalid]="categoryForm.controls.name.invalid && categoryForm.controls.name.touched" />
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Image URL (optional)</label>
+      <input type="text" placeholder="https://..." [formControl]="categoryForm.controls.image" />
+    </div>
+
+    @if (addCategoryError) {
+      <div class="modal-error">{{ addCategoryError }}</div>
+    }
+
+    <div class="modal-footer">
+      <button class="modal-cancel-btn" type="button" (click)="closeAddCategory()">Cancel</button>
+      <button class="modal-add-btn" type="button" (click)="onAddCategory()" [disabled]="addingCategory">
+        {{ addingCategory ? 'Adding...' : 'Add' }}
+      </button>
+    </div>
+  </div>
+}

@@ -21,7 +21,6 @@ public class InventoryController : ControllerBase
         _shops     = shops;
     }
 
-    // Resolves shopId from the JWT owner claim
     private async Task<int?> GetShopIdAsync()
     {
         var ownerIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
@@ -37,8 +36,7 @@ public class InventoryController : ControllerBase
     {
         var shopId = await GetShopIdAsync();
         if (shopId is null) return Unauthorized();
-        var cats = await _inventory.GetCategoriesAsync(shopId.Value);
-        return Ok(cats);
+        return Ok(await _inventory.GetCategoriesAsync(shopId.Value));
     }
 
     // GET api/inventory/products?search=
@@ -47,8 +45,7 @@ public class InventoryController : ControllerBase
     {
         var shopId = await GetShopIdAsync();
         if (shopId is null) return Unauthorized();
-        var products = await _inventory.GetProductsAsync(shopId.Value, search);
-        return Ok(products);
+        return Ok(await _inventory.GetProductsAsync(shopId.Value, search));
     }
 
     // POST api/inventory/products
@@ -58,7 +55,28 @@ public class InventoryController : ControllerBase
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var shopId = await GetShopIdAsync();
         if (shopId is null) return Unauthorized();
-        var product = await _inventory.CreateProductAsync(shopId.Value, req);
+        return Ok(await _inventory.CreateProductAsync(shopId.Value, req));
+    }
+
+    // GET api/inventory/products/{id}
+    [HttpGet("products/{id:int}")]
+    public async Task<IActionResult> GetProduct(int id)
+    {
+        var shopId = await GetShopIdAsync();
+        if (shopId is null) return Unauthorized();
+        var product = await _inventory.GetProductDetailAsync(id, shopId.Value);
+        if (product is null) return NotFound();
+        return Ok(product);
+    }
+
+    // PUT api/inventory/products/{id}
+    [HttpPut("products/{id:int}")]
+    public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductRequest req)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var shopId = await GetShopIdAsync();
+        if (shopId is null) return Unauthorized();
+        var product = await _inventory.UpdateProductAsync(id, shopId.Value, req);
         return Ok(product);
     }
 }

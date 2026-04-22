@@ -1,0 +1,167 @@
+<!-- product-detail.component.html -->
+<div class="pd-backdrop" (click)="onClose()"></div>
+
+<div class="pd-modal" (click)="$event.stopPropagation()">
+
+  @if (loading) {
+    <div class="pd-loading">Loading product details...</div>
+  } @else {
+
+    <!-- Header -->
+    <div class="pd-header">
+      <h2 class="pd-title">Product details</h2>
+      <button class="pd-back-btn" (click)="onClose()">
+        Return To Inventory
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Two-column body -->
+    <div class="pd-body">
+
+      <!-- ── Left column ─────────────────────────────────────────────── -->
+      <div class="pd-col pd-col-left">
+
+        <!-- Image upload -->
+        <div class="pd-img-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+          <span>Add product image</span>
+        </div>
+
+        <!-- Description -->
+        <div class="pd-field-group">
+          <label class="pd-label">Product Description</label>
+          <textarea placeholder="Add a Description......."
+            rows="3" [formControl]="form.controls.description"></textarea>
+        </div>
+
+        <!-- Vendor -->
+        <div class="pd-field-group">
+          <label class="pd-label">Vendor</label>
+          <input type="text" placeholder="Vendor's Name"
+            [formControl]="form.controls.vendorName" />
+        </div>
+
+        <!-- In Stock -->
+        <div class="pd-field-group">
+          <label class="pd-label">In Stock</label>
+          <input type="number" placeholder="eg. 1" min="0"
+            [formControl]="form.controls.stock" />
+        </div>
+
+        <!-- Cost Price -->
+        <div class="pd-field-group">
+          <label class="pd-label">Cost Price</label>
+          <input type="number" placeholder="Type your Cost Price" min="0" step="0.01"
+            [formControl]="form.controls.costPrice" />
+        </div>
+
+        <!-- Selling Price -->
+        <div class="pd-field-group">
+          <label class="pd-label">Selling Price</label>
+          <input type="number" placeholder="Type your selling price..." min="0" step="0.01"
+            [formControl]="form.controls.sellingPrice" />
+        </div>
+
+      </div>
+
+      <!-- ── Right column ────────────────────────────────────────────── -->
+      <div class="pd-col pd-col-right">
+
+        <!-- Product Name -->
+        <div class="pd-inline-field">
+          <label class="pd-inline-label">Product Name:</label>
+          <input type="text" placeholder="Name of Product"
+            [formControl]="form.controls.name"
+            [class.invalid]="form.controls.name.invalid && form.controls.name.touched" />
+        </div>
+
+        <!-- Category -->
+        <div class="pd-inline-field">
+          <label class="pd-inline-label">Category:</label>
+          <select [formControl]="form.controls.categoryId">
+            <option [ngValue]="null">Select Category</option>
+            @for (cat of categories; track cat.categoryId) {
+              <option [ngValue]="cat.categoryId">{{ cat.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="pd-divider"></div>
+
+        <!-- Variation checkbox -->
+        <label class="pd-checkbox-row">
+          <input type="checkbox" [formControl]="form.controls.addVariations"
+            (change)="onAddVariationsChange()" />
+          <span class="pd-checkmark"></span>
+          <span class="pd-checkbox-label">Add Product Variation</span>
+        </label>
+
+        <!-- Variations list (scrollable) -->
+        @if (showVariations) {
+          <div class="pd-variations-list">
+            @for (varCtrl of variationsArray.controls; track varCtrl; let i = $index) {
+              <div class="pd-var-row">
+                <div class="pd-var-img">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="12" cy="12" r="9"/>
+                    <line x1="12" y1="8" x2="12" y2="16"/>
+                    <line x1="8" y1="12" x2="16" y2="12"/>
+                  </svg>
+                </div>
+                <input type="text" placeholder="Option" class="pd-var-name"
+                  [formControl]="getVarControl(varCtrl, 'name')" />
+                <span class="pd-var-price-label">Price:</span>
+                <input type="number" placeholder="Price" min="0" step="0.01" class="pd-var-price"
+                  [formControl]="getVarControl(varCtrl, 'sellingPrice')" />
+                @if (variationsArray.length > 1) {
+                  <button class="pd-var-remove" (click)="removeVariation(i)">✕</button>
+                }
+              </div>
+            }
+
+            <button class="pd-more-var-btn" (click)="addVariationRow()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              More Variation
+            </button>
+          </div>
+        }
+
+        <!-- Online shop checkbox -->
+        <label class="pd-checkbox-row pd-online-row">
+          <input type="checkbox" [formControl]="form.controls.onlineAvailable" />
+          <span class="pd-checkmark"></span>
+          <span class="pd-checkbox-label">Show it in your Online Shop.</span>
+        </label>
+
+        @if (saveError) {
+          <div class="pd-error">{{ saveError }}</div>
+        }
+        @if (saveSuccess) {
+          <div class="pd-success">Changes saved!</div>
+        }
+
+        <!-- Submit -->
+        <div class="pd-footer">
+          <button class="pd-update-btn" (click)="onSubmit()" [disabled]="saving">
+            {{ saving ? 'Saving...' : 'Update Changes' }}
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

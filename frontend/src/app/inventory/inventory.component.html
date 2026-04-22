@@ -1,4 +1,3 @@
-<!-- src/app/inventory/inventory.component.html -->
 <div class="inventory-page">
 
   <!-- Header -->
@@ -15,7 +14,6 @@
 
   <!-- Action buttons -->
   <div class="inv-actions">
-    <!-- Disabled -->
     <button class="action-btn action-btn--disabled" disabled>
       <div class="action-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -27,7 +25,6 @@
       <span class="action-label">Scan and Upload<br>Receipt</span>
     </button>
 
-    <!-- Manual Entry -->
     <button class="action-btn" (click)="openManualEntry()">
       <div class="action-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -39,7 +36,6 @@
       <span class="action-label">Manual<br>Entry</span>
     </button>
 
-    <!-- Disabled -->
     <button class="action-btn action-btn--disabled" disabled>
       <div class="action-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -78,7 +74,9 @@
               <td>{{ p.vendorName ?? '—' }}</td>
               <td>{{ p.stock }}</td>
               <td>
-                <button class="view-details-btn" disabled title="Coming soon">View Details</button>
+                <button class="view-details-btn" (click)="openProductDetail(p.productId)">
+                  View Details
+                </button>
               </td>
             </tr>
           }
@@ -86,38 +84,33 @@
       </tbody>
     </table>
   </div>
-
 </div>
 
-<!-- ── Manual Entry Overlay ─────────────────────────────────────────────── -->
+<!-- Manual Entry Overlay -->
 @if (showManualEntry) {
   <div class="overlay-backdrop" (click)="closeManualEntry()"></div>
-
   <div class="manual-panel" (click)="$event.stopPropagation()">
     <div class="manual-scroll">
-
       <h2 class="panel-title">Manually Enter New Product</h2>
-
-      <!-- Image + Name/Category row -->
       <div class="panel-top-row">
         <div class="img-upload-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/>
+            <circle cx="12" cy="12" r="9"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
             <line x1="8" y1="12" x2="16" y2="12"/>
           </svg>
           <span>Add product image</span>
         </div>
-
         <div class="panel-name-cat">
           <div class="panel-field">
             <label>Product Name:</label>
             <input type="text" placeholder="Name of Product"
-              [formControl]="$any(productForm.get('name'))"
-              [class.invalid]="productForm.get('name')?.invalid && productForm.get('name')?.touched" />
+              [formControl]="productForm.controls.name"
+              [class.invalid]="productForm.controls.name.invalid && productForm.controls.name.touched" />
           </div>
           <div class="panel-field">
             <label>Category:</label>
-            <select [formControl]="$any(productForm.get('categoryId'))">
+            <select [formControl]="productForm.controls.categoryId">
               <option [ngValue]="null">Select Category</option>
               @for (cat of categories; track cat.categoryId) {
                 <option [ngValue]="cat.categoryId">{{ cat.name }}</option>
@@ -127,52 +120,39 @@
         </div>
       </div>
 
-      <!-- Description -->
       <div class="panel-section">
         <label class="section-label">Product Description</label>
         <textarea placeholder="Add a Description......." rows="3"
-          [formControl]="$any(productForm.get('description'))"></textarea>
+          [formControl]="productForm.controls.description"></textarea>
       </div>
-
-      <!-- Vendor -->
       <div class="panel-section">
         <label class="section-label">Vendor</label>
-        <input type="text" placeholder="Vendor's Name"
-          [formControl]="$any(productForm.get('vendorName'))" />
+        <input type="text" placeholder="Vendor's Name" [formControl]="productForm.controls.vendorName" />
       </div>
-
-      <!-- In Stock -->
       <div class="panel-section">
         <label class="section-label">In Stock</label>
-        <input type="number" placeholder="eg. 1" min="0"
-          [formControl]="$any(productForm.get('stock'))" />
+        <input type="number" placeholder="eg. 1" min="0" [formControl]="productForm.controls.stock" />
       </div>
-
-      <!-- Cost Price -->
       <div class="panel-section">
         <label class="section-label">Cost Price</label>
         <input type="number" placeholder="Type your Cost Price" min="0" step="0.01"
-          [formControl]="$any(productForm.get('costPrice'))" />
+          [formControl]="productForm.controls.costPrice" />
       </div>
-
-      <!-- Selling Price -->
       <div class="panel-section">
         <label class="section-label">Selling Price</label>
         <input type="number" placeholder="Type your selling price..." min="0" step="0.01"
-          [formControl]="$any(productForm.get('sellingPrice'))" />
+          [formControl]="productForm.controls.sellingPrice" />
       </div>
 
-      <!-- Add Variation checkbox -->
       <div class="panel-checkbox-row">
         <label class="custom-checkbox">
-          <input type="checkbox" [formControl]="$any(productForm.get('addVariations'))"
+          <input type="checkbox" [formControl]="productForm.controls.addVariations"
             (change)="onAddVariationsChange()" />
           <span class="checkmark"></span>
           <span class="checkbox-label">Add Product Variation</span>
         </label>
       </div>
 
-      <!-- Variations (shown only when checkbox is checked) -->
       @if (showVariations) {
         <div class="variations-section">
           @for (varCtrl of variationsArray.controls; track varCtrl; let i = $index) {
@@ -185,16 +165,17 @@
                 </svg>
               </div>
               <input type="text" placeholder="Option"
-                [formControl]="$any(varCtrl.get('name'))" class="var-name-input" />
+                [formControl]="getVariationControl(varCtrl, 'name')"
+                class="var-name-input" />
               <span class="var-price-label">Price:</span>
               <input type="number" placeholder="Price" min="0" step="0.01"
-                [formControl]="$any(varCtrl.get('sellingPrice'))" class="var-price-input" />
+                [formControl]="getVariationControl(varCtrl, 'sellingPrice')"
+                class="var-price-input" />
               @if (variationsArray.length > 1) {
-                <button class="remove-var-btn" (click)="removeVariation(i)" title="Remove">✕</button>
+                <button class="remove-var-btn" (click)="removeVariation(i)">✕</button>
               }
             </div>
           }
-
           <button class="add-more-btn" (click)="addVariationRow()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
@@ -204,29 +185,30 @@
         </div>
       }
 
-      <!-- Online shop checkbox -->
       <div class="panel-checkbox-row">
         <label class="custom-checkbox">
-          <input type="checkbox" [formControl]="$any(productForm.get('onlineAvailable'))" />
+          <input type="checkbox" [formControl]="productForm.controls.onlineAvailable" />
           <span class="checkmark"></span>
           <span class="checkbox-label">Show it in your Online Shop.</span>
         </label>
       </div>
 
-      @if (saveError) {
-        <div class="save-error">{{ saveError }}</div>
-      }
-      @if (saveSuccess) {
-        <div class="save-success">Product saved successfully!</div>
-      }
+      @if (saveError)   { <div class="save-error">{{ saveError }}</div> }
+      @if (saveSuccess) { <div class="save-success">Product saved successfully!</div> }
 
-      <!-- Submit -->
       <div class="panel-footer">
         <button class="add-product-btn" (click)="onSubmit()" [disabled]="saving">
           {{ saving ? 'Saving...' : (showVariations ? 'Save Changes' : 'Add New Product') }}
         </button>
       </div>
-
     </div>
   </div>
+}
+
+<!-- Product Detail Modal -->
+@if (showProductDetail) {
+  <app-product-detail
+    [productId]="selectedProductId!"
+    (close)="onProductDetailClose($event)">
+  </app-product-detail>
 }
