@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Poppins:wght@400;500;600;700;800&display=swap');
 
 :root {
+  --maingreen: #708848;
   --olive:       #5a6e2e;
   --olive-dark:  #4a5c24;
   --olive-mid:   #6b7f3a;
@@ -22,7 +23,7 @@ html, body {
   height: 100%;
   font-family: 'Poppins', sans-serif;
   background: var(--olive);
-  color: var(--text-dark);
+  color: var(--olive-dark);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -36,6 +37,7 @@ html, body {
   flex: 0 0 50%;
   background: var(--olive);
   display: flex;
+  align-items: center;
   flex-direction: column;
   justify-content: center;
   padding: 60px 80px;
@@ -44,7 +46,7 @@ html, body {
 .auth-right {
   flex: 1;
   background: var(--cream);
-  border-radius: 32px 0 0 32px;
+  border-radius: 50px 0 0 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -55,35 +57,34 @@ html, body {
 
 /* ── Brand Panel ───────────────────────────────────────────────────────── */
 .brand-logo {
-  width: 220px;
+  width: 300px;
   height: auto;
   margin-bottom: 28px;
 }
 
 .brand-name {
   font-family: 'Baloo 2', sans-serif;
-  font-size: 64px;
+  font-size: 90px;
   font-weight: 900;
-  color: var(--olive-dark);
+  color: var(--maingreen);
   letter-spacing: -1px;
   line-height: 1;
   margin-bottom: 12px;
 }
 
 .brand-tagline {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--olive-dark);
-  font-style: italic;
+  font-size: 20px;
+  font-weight: 550;
+  color: var(--maingreen);
 }
 
 /* ── Form Elements ─────────────────────────────────────────────────────── */
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 60px;
   width: 100%;
-  max-width: 440px;
+  max-width: 500px;
 }
 
 .form-row {
@@ -114,14 +115,14 @@ html, body {
 
 .input-wrap input {
   width: 100%;
-  padding: 18px 18px 18px 52px;
+  padding: 25px 25px 25px 72px;
   background: var(--cream-input);
   border: 2px solid transparent;
   border-radius: var(--radius);
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
-  font-weight: 600;
-  color: var(--text-dark);
+  font-weight: 500;
+  color: var(--olive);
   outline: none;
   transition: border-color .2s, box-shadow .2s;
 }
@@ -152,18 +153,18 @@ html, body {
 }
 
 .subdomain-row .input-wrap input {
-  border-radius: var(--radius) 0 0 var(--radius);
+  border-radius: var(--radius) var(--radius) var(--radius) var(--radius);
 }
 
 .subdomain-suffix {
-  background: var(--cream-input);
+  /* background: var(--cream-input);
   border: 2px solid transparent;
-  border-left: none;
+  border-left: none; */
   padding: 18px 16px;
   border-radius: 0 var(--radius) var(--radius) 0;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--olive-dark);
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--cream-input);
   white-space: nowrap;
   line-height: 1.5;
 }
@@ -177,8 +178,8 @@ html, body {
   border: none;
   border-radius: var(--radius);
   font-family: 'Poppins', sans-serif;
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 24px;
+  font-weight: 500;
   cursor: pointer;
   transition: background .2s, transform .1s;
   letter-spacing: .3px;
@@ -262,8 +263,8 @@ html, body {
 }
 
 .forgot-link a {
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--cream-input);
   text-decoration: underline;
   cursor: pointer;

@@ -1,24 +1,23 @@
-// src/app/core/models/shop.models.ts
-
 export interface ShopInfo {
-  shopId:           number;
-  shopName:         string;
-  brandName?:       string;
+  shopId:            number;
+  shopName:          string;
+  brandName?:        string;
   physicalLocation?: string;
-  subdomain?:       string;
-  theme?:           string;
-  colour?:          string;
-  logoImage?:       string;
-  bannerImage?:     string;
+  subdomain?:        string;
+  subdomainStatus:   string; // pending | approved | disapproved
+  theme?:            string;
+  colour?:           string;
+  logoImage?:        string;
+  bannerImage?:      string;
 }
 
 export interface UpdateShopRequest {
-  brandName?:       string;
+  brandName?:        string;
   physicalLocation?: string;
-  theme?:           string;
-  colour?:          string;
-  logoImage?:       string;
-  bannerImage?:     string;
+  theme?:            string;
+  colour?:           string;
+  logoImage?:        string;
+  bannerImage?:      string;
 }
 
 export interface CategoryDetail {
@@ -33,9 +32,9 @@ export interface CreateCategoryRequest {
 }
 
 export interface VariationDetail {
-  variationId:  number;
-  name?:        string;
-  image?:       string;
+  variationId:   number;
+  name?:         string;
+  image?:        string;
   sellingPrice?: number;
 }
 
@@ -55,9 +54,9 @@ export interface ProductDetail {
 }
 
 export interface UpsertVariationRequest {
-  variationId?: number;
-  name:         string;
-  image?:       string;
+  variationId?:  number;
+  name:          string;
+  image?:        string;
   sellingPrice?: number;
 }
 

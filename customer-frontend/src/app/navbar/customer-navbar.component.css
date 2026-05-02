@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+.customer-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 68px;
+  background: #ffffff;
+  border-bottom: 1.5px solid #e8f0d0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  font-family: 'Nunito', sans-serif;
+  box-shadow: 0 2px 12px rgba(74, 92, 36, 0.06);
+}
+
+/* ── Brand / Logo ── */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.shop-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.shop-logo-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #eef3d8;
+  border: 1.5px solid #c8d890;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.shop-logo-placeholder svg {
+  width: 20px;
+  height: 20px;
+  stroke: #5a7030;
+}
+
+.shop-name {
+  font-size: 20px;
+  font-weight: 900;
+  color: #1a1a1a;
+  letter-spacing: -0.3px;
+}
+
+/* ── Nav links ── */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #555;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .18s, color .18s;
+}
+
+.nav-link svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+.nav-link:hover {
+  background: #f0f4dc;
+  color: #4a5c24;
+}
+
+.nav-link.active {
+  background: #eef3d8;
+  color: #4a5c24;
+  font-weight: 800;
+}
+
+/* ── Cart ── */
+.cart-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 18px;
+  height: 18px;
+  background: #e8720c;
+  color: #ffffff;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .customer-nav { padding: 0 16px; }
+  .nav-link span { display: none; }
+  .nav-link { padding: 8px 10px; }
+  .shop-name { font-size: 16px; }
+}

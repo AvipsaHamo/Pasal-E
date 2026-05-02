@@ -1,0 +1,72 @@
+<!-- customer-navbar.component.html -->
+<nav class="customer-nav">
+
+  <!-- Left: Logo + Shop name -->
+  <a class="nav-brand" routerLink="/">
+    @if (shopSvc.shopInfo()?.logoImage) {
+      <img class="shop-logo" [src]="shopSvc.shopInfo()!.logoImage!" [alt]="shopSvc.shopInfo()!.shopName" />
+    } @else {
+      <div class="shop-logo-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+    }
+    <span class="shop-name">
+      {{ shopSvc.shopInfo()?.brandName ?? shopSvc.shopInfo()?.shopName ?? shopSvc.shopName() }}
+    </span>
+  </a>
+
+  <!-- Right: Nav links -->
+  <ul class="nav-links">
+
+    <li>
+      <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Home</span>
+      </a>
+    </li>
+
+    <li>
+      <a class="nav-link" routerLink="/categories" routerLinkActive="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        <span>Category</span>
+      </a>
+    </li>
+
+    <li>
+      <a class="nav-link cart-link" routerLink="/cart" routerLinkActive="active">
+        <div class="cart-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          @if (shopSvc.cartCount() > 0) {
+            <span class="cart-badge">{{ shopSvc.cartCount() }}</span>
+          }
+        </div>
+        <span>Cart</span>
+      </a>
+    </li>
+
+    <li>
+      <a class="nav-link" routerLink="/profile" routerLinkActive="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>Profile</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>

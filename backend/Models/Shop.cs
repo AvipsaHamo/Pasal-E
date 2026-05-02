@@ -8,6 +8,7 @@ public class Shop
     public string? BrandName          { get; set; }
     public string? Currency           { get; set; }
     public string? Subdomain          { get; set; }
+    public string  SubdomainStatus    { get; set; } = "pending";
     public string? Theme              { get; set; }
     public string? Colour             { get; set; }
     public string? LogoImage          { get; set; }

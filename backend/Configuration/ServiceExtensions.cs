@@ -12,6 +12,7 @@ public static class ServiceExtensions
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IInventoryRepository, InventoryRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IAdminRepository, AdminRepository>();
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IJwtService, JwtService>();
@@ -19,6 +20,7 @@ public static class ServiceExtensions
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IShopService, ShopService>();
+        services.AddScoped<IAdminService, AdminService>();
 
         return services;
     }

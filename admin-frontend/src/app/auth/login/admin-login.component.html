@@ -1,0 +1,47 @@
+<!-- admin-login.component.html -->
+<div class="login-page">
+  <div class="login-card">
+
+    <div class="login-brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Pasal-E Admin</span>
+    </div>
+
+    <h1 class="login-title">Sign in to admin panel</h1>
+
+    @if (errorMsg) {
+      <div class="error-banner">{{ errorMsg }}</div>
+    }
+
+    <div class="form-group">
+      <label class="field-label">Email Address</label>
+      <div class="input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+        </svg>
+        <input type="email" placeholder="admin@pasal-e.me"
+          [formControl]="form.controls.email"
+          [class.invalid]="form.controls.email.invalid && form.controls.email.touched" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="field-label">Password</label>
+      <div class="input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <input type="password" placeholder="Password"
+          [formControl]="form.controls.password"
+          [class.invalid]="form.controls.password.invalid && form.controls.password.touched" />
+      </div>
+    </div>
+
+    <button class="login-btn" (click)="onSubmit()" [disabled]="loading">
+      @if (loading) { <span class="spinner"></span> } @else { Sign In }
+    </button>
+
+  </div>
+</div>

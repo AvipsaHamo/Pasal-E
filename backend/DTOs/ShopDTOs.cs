@@ -2,14 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PasalE.Api.DTOs;
 
-// ── Shop Customization ────────────────────────────────────────────────────
-
 public record ShopInfoDto(
     int     ShopId,
     string  ShopName,
     string? BrandName,
     string? PhysicalLocation,
     string? Subdomain,
+    string  SubdomainStatus,
     string? Theme,
     string? Colour,
     string? LogoImage,
@@ -78,8 +77,10 @@ public record UpdateProductRequest(
 );
 
 public record UpsertVariationRequest(
-    int?     VariationId,   // null = new variation
+    int?     VariationId,
     string   Name,
     string?  Image,
     decimal? SellingPrice
 );
+
+public record ImageUploadResponse(string Url);

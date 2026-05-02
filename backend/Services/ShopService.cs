@@ -72,6 +72,6 @@ public class ShopService : IShopService
 
     private static ShopInfoDto MapShop(Shop s) => new(
         s.ShopId, s.ShopName, s.BrandName, s.PhysicalLocation,
-        s.Subdomain, s.Theme, s.Colour, s.LogoImage, s.BannerImage
+        s.Subdomain, s.SubdomainStatus, s.Theme, s.Colour, s.LogoImage, s.BannerImage
     );
 }

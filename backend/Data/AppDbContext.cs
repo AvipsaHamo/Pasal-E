@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<Customer>    Customers    => Set<Customer>();
     public DbSet<Order>       Orders       => Set<Order>();
     public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
+    public DbSet<Admin>       Admins       => Set<Admin>();
 
     protected override void OnModelCreating(ModelBuilder mb)
     {
@@ -44,6 +45,7 @@ public class AppDbContext : DbContext
             e.Property(s => s.BrandName).HasColumnName("brand_name");
             e.Property(s => s.Currency).HasColumnName("currency");
             e.Property(s => s.Subdomain).HasColumnName("subdomain");
+            e.Property(s => s.SubdomainStatus).HasColumnName("subdomain_status").HasDefaultValue("pending");
             e.Property(s => s.Theme).HasColumnName("theme");
             e.Property(s => s.Colour).HasColumnName("colour");
             e.Property(s => s.LogoImage).HasColumnName("logo_image");
@@ -120,8 +122,7 @@ public class AppDbContext : DbContext
             e.Property(o => o.TotalAmount).HasColumnName("total_amount").HasPrecision(10, 2);
             e.Property(o => o.PaymentScreenshot).HasColumnName("payment_screenshot");
             e.Property(o => o.PaymentType).HasColumnName("payment_type");
-            e.Property(o => o.Status).HasColumnName("status").IsRequired()
-                .HasDefaultValue("Pending");
+            e.Property(o => o.Status).HasColumnName("status").IsRequired().HasDefaultValue("Pending");
         });
 
         mb.Entity<OrderDetail>(e =>
@@ -136,6 +137,17 @@ public class AppDbContext : DbContext
             e.Property(od => od.Price).HasColumnName("price").HasPrecision(10, 2);
             e.Property(od => od.ProductName).HasColumnName("product_name");
             e.Property(od => od.VariationName).HasColumnName("variation_name");
+        });
+
+        mb.Entity<Admin>(e =>
+        {
+            e.ToTable("admin");
+            e.HasKey(a => a.AdminId);
+            e.Property(a => a.AdminId).HasColumnName("admin_id").UseIdentityByDefaultColumn();
+            e.Property(a => a.Email).HasColumnName("email").IsRequired();
+            e.Property(a => a.Password).HasColumnName("password").IsRequired();
+            e.Property(a => a.CreatedAt).HasColumnName("created_at");
+            e.HasIndex(a => a.Email).IsUnique();
         });
     }
 }

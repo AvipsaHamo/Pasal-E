@@ -8,56 +8,45 @@ using PasalE.Api.Middleware;
 using System.Text;
 using System.Text.Json;
 
-// Load .env in development
 DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ── Configuration from ENV ─────────────────────────────────────────────────
-var jwtSecret   = Environment.GetEnvironmentVariable("JWT_SECRET")!;
-var jwtIssuer   = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "pasal-e";
-var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "pasal-e-users";
-var dbUrl       = Environment.GetEnvironmentVariable("DATABASE_URL")!;
+// ── ENV ───────────────────────────────────────────────────────────────────
+var jwtSecret   = Environment.GetEnvironmentVariable("JWT_SECRET")
+    ?? throw new InvalidOperationException("JWT_SECRET not set.");
+var jwtIssuer   = Environment.GetEnvironmentVariable("JWT_ISSUER")   ?? "pasal-e";
+var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE")  ?? "pasal-e-users";
+var dbUrl       = Environment.GetEnvironmentVariable("DATABASE_URL")
+    ?? throw new InvalidOperationException("DATABASE_URL not set.");
 
-// Supports multiple origins via FRONTEND_URLS and a single FRONTEND_URL fallback.
-var rawFrontendUrls =
-    Environment.GetEnvironmentVariable("FRONTEND_URLS")
-    ?? Environment.GetEnvironmentVariable("FRONTEND_URL")
-    ?? "http://localhost:4200";
+// Comma-separated list of exact allowed origins (owner + admin + local dev)
+var explicitOrigins = (Environment.GetEnvironmentVariable("FRONTEND_URLS") ?? "http://localhost:4200")
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-var frontendUrls = rawFrontendUrls
-    .Split(',', StringSplitOptions.RemoveEmptyEntries)
-    .Select(url => url.Trim().TrimEnd('/'))
-    .Where(url => !string.IsNullOrWhiteSpace(url))
-    .Distinct(StringComparer.OrdinalIgnoreCase)
-    .ToArray();
+// Whether to also allow ALL *.pasal-e.me subdomains (customer storefronts)
+var allowSubdomains = (Environment.GetEnvironmentVariable("CORS_ALLOW_PASAL_ME_SUBDOMAINS") ?? "false")
+    .Equals("true", StringComparison.OrdinalIgnoreCase);
 
-var allowPasalMeSubdomains =
-    string.Equals(
-        Environment.GetEnvironmentVariable("CORS_ALLOW_PASAL_ME_SUBDOMAINS") ?? "true",
-        "true",
-        StringComparison.OrdinalIgnoreCase);
-
-// ── Services ───────────────────────────────────────────────────────────────
+// ── Services ──────────────────────────────────────────────────────────────
 builder.Services.AddControllers()
     .AddJsonOptions(opts =>
     {
         opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         opts.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
     });
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Database
-builder.Services.AddDbContext<AppDbContext>(opts =>
-    opts.UseNpgsql(dbUrl));
+System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-// JWT Authentication
+builder.Services.AddDbContext<AppDbContext>(opts => opts.UseNpgsql(dbUrl));
+
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opts =>
     {
+        opts.MapInboundClaims = false;
         opts.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer           = true,
@@ -66,40 +55,58 @@ builder.Services
             ValidateIssuerSigningKey = true,
             ValidIssuer              = jwtIssuer,
             ValidAudience            = jwtAudience,
-            IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
+            IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+            NameClaimType            = "sub",
+            RoleClaimType            = "role"
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(opts =>
+{
+    opts.AddPolicy("AdminOnly", policy => policy.RequireClaim("role", "admin"));
+});
 
-
+// ── CORS ──────────────────────────────────────────────────────────────────
 builder.Services.AddCors(opts =>
+{
     opts.AddPolicy("Frontend", policy =>
-        policy.SetIsOriginAllowed(origin =>
-              {
-                  var normalized = origin.TrimEnd('/');
+    {
+        policy
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
 
-                  if (frontendUrls.Contains(normalized, StringComparer.OrdinalIgnoreCase))
-                      return true;
+        if (allowSubdomains)
+        {
+            // Use SetIsOriginAllowed so we can do wildcard matching for *.pasal-e.me
+            policy.SetIsOriginAllowed(origin =>
+            {
+                if (string.IsNullOrEmpty(origin)) return false;
 
-                  if (!allowPasalMeSubdomains)
-                      return false;
+                // Always allow explicitly listed origins
+                if (explicitOrigins.Contains(origin)) return true;
 
-                  if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
-                      return false;
+                // Allow any https://*.pasal-e.me (customer storefronts)
+                try
+                {
+                    var uri = new Uri(origin);
+                    return uri.Host.EndsWith(".pasal-e.me", StringComparison.OrdinalIgnoreCase)
+                        && uri.Scheme == "https";
+                }
+                catch { return false; }
+            });
+        }
+        else
+        {
+            // Dev mode — exact origin list only
+            policy.WithOrigins(explicitOrigins);
+        }
+    });
+});
 
-                  // Accept root domain and all shop subdomains over HTTPS.
-                  return string.Equals(uri.Scheme, "https", StringComparison.OrdinalIgnoreCase)
-                      && (string.Equals(uri.Host, "pasal-e.me", StringComparison.OrdinalIgnoreCase)
-                          || uri.Host.EndsWith(".pasal-e.me", StringComparison.OrdinalIgnoreCase));
-              })
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials()));
-
-// App services
 builder.Services.AddApplicationServices();
 
+// ── Pipeline ──────────────────────────────────────────────────────────────
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -108,8 +115,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// ── Middleware pipeline ────────────────────────────────────────────────────
-app.UseRouting();
 app.UseCors("Frontend");
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseAuthentication();

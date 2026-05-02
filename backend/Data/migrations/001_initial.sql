@@ -160,3 +160,23 @@ ALTER TABLE product
 -- Backfill existing products with a placeholder date
 UPDATE product SET date_added = CURRENT_TIMESTAMP WHERE date_added IS NULL;
 
+
+-- ============================================================
+-- 005_subdomain_approval + admin (appended)
+-- ============================================================
+
+-- Add subdomain status to shop table
+ALTER TABLE shop
+  ADD COLUMN IF NOT EXISTS subdomain_status VARCHAR(20) DEFAULT 'pending'
+  CHECK (subdomain_status IN ('pending', 'approved', 'disapproved'));
+
+-- Update existing rows
+UPDATE shop SET subdomain_status = 'pending' WHERE subdomain_status IS NULL;
+
+-- Admin table
+CREATE TABLE IF NOT EXISTS admin (
+    admin_id   SERIAL PRIMARY KEY,
+    email      VARCHAR(255) UNIQUE NOT NULL,
+    password   TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
