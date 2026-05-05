@@ -5,10 +5,13 @@
     <h1 class="inv-title">Inventory</h1>
     <div class="inv-search-wrap">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
-      <input type="text" placeholder="Search for a specific product" class="inv-search"
-        (input)="onSearch($event)" />
+      <input type="text"
+             placeholder="Search for a specific product"
+             class="inv-search"
+             (input)="onSearch($event)" />
     </div>
   </div>
 
@@ -89,9 +92,14 @@
 <!-- Manual Entry Overlay -->
 @if (showManualEntry) {
   <div class="overlay-backdrop" (click)="closeManualEntry()"></div>
+
   <div class="manual-panel" (click)="$event.stopPropagation()">
-    <div class="manual-scroll">
+
+    <!-- IMPORTANT: formGroup added -->
+    <div class="manual-scroll" [formGroup]="productForm">
+
       <h2 class="panel-title">Manually Enter New Product</h2>
+
       <div class="panel-top-row">
         <div class="img-upload-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -101,16 +109,19 @@
           </svg>
           <span>Add product image</span>
         </div>
+
         <div class="panel-name-cat">
           <div class="panel-field">
             <label>Product Name:</label>
-            <input type="text" placeholder="Name of Product"
-              [formControl]="productForm.controls.name"
-              [class.invalid]="productForm.controls.name.invalid && productForm.controls.name.touched" />
+            <input type="text"
+                   placeholder="Name of Product"
+                   formControlName="name"
+                   [class.invalid]="productForm.controls.name.invalid && productForm.controls.name.touched" />
           </div>
+
           <div class="panel-field">
             <label>Category:</label>
-            <select [formControl]="productForm.controls.categoryId">
+            <select formControlName="categoryId">
               <option [ngValue]="null">Select Category</option>
               @for (cat of categories; track cat.categoryId) {
                 <option [ngValue]="cat.categoryId">{{ cat.name }}</option>
@@ -122,41 +133,50 @@
 
       <div class="panel-section">
         <label class="section-label">Product Description</label>
-        <textarea placeholder="Add a Description......." rows="3"
-          [formControl]="productForm.controls.description"></textarea>
+        <textarea rows="3"
+                  placeholder="Add a Description......."
+                  formControlName="description"></textarea>
       </div>
+
       <div class="panel-section">
         <label class="section-label">Vendor</label>
-        <input type="text" placeholder="Vendor's Name" [formControl]="productForm.controls.vendorName" />
+        <input type="text" placeholder="Vendor's Name" formControlName="vendorName" />
       </div>
+
       <div class="panel-section">
         <label class="section-label">In Stock</label>
-        <input type="number" placeholder="eg. 1" min="0" [formControl]="productForm.controls.stock" />
+        <input type="number" min="0" placeholder="eg. 1" formControlName="stock" />
       </div>
+
       <div class="panel-section">
         <label class="section-label">Cost Price</label>
-        <input type="number" placeholder="Type your Cost Price" min="0" step="0.01"
-          [formControl]="productForm.controls.costPrice" />
+        <input type="number" min="0" step="0.01" placeholder="Type your Cost Price"
+               formControlName="costPrice" />
       </div>
+
       <div class="panel-section">
         <label class="section-label">Selling Price</label>
-        <input type="number" placeholder="Type your selling price..." min="0" step="0.01"
-          [formControl]="productForm.controls.sellingPrice" />
+        <input type="number" min="0" step="0.01" placeholder="Type your selling price..."
+               formControlName="sellingPrice" />
       </div>
 
       <div class="panel-checkbox-row">
         <label class="custom-checkbox">
-          <input type="checkbox" [formControl]="productForm.controls.addVariations"
-            (change)="onAddVariationsChange()" />
+          <input type="checkbox"
+                 formControlName="addVariations"
+                 (change)="onAddVariationsChange()" />
           <span class="checkmark"></span>
           <span class="checkbox-label">Add Product Variation</span>
         </label>
       </div>
 
+      <!-- ✅ FIXED VARIATIONS -->
       @if (showVariations) {
-        <div class="variations-section">
+        <div class="variations-section" formArrayName="variations">
+
           @for (varCtrl of variationsArray.controls; track varCtrl; let i = $index) {
-            <div class="variation-row">
+            <div class="variation-row" [formGroupName]="i">
+
               <div class="variation-img-box">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                   <circle cx="12" cy="12" r="9"/>
@@ -164,21 +184,31 @@
                   <line x1="8" y1="12" x2="16" y2="12"/>
                 </svg>
               </div>
-              <input type="text" placeholder="Option"
-                [formControl]="getVariationControl(varCtrl, 'name')"
-                class="var-name-input" />
+
+              <input type="text"
+                     placeholder="Option"
+                     formControlName="name"
+                     class="var-name-input" />
+
               <span class="var-price-label">Price:</span>
-              <input type="number" placeholder="Price" min="0" step="0.01"
-                [formControl]="getVariationControl(varCtrl, 'sellingPrice')"
-                class="var-price-input" />
+
+              <input type="number"
+                     min="0"
+                     step="0.01"
+                     placeholder="Price"
+                     formControlName="sellingPrice"
+                     class="var-price-input" />
+
               @if (variationsArray.length > 1) {
                 <button class="remove-var-btn" (click)="removeVariation(i)">✕</button>
               }
             </div>
           }
+
           <button class="add-more-btn" (click)="addVariationRow()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
             More Variation
           </button>
@@ -187,7 +217,7 @@
 
       <div class="panel-checkbox-row">
         <label class="custom-checkbox">
-          <input type="checkbox" [formControl]="productForm.controls.onlineAvailable" />
+          <input type="checkbox" formControlName="onlineAvailable" />
           <span class="checkmark"></span>
           <span class="checkbox-label">Show it in your Online Shop.</span>
         </label>
@@ -197,10 +227,13 @@
       @if (saveSuccess) { <div class="save-success">Product saved successfully!</div> }
 
       <div class="panel-footer">
-        <button class="add-product-btn" (click)="onSubmit()" [disabled]="saving">
+        <button class="add-product-btn"
+                (click)="onSubmit()"
+                [disabled]="saving">
           {{ saving ? 'Saving...' : (showVariations ? 'Save Changes' : 'Add New Product') }}
         </button>
       </div>
+
     </div>
   </div>
 }

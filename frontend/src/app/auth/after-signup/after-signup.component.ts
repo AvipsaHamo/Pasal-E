@@ -1,11 +1,10 @@
-// src/app/auth/after-signup/after-signup.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, map, switchMap, catchError, of, Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../core/services/auth.service';
-import { HttpClient } from '@angular/common/http';
+import { DestroyableComponent } from '../../core/base/destroyable.base';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -14,8 +13,9 @@ import { environment } from '../../../environments/environment';
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './after-signup.component.html'
 })
-export class AfterSignupComponent {
-  readonly subdomainSuffix = environment.subdomainSuffix;
+export class AfterSignupComponent extends DestroyableComponent {
+  // Read from environment — not hardcoded
+  readonly subdomainSuffix = environment.subdomainSuffix ?? 'pasal-e.me';
 
   form = this.fb.group({
     brandName: ['', Validators.required],
@@ -28,47 +28,43 @@ export class AfterSignupComponent {
 
   loading  = false;
   errorMsg = '';
+  saveSuccess = false;
 
   constructor(
     private fb:     FormBuilder,
     private auth:   AuthService,
-    private router: Router,
-    private http:   HttpClient
-  ) {}
+    private router: Router
+  ) { super(); }
 
-  // Auto-fill subdomain from brand name
   onBrandNameInput(event: Event): void {
-    const val      = (event.target as HTMLInputElement).value;
-    const slug     = val.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    const subdCtrl = this.form.get('subdomain');
-    if (subdCtrl && !subdCtrl.dirty) {
-      subdCtrl.setValue(slug, { emitEvent: true });
-    }
+    const val  = (event.target as HTMLInputElement).value;
+    const slug = val.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    const ctrl = this.form.get('subdomain');
+    if (ctrl && !ctrl.dirty) ctrl.setValue(slug, { emitEvent: true });
   }
 
   onSubdomainInput(event: Event): void {
-    const val  = (event.target as HTMLInputElement).value;
-    const slug = val.toLowerCase().replace(/[^a-z0-9-]/g, '');
+    const input = event.target as HTMLInputElement;
+    const slug  = input.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
     this.form.get('subdomain')!.setValue(slug, { emitEvent: false });
-    (event.target as HTMLInputElement).value = slug;
+    input.value = slug;
   }
 
   onSubmit(): void {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    this.loading = true; this.errorMsg = '';
 
-    this.loading  = true;
-    this.errorMsg = '';
+    const brandName = this.form.value.brandName ?? '';
+    const subdomain = this.form.value.subdomain ?? '';
 
-    const { brandName, subdomain } = this.form.value;
-    this.auth.setupShop({ brandName: brandName!, subdomain: subdomain! }).subscribe({
-      next: () => {
-        this.loading = false;
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        this.loading  = false;
-        this.errorMsg = err?.error?.message ?? 'Shop setup failed. Please try again.';
-      }
-    });
+    this.auth.setupShop({ brandName, subdomain })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => { this.loading = false; this.router.navigate(['/dashboard']); },
+        error: (err: { error?: { message?: string } }) => {
+          this.loading  = false;
+          this.errorMsg = err?.error?.message ?? 'Shop setup failed. Please try again.';
+        }
+      });
   }
 }

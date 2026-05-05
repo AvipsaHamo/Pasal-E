@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { ShopService } from '../../core/services/shop.service';
@@ -93,8 +93,8 @@ export class ProductDetailComponent extends DestroyableComponent implements OnIn
 
   getVarGroup(ctrl: unknown): FormGroup { return ctrl as FormGroup; }
 
-  getVarControl(ctrl: AbstractControl | unknown, name: string): AbstractControl | null {
-    return (ctrl as AbstractControl).get ? (ctrl as AbstractControl).get(name) : null;
+  getVarControl(ctrl: AbstractControl | unknown, name: string): FormControl {
+    return (ctrl as FormGroup).get(name) as FormControl;
   }
 
   addVariationRow(): void {

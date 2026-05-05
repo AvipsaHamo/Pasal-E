@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { InventoryService } from '../core/services/inventory.service';
@@ -96,10 +96,6 @@ export class InventoryComponent extends DestroyableComponent implements OnInit {
   get showVariations():  boolean   { return !!this.productForm.get('addVariations')?.value; }
 
   getVariationGroup(ctrl: unknown): FormGroup { return ctrl as FormGroup; }
-
-  getVariationControl(ctrl: AbstractControl | unknown, name: string): AbstractControl | null {
-    return (ctrl as AbstractControl).get ? (ctrl as AbstractControl).get(name) : null;
-  }
 
   addVariationRow(): void {
     this.variationsArray.push(this.fb.group({

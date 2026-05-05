@@ -1,9 +1,10 @@
-// src/app/auth/signup/signup.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../core/services/auth.service';
+import { DestroyableComponent } from '../../core/base/destroyable.base';
 
 function passwordsMatch(ctrl: AbstractControl): ValidationErrors | null {
   const pw  = ctrl.get('password')?.value;
@@ -17,7 +18,7 @@ function passwordsMatch(ctrl: AbstractControl): ValidationErrors | null {
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './signup.component.html'
 })
-export class SignupComponent {
+export class SignupComponent extends DestroyableComponent {
   form = this.fb.group({
     firstName:       ['', Validators.required],
     lastName:        ['', Validators.required],
@@ -33,47 +34,31 @@ export class SignupComponent {
     private fb:     FormBuilder,
     private auth:   AuthService,
     private router: Router
-  ) {}
-
-  onSubmit(): void {
-  if (this.form.invalid) { 
-    this.form.markAllAsTouched(); 
-    return; 
-  }
-
-  this.loading  = true;
-  this.errorMsg = '';
-
-  const { firstName, lastName, email, password, confirmPassword } = this.form.value;
-  this.auth.register({
-    firstName:       firstName!,
-    lastName:        lastName!,
-    email:           email!,
-    password:        password!,
-    confirmPassword: confirmPassword!
-  }).subscribe({
-    next: () => {
-      this.loading = false;
-      this.router.navigate(['/setup-shop']);
-    },
-    error: (err) => {
-      this.loading = false;
-
-      // Handle .NET validation errors
-      if (err?.error?.errors) {
-        // Flatten all error messages into a single string
-        this.errorMsg = Object.values(err.error.errors).flat().join(' ');
-      } else if (err?.error?.title) {
-        this.errorMsg = err.error.title;
-      } else {
-        this.errorMsg = 'Registration failed. Please try again.';
-      }
-    }
-  });
-}
+  ) { super(); }
 
   get mismatch(): boolean {
-    return this.form.hasError('mismatch') &&
-      !!this.form.get('confirmPassword')?.touched;
+    return this.form.hasError('mismatch') && !!this.form.get('confirmPassword')?.touched;
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    this.loading = true; this.errorMsg = '';
+
+    // Null-safe — no ! assertions
+    const firstName       = this.form.value.firstName       ?? '';
+    const lastName        = this.form.value.lastName        ?? '';
+    const email           = this.form.value.email           ?? '';
+    const password        = this.form.value.password        ?? '';
+    const confirmPassword = this.form.value.confirmPassword ?? '';
+
+    this.auth.register({ firstName, lastName, email, password, confirmPassword })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => { this.loading = false; this.router.navigate(['/setup-shop']); },
+        error: (err: { error?: { message?: string } }) => {
+          this.loading  = false;
+          this.errorMsg = err?.error?.message ?? 'Registration failed. Please try again.';
+        }
+      });
   }
 }

@@ -18,10 +18,9 @@ export class DashboardService {
   }
 
   getChart(year: number, month: number): Observable<ChartData> {
-    // Temporary logging to help debug missing chart data
-    const params = new HttpParams().set('year', String(year)).set('month', String(month));
-    console.debug('[DashboardService] GET', `${this.base}/chart`, { params: params.toString() });
-    return this.http.get<ChartData>(`${this.base}/chart`, { params });
+    return this.http.get<ChartData>(`${this.base}/chart`, {
+      params: new HttpParams().set('year', year).set('month', month)
+    });
   }
 
   getAvailableYears(): Observable<AvailableYears> {
