@@ -21,6 +21,7 @@ public static class ServiceExtensions
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IShopService, ShopService>();
         services.AddScoped<IAdminService, AdminService>();
+        services.AddScoped<IImageService, ImageService>();
 
         return services;
     }

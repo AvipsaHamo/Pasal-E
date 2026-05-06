@@ -13,8 +13,6 @@ public interface IInventoryRepository
 
     Task<Product> CreateProductAsync(Product product);
     Task<Variation> CreateVariationAsync(Variation variation);
-
-    // ✅ NEW: bulk insert variations
     Task CreateVariationsBulkAsync(List<Variation> variations);
 
     Task<Variation?> GetVariationByIdAsync(int variationId, int productId);

@@ -1,0 +1,91 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using PasalE.Api.DTOs;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
+
+namespace PasalE.Api.Controllers;
+
+[ApiController]
+[Route("api/images")]
+[AllowAnonymous]
+public class ImageController : ControllerBase
+{
+    private readonly string _connectionString;
+    private readonly string _containerName;
+
+    public ImageController()
+    {
+        _connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING") ?? "";
+        _containerName    = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONTAINER")         ?? "pasal-e-images";
+    }
+
+    // POST api/images/upload
+    [HttpPost("upload")]
+    public async Task<IActionResult> Upload(IFormFile file)
+    {
+        if (file is null || file.Length == 0)
+            return BadRequest(new { message = "No file provided." });
+
+        if (file.Length > 5 * 1024 * 1024)
+            return BadRequest(new { message = "File must be under 5 MB." });
+
+        var allowedTypes = new[] { "image/jpeg", "image/png", "image/webp", "image/gif" };
+        if (!allowedTypes.Contains(file.ContentType))
+            return BadRequest(new { message = "Only JPEG, PNG, WebP and GIF are allowed." });
+
+        if (string.IsNullOrEmpty(_connectionString))
+            return StatusCode(503, new { message = "Image storage not configured. Set AZURE_STORAGE_CONNECTION_STRING." });
+
+        var ext      = Path.GetExtension(file.FileName).ToLowerInvariant();
+        var blobName = $"{Guid.NewGuid()}{ext}";
+
+        var containerClient = new BlobContainerClient(_connectionString, _containerName);
+        var blob = containerClient.GetBlobClient(blobName);
+        using var stream = file.OpenReadStream();
+        await blob.UploadAsync(stream, new BlobHttpHeaders { ContentType = file.ContentType });
+
+        // Generate SAS URL for secure access
+        var sasUri = GenerateSasUrl(blob, blobName);
+        return Ok(new ImageUploadResponse(sasUri));
+    }
+
+    private string GenerateSasUrl(BlobClient blob, string blobName)
+    {
+        try
+        {
+            var sasBuilder = new BlobSasBuilder(BlobSasPermissions.Read, DateTimeOffset.UtcNow.AddHours(24))
+            {
+                BlobContainerName = _containerName,
+                BlobName = blobName
+            };
+
+            // Extract account name and key from connection string
+            var parts = _connectionString.Split(';');
+            string? accountName = null;
+            string? accountKey = null;
+
+            foreach (var part in parts)
+            {
+                if (part.StartsWith("AccountName="))
+                    accountName = part.Substring("AccountName=".Length);
+                else if (part.StartsWith("AccountKey="))
+                    accountKey = part.Substring("AccountKey=".Length);
+            }
+
+            if (string.IsNullOrEmpty(accountName) || string.IsNullOrEmpty(accountKey))
+                return blob.Uri.ToString();
+
+            var credential = new Azure.Storage.StorageSharedKeyCredential(accountName, accountKey);
+            var sasToken = sasBuilder.ToSasQueryParameters(credential).ToString();
+
+            return $"{blob.Uri}?{sasToken}";
+        }
+        catch
+        {
+            // Fallback to regular URI if SAS generation fails
+            return blob.Uri.ToString();
+        }
+    }
+}
