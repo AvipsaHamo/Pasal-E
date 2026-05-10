@@ -47,6 +47,10 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "host": "0.0.0.0",
+            "allowedHosts": ["test-shop.lvh.me", "localhost", "127.0.0.1"]
+          },
           "configurations": {
             "production": { "buildTarget": "pasal-e-customer:build:production" },
             "development": {

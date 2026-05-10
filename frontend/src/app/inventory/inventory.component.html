@@ -101,7 +101,7 @@
       <h2 class="panel-title">Manually Enter New Product</h2>
 
       <div class="panel-top-row">
-        <div class="img-upload-box" (click)="productImageInput.click()">
+        <div class="img-upload-box" (click)="productImageInput.click()" [class.invalid]="isControlInvalid('image')">
           @if (newProductImageUrl) {
             <img [src]="newProductImageUrl | imageProxy" alt="Product preview" class="image-preview" />
           } @else {
@@ -114,6 +114,9 @@
           }
         </div>
         <input #productImageInput type="file" accept="image/*" hidden (change)="onProductImageUpload($event)" />
+        @if (isRequiredError(productForm.get('image'))) {
+          <div class="field-required-error">This field is mandatory</div>
+        }
 
         <div class="panel-name-cat">
           <div class="panel-field">
@@ -121,8 +124,11 @@
             <input type="text"
                    placeholder="Name of Product"
                    formControlName="name"
-                   [class.invalid]="productForm.controls.name.invalid && productForm.controls.name.touched" />
+                   [class.invalid]="isControlInvalid('name')" />
           </div>
+          @if (isRequiredError(productForm.get('name'))) {
+            <div class="field-required-error">This field is mandatory</div>
+            }
 
           <div class="panel-field">
             <label>Category:</label>
@@ -140,7 +146,11 @@
         <label class="section-label">Product Description</label>
         <textarea rows="3"
                   placeholder="Add a Description......."
-                  formControlName="description"></textarea>
+                  formControlName="description"
+                  [class.invalid]="isControlInvalid('description')"></textarea>
+        @if (isRequiredError(productForm.get('description'))) {
+          <div class="field-required-error">This field is mandatory</div>
+        }
       </div>
 
       @if (imageUploadError) {
@@ -158,19 +168,30 @@
 
       <div class="panel-section">
         <label class="section-label">In Stock</label>
-        <input type="number" min="0" placeholder="eg. 1" formControlName="stock" />
+        <input type="number" min="0" placeholder="eg. 1" formControlName="stock" [class.invalid]="isControlInvalid('stock')" />
+        @if (isRequiredError(productForm.get('stock'))) {
+          <div class="field-required-error">This field is mandatory</div>
+        }
       </div>
 
       <div class="panel-section">
         <label class="section-label">Cost Price</label>
         <input type="number" min="0" step="0.01" placeholder="Type your Cost Price"
-               formControlName="costPrice" />
+               formControlName="costPrice"
+               [class.invalid]="isControlInvalid('costPrice')" />
+        @if (isRequiredError(productForm.get('costPrice'))) {
+          <div class="field-required-error">This field is mandatory</div>
+        }
       </div>
 
       <div class="panel-section">
         <label class="section-label">Selling Price</label>
         <input type="number" min="0" step="0.01" placeholder="Type your selling price..."
-               formControlName="sellingPrice" />
+               formControlName="sellingPrice"
+               [class.invalid]="isControlInvalid('sellingPrice')" />
+        @if (isRequiredError(productForm.get('sellingPrice'))) {
+          <div class="field-required-error">This field is mandatory</div>
+        }
       </div>
 
       <div class="panel-checkbox-row">
@@ -191,17 +212,22 @@
             <div class="variation-row" [formGroupName]="i">
 
               <div class="variation-img-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <circle cx="12" cy="12" r="9"/>
-                  <line x1="12" y1="8" x2="12" y2="16"/>
-                  <line x1="8" y1="12" x2="16" y2="12"/>
-                </svg>
+                @if (variationPreviewImage()) {
+                  <img [src]="variationPreviewImage() | imageProxy" alt="Variation preview" class="variation-image-preview" />
+                } @else {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="12" cy="12" r="9"/>
+                    <line x1="12" y1="8" x2="12" y2="16"/>
+                    <line x1="8" y1="12" x2="16" y2="12"/>
+                  </svg>
+                }
               </div>
 
               <input type="text"
                      placeholder="Option"
                      formControlName="name"
-                     class="var-name-input" />
+                     class="var-name-input"
+                     [class.invalid]="isVariationControlInvalid(i, 'name')" />
 
               <span class="var-price-label">Price:</span>
 
@@ -210,12 +236,16 @@
                      step="0.01"
                      placeholder="Price"
                      formControlName="sellingPrice"
-                     class="var-price-input" />
+                     class="var-price-input"
+                     [class.invalid]="isVariationControlInvalid(i, 'sellingPrice')" />
 
               @if (variationsArray.length > 1) {
                 <button class="remove-var-btn" (click)="removeVariation(i)">✕</button>
               }
             </div>
+            @if (isRequiredError(variationsArray.at(i).get('name')) || isRequiredError(variationsArray.at(i).get('sellingPrice'))) {
+              <div class="field-required-error variation-required-error">This field is mandatory</div>
+            }
           }
 
           <button class="add-more-btn" (click)="addVariationRow()">

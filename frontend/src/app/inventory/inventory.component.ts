@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { InventoryService } from '../core/services/inventory.service';
@@ -37,12 +37,12 @@ export class InventoryComponent extends DestroyableComponent implements OnInit {
   productForm = this.fb.group({
     name:            ['', Validators.required],
     categoryId:      [null as number | null],
-    description:     [''],
-    image:           [''],
+    description:     ['', Validators.required],
+    image:           ['', Validators.required],
     vendorName:      [''],
     stock:           [0, [Validators.required, Validators.min(0)]],
-    costPrice:       [null as number | null],
-    sellingPrice:    [null as number | null],
+    costPrice:       [null as number | null, [Validators.required, Validators.min(0)]],
+    sellingPrice:    [null as number | null, [Validators.required, Validators.min(0)]],
     onlineAvailable: [true],
     addVariations:   [false],
     variations:      this.fb.array([])
@@ -106,7 +106,7 @@ export class InventoryComponent extends DestroyableComponent implements OnInit {
   addVariationRow(): void {
     this.variationsArray.push(this.fb.group({
       name:         ['', Validators.required],
-      sellingPrice: [null as number | null]
+      sellingPrice: [null as number | null, [Validators.required, Validators.min(0)]]
     }));
   }
 
@@ -146,10 +146,8 @@ export class InventoryComponent extends DestroyableComponent implements OnInit {
     if (this.productForm.invalid) { this.productForm.markAllAsTouched(); return; }
     this.saving = true; this.saveError = '';
     const v = this.productForm.value;
-
     const variations = this.showVariations
       ? this.variationsArray.controls
-          .filter(c => c.get('name')?.value?.trim())
           .map(c => ({
             name:         (c.get('name')?.value as string) ?? '',
             sellingPrice: (c.get('sellingPrice')?.value as number | null) ?? undefined
@@ -179,6 +177,24 @@ export class InventoryComponent extends DestroyableComponent implements OnInit {
           this.saveError = err?.error?.message ?? 'Failed to save product.';
         }
       });
+  }
+
+  isControlInvalid(controlName: string): boolean {
+    const control = this.productForm.get(controlName);
+    return !!control && control.invalid && control.touched;
+  }
+
+  isVariationControlInvalid(index: number, controlName: string): boolean {
+    const control = this.variationsArray.at(index)?.get(controlName);
+    return !!control && control.invalid && control.touched;
+  }
+
+  isRequiredError(control: AbstractControl | null): boolean {
+    return !!control && control.touched && control.hasError('required');
+  }
+
+  variationPreviewImage(): string {
+    return ((this.productForm.get('image')?.value as string | null) ?? '').trim();
   }
 
   openProductDetail(productId: number): void  { this.selectedProductId = productId; }

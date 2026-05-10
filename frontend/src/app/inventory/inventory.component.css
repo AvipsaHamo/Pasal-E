@@ -50,6 +50,7 @@
 .img-upload-box { width: 160px; min-width: 160px; height: 160px; border: 2px dashed #b0c070; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; background: #eef3d8; transition: border-color 0.2s, background 0.2s; }
 .img-upload-box:hover { border-color: #5a7030; background: #e8f0cc; }
 .img-upload-box { overflow: hidden; }
+.img-upload-box.invalid { border-color: #c0392b; background: #fff4f2; }
 .image-preview {
 	width: 100%;
 	height: 100%;
@@ -64,13 +65,16 @@
 .panel-field label { font-size: 14px; font-weight: 800; color: #3d4f1c; white-space: nowrap; min-width: 110px; }
 .panel-field input, .panel-field select { flex: 1; padding: 12px 16px; background: #ffffff; border: 1.5px solid #dde8bc; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 600; color: #333; outline: none; transition: border-color 0.2s; }
 .panel-field input:focus, .panel-field select:focus { border-color: #5a7030; }
-.panel-field input.invalid { border-color: #c0392b; }
+.panel-field input.invalid, .panel-field select.invalid { border-color: #c0392b; }
 
 .panel-section { margin-bottom: 16px; }
 .section-label { display: block; font-size: 14px; font-weight: 800; color: #3d4f1c; margin-bottom: 8px; }
 .panel-section input, .panel-section textarea { width: 100%; padding: 12px 16px; background: #ffffff; border: 1.5px solid #dde8bc; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 600; color: #333; outline: none; resize: vertical; transition: border-color 0.2s; }
 .panel-section input:focus, .panel-section textarea:focus { border-color: #5a7030; }
 .panel-section textarea::placeholder, .panel-section input::placeholder { color: #b0b8a0; }
+.panel-section input.invalid, .panel-section textarea.invalid { border-color: #c0392b; }
+
+.field-required-error { margin-top: 6px; font-size: 12px; font-weight: 700; color: #c0392b; }
 
 .panel-checkbox-row { margin: 18px 0 10px; }
 .custom-checkbox { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
@@ -84,11 +88,15 @@
 .variation-row { display: flex; align-items: center; gap: 10px; }
 .variation-img-box { width: 48px; height: 48px; border: 2px dashed #b0c070; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #ffffff; flex-shrink: 0; cursor: pointer; }
 .variation-img-box svg { width: 20px; height: 20px; stroke: #7a9040; }
+.variation-image-preview { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
 .var-name-input { flex: 1; padding: 10px 14px; background: #ffffff; border: 1.5px solid #dde8bc; border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 600; color: #333; outline: none; }
 .var-name-input:focus { border-color: #5a7030; }
+.var-name-input.invalid { border-color: #c0392b; }
 .var-price-label { font-size: 13px; font-weight: 800; color: #4a5c24; white-space: nowrap; }
 .var-price-input { width: 90px; padding: 10px 12px; background: #ffffff; border: 1.5px solid #dde8bc; border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 600; color: #333; outline: none; }
 .var-price-input:focus { border-color: #5a7030; }
+.var-price-input.invalid { border-color: #c0392b; }
+.variation-required-error { margin-top: -2px; margin-left: 58px; }
 .remove-var-btn { background: none; border: none; color: #c0392b; font-size: 14px; cursor: pointer; padding: 4px 6px; border-radius: 6px; transition: background 0.15s; }
 .remove-var-btn:hover { background: rgba(192,57,43,0.1); }
 .add-more-btn { display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: #4a5c24; color: #ffffff; border: none; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; width: fit-content; transition: background 0.18s; }

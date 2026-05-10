@@ -34,12 +34,12 @@ export class ProductDetailComponent extends DestroyableComponent implements OnIn
   form = this.fb.group({
     name:            ['', Validators.required],
     categoryId:      [null as number | null],
-    description:     [''],
-    image:           [''],
+    description:     ['', Validators.required],
+    image:           ['', Validators.required],
     vendorName:      [''],
     stock:           [0, [Validators.required, Validators.min(0)]],
-    costPrice:       [null as number | null],
-    sellingPrice:    [null as number | null],
+    costPrice:       [null as number | null, [Validators.required, Validators.min(0)]],
+    sellingPrice:    [null as number | null, [Validators.required, Validators.min(0)]],
     onlineAvailable: [true],
     addVariations:   [false],
     variations:      this.fb.array([])
@@ -89,7 +89,8 @@ export class ProductDetailComponent extends DestroyableComponent implements OnIn
     p.variations.forEach(v => this.variationsArray.push(this.fb.group({
       variationId:  [v.variationId],
       name:         [v.name ?? '', Validators.required],
-      sellingPrice: [v.sellingPrice ?? null]
+      image:        [v.image ?? null],
+      sellingPrice: [v.sellingPrice ?? null, [Validators.required, Validators.min(0)]]
     })));
   }
 
@@ -106,7 +107,8 @@ export class ProductDetailComponent extends DestroyableComponent implements OnIn
     this.variationsArray.push(this.fb.group({
       variationId:  [null],
       name:         ['', Validators.required],
-      sellingPrice: [null as number | null]
+      image:        [null as string | null],
+      sellingPrice: [null as number | null, [Validators.required, Validators.min(0)]]
     }));
   }
 
@@ -134,8 +136,13 @@ export class ProductDetailComponent extends DestroyableComponent implements OnIn
   removeVariation(i: number): void { this.variationsArray.removeAt(i); }
 
   onAddVariationsChange(): void {
-    if (this.form.get('addVariations')?.value && this.variationsArray.length === 0)
+    if (this.form.get('addVariations')?.value && this.variationsArray.length === 0) {
       this.addVariationRow();
+      return;
+    }
+    if (!this.form.get('addVariations')?.value) {
+      this.variationsArray.clear();
+    }
   }
 
   onSubmit(): void {
@@ -143,12 +150,13 @@ export class ProductDetailComponent extends DestroyableComponent implements OnIn
     this.saving = true; this.saveError = '';
 
     const v = this.form.value;
+    const productImage = ((v.image as string | null) ?? '').trim();
     const variations: UpsertVariationRequest[] = this.showVariations
       ? this.variationsArray.controls
-          .filter(c => (c.get('name')?.value as string)?.trim())
           .map(c => ({
             variationId:  (c.get('variationId')?.value as number | null) ?? undefined,
             name:         (c.get('name')?.value as string) ?? '',
+            image:        ((c.get('image')?.value as string | null) ?? '').trim() || productImage || undefined,
             sellingPrice: (c.get('sellingPrice')?.value as number | null) ?? undefined
           }))
       : [];
@@ -175,6 +183,26 @@ export class ProductDetailComponent extends DestroyableComponent implements OnIn
           this.saveError = err?.error?.message ?? 'Failed to update product.';
         }
       });
+  }
+
+  isControlInvalid(controlName: string): boolean {
+    const control = this.form.get(controlName);
+    return !!control && control.invalid && control.touched;
+  }
+
+  isVariationControlInvalid(index: number, controlName: string): boolean {
+    const control = this.variationsArray.at(index)?.get(controlName);
+    return !!control && control.invalid && control.touched;
+  }
+
+  isRequiredError(control: AbstractControl | null): boolean {
+    return !!control && control.touched && control.hasError('required');
+  }
+
+  variationPreviewImage(ctrl: AbstractControl | unknown): string {
+    const varImage = (((ctrl as FormGroup).get('image')?.value as string | null) ?? '').trim();
+    if (varImage) return varImage;
+    return ((this.form.get('image')?.value as string | null) ?? '').trim();
   }
 
   onClose(): void { this.close.emit(false); }

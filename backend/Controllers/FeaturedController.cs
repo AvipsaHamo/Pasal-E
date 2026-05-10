@@ -43,10 +43,23 @@ public class FeaturedController : ControllerBase
             .Join(_db.Products,
                   f => f.ProductId,
                   p => p.ProductId,
-                  (f, p) => new FeaturedProductDto(
-                      f.FeaturedId, p.ProductId, p.Name,
-                      p.Image, p.SellingPrice, f.SortOrder))
-            .OrderBy(f => f.SortOrder)
+                  (f, p) => new
+                  {
+                      f.FeaturedId,
+                      p.ProductId,
+                      p.Name,
+                      p.Image,
+                      p.SellingPrice,
+                      f.SortOrder
+                  })
+            .OrderBy(x => x.SortOrder)
+            .Select(x => new FeaturedProductDto(
+                x.FeaturedId,
+                x.ProductId,
+                x.Name,
+                x.Image,
+                x.SellingPrice,
+                x.SortOrder))
             .ToListAsync();
 
         return Ok(featured);

@@ -1,127 +1,94 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
 .customer-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px;
-  height: 68px;
-  background: #ffffff;
-  border-bottom: 1.5px solid #e8f0d0;
+  padding: 0 48px;
+  height: 72px;
+  background: var(--c-nav-bg, #ffffff);
+  border-bottom: 1px solid var(--c-border, #e5e7eb);
   position: sticky;
   top: 0;
   z-index: 100;
-  font-family: 'Nunito', sans-serif;
-  box-shadow: 0 2px 12px rgba(74, 92, 36, 0.06);
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
 }
 
-/* ── Brand / Logo ── */
 .nav-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   text-decoration: none;
   flex-shrink: 0;
 }
 
 .shop-logo {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 46px; height: 46px;
+  border-radius: 50%;
   object-fit: cover;
+  border: 2px solid var(--c-border, #e5e7eb);
 }
 
 .shop-logo-placeholder {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: #eef3d8;
-  border: 1.5px solid #c8d890;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--c-primary-muted, #f3f4f6);
+  border: 2px solid var(--c-border, #e5e7eb);
+  display: flex; align-items: center; justify-content: center;
 }
-.shop-logo-placeholder svg {
-  width: 20px;
-  height: 20px;
-  stroke: #5a7030;
-}
+.shop-logo-placeholder svg { width: 22px; height: 22px; stroke: var(--c-primary, #374151); }
 
 .shop-name {
-  font-size: 20px;
-  font-weight: 900;
-  color: #1a1a1a;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--c-text-primary, #111827);
   letter-spacing: -0.3px;
 }
 
-/* ── Nav links ── */
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   list-style: none;
 }
 
 .nav-link {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 8px 16px;
-  border-radius: 10px;
+  gap: 6px;
+  padding: 8px 20px;
+  font-family: 'Poppins', sans-serif;
   font-size: 15px;
-  font-weight: 700;
-  color: #555;
+  font-weight: 500;
+  color: var(--c-nav-text, #374151);
   text-decoration: none;
-  cursor: pointer;
-  transition: background .18s, color .18s;
+  border-radius: 8px;
+  transition: color 0.18s, background 0.18s;
 }
+.nav-link:hover { color: var(--c-nav-text-active, #1f2937); background: var(--c-primary-muted, #f3f4f6); }
+.nav-link.active { color: var(--c-nav-text-active, #1f2937); font-weight: 600; }
 
-.nav-link svg {
-  width: 20px;
-  height: 20px;
-  stroke: currentColor;
-  flex-shrink: 0;
-}
-
-.nav-link:hover {
-  background: #f0f4dc;
-  color: #4a5c24;
-}
-
-.nav-link.active {
-  background: #eef3d8;
-  color: #4a5c24;
-  font-weight: 800;
-}
-
-/* ── Cart ── */
-.cart-wrap {
+.cart-icon-wrap {
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
 }
-
+.cart-icon-wrap svg { width: 20px; height: 20px; }
 .cart-badge {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 18px;
-  height: 18px;
-  background: #e8720c;
-  color: #ffffff;
+  top: -8px; right: -10px;
+  width: 18px; height: 18px;
+  background: var(--c-badge-bg, #374151);
+  color: var(--c-text-on-primary, #ffffff);
   border-radius: 50%;
   font-size: 10px;
-  font-weight: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
 }
 
-/* ── Responsive ── */
 @media (max-width: 640px) {
   .customer-nav { padding: 0 16px; }
-  .nav-link span { display: none; }
-  .nav-link { padding: 8px 10px; }
-  .shop-name { font-size: 16px; }
+  .nav-link { padding: 8px 10px; font-size: 13px; }
+  .shop-name { font-size: 17px; }
 }

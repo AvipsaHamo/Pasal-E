@@ -112,6 +112,7 @@
   overflow: hidden;
 }
 .pd-img-box:hover { border-color: #5a7030; background: #e4ecc8; }
+.pd-img-box.invalid { border-color: #c0392b; background: #fff4f2; }
 .pd-img-box svg   { width: 36px; height: 36px; stroke: #6a8030; }
 .pd-img-box span  { font-size: 12px; font-weight: 700; color: #6a8030; }
 
@@ -151,6 +152,8 @@
 .pd-field-group textarea { border-radius: 12px; }
 .pd-field-group input:focus,
 .pd-field-group textarea:focus { border-color: #5a7030; }
+.pd-field-group input.invalid,
+.pd-field-group textarea.invalid { border-color: #c0392b; }
 .pd-field-group input::placeholder,
 .pd-field-group textarea::placeholder { color: #b0b8a0; }
 
@@ -186,7 +189,20 @@
 }
 .pd-inline-field input:focus,
 .pd-inline-field select:focus { border-color: #5a7030; }
-.pd-inline-field input.invalid { border-color: #c0392b; }
+.pd-inline-field input.invalid,
+.pd-inline-field select.invalid { border-color: #c0392b; }
+
+.field-required-error {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #c0392b;
+}
+
+.inline-required-error {
+  margin-top: -8px;
+  margin-bottom: 10px;
+}
 
 .pd-divider {
   height: 1px;
@@ -254,6 +270,7 @@
   background: #ffffff; flex-shrink: 0; cursor: pointer;
 }
 .pd-var-img svg { width: 18px; height: 18px; stroke: #7a9040; }
+.pd-var-image-preview { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
 
 .pd-var-name {
   flex: 1;
@@ -266,6 +283,7 @@
   outline: none;
 }
 .pd-var-name:focus { border-color: #5a7030; }
+.pd-var-name.invalid { border-color: #c0392b; }
 
 .pd-var-price-label {
   font-size: 13px; font-weight: 800; color: #4a5c24; white-space: nowrap;
@@ -282,6 +300,7 @@
   outline: none;
 }
 .pd-var-price:focus { border-color: #5a7030; }
+.pd-var-price.invalid { border-color: #c0392b; }
 
 .pd-var-remove {
   background: none; border: none; color: #c0392b;

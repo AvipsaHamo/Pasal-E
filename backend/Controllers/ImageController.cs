@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PasalE.Api.DTOs;
+using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
@@ -43,42 +44,79 @@ public class ImageController : ControllerBase
         var ext      = Path.GetExtension(file.FileName).ToLowerInvariant();
         var blobName = $"{Guid.NewGuid()}{ext}";
 
-        var containerClient = new BlobContainerClient(_connectionString, _containerName);
-        var blob = containerClient.GetBlobClient(blobName);
-        using var stream = file.OpenReadStream();
-        await blob.UploadAsync(stream, new BlobHttpHeaders { ContentType = file.ContentType });
+        try
+        {
+            var containerClient = CreateContainerClient();
 
-        // Return blob name instead of direct Azure URL to avoid CORS issues
-        return Ok(new ImageUploadResponse($"/api/images/{blobName}"));
+            await containerClient.CreateIfNotExistsAsync();
+
+            var blob = containerClient.GetBlobClient(blobName);
+            using var stream = file.OpenReadStream();
+            await blob.UploadAsync(stream, new BlobHttpHeaders { ContentType = file.ContentType });
+
+            // Return proxied path to avoid direct Azure CORS issues
+            return Ok(new ImageUploadResponse($"/api/images/{blobName}"));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Image upload failed: {ex.Message}\n{ex.StackTrace}");
+            return StatusCode(500, new { message = "Image upload failed.", error = ex.Message });
+        }
     }
 
     // GET api/images/{blobName} - Stream image from Azure (avoids CORS)
     [HttpGet("{blobName}")]
     public async Task<IActionResult> GetImage(string blobName)
     {
+        if (string.IsNullOrEmpty(blobName))
+            return BadRequest("Blob name is required.");
+
         try
         {
-            if (string.IsNullOrEmpty(blobName))
-                return BadRequest("Blob name is required.");
-
-            var containerClient = new BlobContainerClient(_connectionString, _containerName);
+            var containerClient = CreateContainerClient();
             var blob = containerClient.GetBlobClient(blobName);
 
-            // Check if blob exists
             if (!await blob.ExistsAsync())
                 return NotFound("Image not found.");
 
-            // Download blob
             var download = await blob.DownloadAsync();
-
-            // Return with proper content type
             return File(download.Value.Content, download.Value.Details.ContentType ?? "image/jpeg");
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error retrieving image {blobName}: {ex.Message}");
-            return StatusCode(500, new { message = "Failed to retrieve image." });
+            _logger.LogError($"Error retrieving image {blobName}: {ex.Message}\n{ex.StackTrace}");
+            return StatusCode(500, new { message = "Failed to retrieve image.", error = ex.Message });
         }
+    }
+
+    private BlobContainerClient CreateContainerClient()
+    {
+        if (string.IsNullOrWhiteSpace(_connectionString))
+            throw new InvalidOperationException("AZURE_STORAGE_CONNECTION_STRING not set.");
+
+        var settings = _connectionString
+            .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(part => part.Split('=', 2))
+            .Where(part => part.Length == 2)
+            .ToDictionary(part => part[0], part => part[1], StringComparer.OrdinalIgnoreCase);
+
+        if (!settings.TryGetValue("AccountName", out var accountName) || string.IsNullOrWhiteSpace(accountName))
+            throw new FormatException("AZURE_STORAGE_CONNECTION_STRING must include AccountName.");
+
+        if (!settings.TryGetValue("AccountKey", out var accountKey) || string.IsNullOrWhiteSpace(accountKey))
+            throw new FormatException("AZURE_STORAGE_CONNECTION_STRING must include AccountKey.");
+
+        if (!settings.TryGetValue("BlobEndpoint", out var blobEndpoint) || string.IsNullOrWhiteSpace(blobEndpoint))
+        {
+            if (!settings.TryGetValue("EndpointSuffix", out var endpointSuffix) || string.IsNullOrWhiteSpace(endpointSuffix))
+                throw new FormatException("AZURE_STORAGE_CONNECTION_STRING must include BlobEndpoint or EndpointSuffix.");
+
+            blobEndpoint = $"https://{accountName}.blob.{endpointSuffix.Trim().TrimEnd('/')}/";
+        }
+
+        var credential = new StorageSharedKeyCredential(accountName, accountKey);
+        var blobServiceClient = new BlobServiceClient(new Uri(blobEndpoint), credential);
+        return blobServiceClient.GetBlobContainerClient(_containerName);
     }
 
     private string GenerateSasUrl(BlobClient blob, string blobName)

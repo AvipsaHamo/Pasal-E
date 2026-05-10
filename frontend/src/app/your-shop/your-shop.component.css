@@ -475,3 +475,9 @@
   color: #5a7030;
   margin-top: 4px;
 }
+
+/* Featured section additions */
+.featured-section { margin-top: 8px; }
+.featured-hint { font-size: 13px; font-weight: 600; color: #888; margin-left: 8px; }
+.upload-error { background: rgba(192,57,43,.1); border: 1.5px solid #c0392b; border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 700; color: #c0392b; margin: 8px 0; }
+.shop-load-error { padding: 40px; text-align: center; color: #c0392b; font-weight: 700; }

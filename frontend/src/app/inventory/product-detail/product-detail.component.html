@@ -26,7 +26,7 @@
       <div class="pd-col pd-col-left">
 
         <!-- Image upload -->
-        <div class="pd-img-box" (click)="productImageInput.click()">
+        <div class="pd-img-box" (click)="productImageInput.click()" [class.invalid]="isControlInvalid('image')">
           @if (form.controls.image.value) {
             <img [src]="form.controls.image.value | imageProxy" alt="Product preview" class="pd-image-preview" />
           } @else {
@@ -39,12 +39,18 @@
           }
         </div>
         <input #productImageInput type="file" accept="image/*" hidden (change)="onImageUpload($event)" />
+        @if (isRequiredError(form.get('image'))) {
+          <div class="field-required-error">This field is mandatory</div>
+        }
 
         <!-- Description -->
         <div class="pd-field-group">
           <label class="pd-label">Product Description</label>
           <textarea placeholder="Add a Description......."
-            rows="3" [formControl]="form.controls.description"></textarea>
+            rows="3" [formControl]="form.controls.description" [class.invalid]="isControlInvalid('description')"></textarea>
+          @if (isRequiredError(form.get('description'))) {
+            <div class="field-required-error">This field is mandatory</div>
+          }
         </div>
 
         @if (imageUploadError) {
@@ -66,21 +72,30 @@
         <div class="pd-field-group">
           <label class="pd-label">In Stock</label>
           <input type="number" placeholder="eg. 1" min="0"
-            [formControl]="form.controls.stock" />
+            [formControl]="form.controls.stock" [class.invalid]="isControlInvalid('stock')" />
+          @if (isRequiredError(form.get('stock'))) {
+            <div class="field-required-error">This field is mandatory</div>
+          }
         </div>
 
         <!-- Cost Price -->
         <div class="pd-field-group">
           <label class="pd-label">Cost Price</label>
           <input type="number" placeholder="Type your Cost Price" min="0" step="0.01"
-            [formControl]="form.controls.costPrice" />
+            [formControl]="form.controls.costPrice" [class.invalid]="isControlInvalid('costPrice')" />
+          @if (isRequiredError(form.get('costPrice'))) {
+            <div class="field-required-error">This field is mandatory</div>
+          }
         </div>
 
         <!-- Selling Price -->
         <div class="pd-field-group">
           <label class="pd-label">Selling Price</label>
           <input type="number" placeholder="Type your selling price..." min="0" step="0.01"
-            [formControl]="form.controls.sellingPrice" />
+            [formControl]="form.controls.sellingPrice" [class.invalid]="isControlInvalid('sellingPrice')" />
+          @if (isRequiredError(form.get('sellingPrice'))) {
+            <div class="field-required-error">This field is mandatory</div>
+          }
         </div>
 
       </div>
@@ -93,8 +108,11 @@
           <label class="pd-inline-label">Product Name:</label>
           <input type="text" placeholder="Name of Product"
             [formControl]="form.controls.name"
-            [class.invalid]="form.controls.name.invalid && form.controls.name.touched" />
+            [class.invalid]="isControlInvalid('name')" />
         </div>
+        @if (isRequiredError(form.get('name'))) {
+          <div class="field-required-error inline-required-error">This field is mandatory</div>
+        }
 
         <!-- Category -->
         <div class="pd-inline-field">
@@ -123,21 +141,30 @@
             @for (varCtrl of variationsArray.controls; track varCtrl; let i = $index) {
               <div class="pd-var-row">
                 <div class="pd-var-img">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <circle cx="12" cy="12" r="9"/>
-                    <line x1="12" y1="8" x2="12" y2="16"/>
-                    <line x1="8" y1="12" x2="16" y2="12"/>
-                  </svg>
+                  @if (variationPreviewImage(varCtrl)) {
+                    <img [src]="variationPreviewImage(varCtrl) | imageProxy" alt="Variation preview" class="pd-var-image-preview" />
+                  } @else {
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <circle cx="12" cy="12" r="9"/>
+                      <line x1="12" y1="8" x2="12" y2="16"/>
+                      <line x1="8" y1="12" x2="16" y2="12"/>
+                    </svg>
+                  }
                 </div>
                 <input type="text" placeholder="Option" class="pd-var-name"
-                  [formControl]="getVarControl(varCtrl, 'name')" />
+                  [formControl]="getVarControl(varCtrl, 'name')"
+                  [class.invalid]="isVariationControlInvalid(i, 'name')" />
                 <span class="pd-var-price-label">Price:</span>
                 <input type="number" placeholder="Price" min="0" step="0.01" class="pd-var-price"
-                  [formControl]="getVarControl(varCtrl, 'sellingPrice')" />
+                  [formControl]="getVarControl(varCtrl, 'sellingPrice')"
+                  [class.invalid]="isVariationControlInvalid(i, 'sellingPrice')" />
                 @if (variationsArray.length > 1) {
                   <button class="pd-var-remove" (click)="removeVariation(i)">✕</button>
                 }
               </div>
+              @if (isRequiredError(variationsArray.at(i).get('name')) || isRequiredError(variationsArray.at(i).get('sellingPrice'))) {
+                <div class="field-required-error inline-required-error">This field is mandatory</div>
+              }
             }
 
             <button class="pd-more-var-btn" (click)="addVariationRow()">

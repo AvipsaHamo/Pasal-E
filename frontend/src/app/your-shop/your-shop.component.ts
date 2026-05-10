@@ -1,16 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormsModule } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
-import { ShopService } from '../core/services/shop.service';import { ImageProxyPipe } from '../core/pipes/image-proxy.pipe';import { ShopInfo, CategoryDetail } from '../core/models/shop.models';
+import { ShopService, FeaturedProductItem } from '../core/services/shop.service';
+import { ImageProxyPipe } from '../core/pipes/image-proxy.pipe';
+import { ShopInfo, CategoryDetail } from '../core/models/shop.models';
+import { ProductListItem } from '../core/models/inventory.models';
+import { InventoryService } from '../core/services/inventory.service';
 import { DestroyableComponent } from '../core/base/destroyable.base';
 
 @Component({
   selector: 'app-your-shop',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ImageProxyPipe],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ImageProxyPipe],
   templateUrl: './your-shop.component.html',
-  styleUrl: './your-shop.component.css'
+  styleUrls: ['./your-shop.component.css']
 })
 export class YourShopComponent extends DestroyableComponent implements OnInit {
   shop:       ShopInfo | null  = null;
@@ -21,6 +25,14 @@ export class YourShopComponent extends DestroyableComponent implements OnInit {
   saveMsg     = '';
   saveError   = '';
   copySuccess = false;
+
+  // Featured products
+  featured: FeaturedProductItem[] = [];
+  allProducts: ProductListItem[] = [];
+  selectedFeaturedId: number | null = null;
+  addFeaturedError = '';
+  showAddFeatured = false;
+  addingFeatured = false;
 
   uploadingLogo    = false;
   uploadingBanner  = false;
@@ -46,11 +58,13 @@ export class YourShopComponent extends DestroyableComponent implements OnInit {
     name: ['', Validators.required]
   });
 
-  constructor(private shopSvc: ShopService, private fb: FormBuilder) { super(); }
+  constructor(private shopSvc: ShopService, private invSvc: InventoryService, private fb: FormBuilder) { super(); }
 
   ngOnInit(): void {
     this.loadShop();
     this.loadCategories();
+    this.loadFeatured();
+    this.loadAllProducts();
   }
 
   private loadShop(): void {
@@ -251,4 +265,45 @@ export class YourShopComponent extends DestroyableComponent implements OnInit {
           console.error('Delete failed:', err?.error?.message ?? err)
       });
   }
+
+  // Featured
+  get availableToFeature(): ProductListItem[] {
+    const featuredIds = new Set(this.featured.map(f => f.productId));
+    return this.allProducts.filter(p => !featuredIds.has(p.productId));
+  }
+
+  openAddFeatured(): void { this.selectedFeaturedId = null; this.addFeaturedError = ''; this.showAddFeatured = true; }
+  closeAddFeatured(): void { this.showAddFeatured = false; }
+
+  onAddFeatured(): void {
+    if (!this.selectedFeaturedId) { this.addFeaturedError = 'Please select a product.'; return; }
+    this.addingFeatured = true; this.addFeaturedError = '';
+    this.shopSvc.addFeatured(this.selectedFeaturedId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => { this.addingFeatured = false; this.showAddFeatured = false; this.loadFeatured(); },
+      error: (err: { error?: { message?: string } }) => { this.addingFeatured = false; this.addFeaturedError = err?.error?.message ?? 'Failed to add.'; }
+    });
+  }
+
+  removeFeatured(featuredId: number): void {
+    this.shopSvc.removeFeatured(featuredId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => this.loadFeatured(),
+      error: (err: { error?: { message?: string } }) => console.error('Remove featured failed:', err?.error?.message)
+    });
+  }
+
+  private loadFeatured(): void {
+    this.shopSvc.getFeatured().pipe(takeUntil(this.destroy$)).subscribe({
+      next: f => this.featured = f,
+      error: err => console.error('Failed to load featured:', err)
+    });
+  }
+
+  private loadAllProducts(): void {
+    this.invSvc.getProducts().pipe(takeUntil(this.destroy$)).subscribe({
+      next: p => this.allProducts = p,
+      error: err => console.error('Failed to load products:', err)
+    });
+  }
+
 }
+
