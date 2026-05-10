@@ -8,11 +8,12 @@ import { ProductDetail, UpsertVariationRequest } from '../../core/models/shop.mo
 import { Category } from '../../core/models/inventory.models';
 import { InventoryService } from '../../core/services/inventory.service';
 import { DestroyableComponent } from '../../core/base/destroyable.base';
+import { ImageProxyPipe } from '../../core/pipes/image-proxy.pipe';
 
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ImageProxyPipe],
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css']
 })
@@ -27,11 +28,14 @@ export class ProductDetailComponent extends DestroyableComponent implements OnIn
   saving      = false;
   saveError   = '';
   saveSuccess = false;
+  uploadingImage = false;
+  imageUploadError = '';
 
   form = this.fb.group({
     name:            ['', Validators.required],
     categoryId:      [null as number | null],
     description:     [''],
+    image:           [''],
     vendorName:      [''],
     stock:           [0, [Validators.required, Validators.min(0)]],
     costPrice:       [null as number | null],
@@ -72,6 +76,7 @@ export class ProductDetailComponent extends DestroyableComponent implements OnIn
       name:            p.name,
       categoryId:      p.categoryId   ?? null,
       description:     p.description  ?? '',
+      image:           p.image        ?? '',
       vendorName:      p.vendorName   ?? '',
       stock:           p.stock,
       costPrice:       p.costPrice    ?? null,
@@ -105,6 +110,27 @@ export class ProductDetailComponent extends DestroyableComponent implements OnIn
     }));
   }
 
+  onImageUpload(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    this.uploadingImage = true;
+    this.imageUploadError = '';
+
+    this.shopSvc.uploadImage(file)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: res => {
+          this.uploadingImage = false;
+          this.form.patchValue({ image: res.url });
+        },
+        error: (err: { error?: { message?: string } }) => {
+          this.uploadingImage = false;
+          this.imageUploadError = err?.error?.message ?? 'Image upload failed.';
+        }
+      });
+  }
+
   removeVariation(i: number): void { this.variationsArray.removeAt(i); }
 
   onAddVariationsChange(): void {
@@ -131,6 +157,7 @@ export class ProductDetailComponent extends DestroyableComponent implements OnIn
       name:            v.name            ?? '',
       categoryId:      v.categoryId      ?? undefined,
       description:     v.description     || undefined,
+      image:           v.image           || undefined,
       vendorName:      v.vendorName      || undefined,
       stock:           v.stock           ?? 0,
       costPrice:       v.costPrice       ?? undefined,

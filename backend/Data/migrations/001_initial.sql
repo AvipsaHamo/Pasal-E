@@ -180,3 +180,15 @@ CREATE TABLE IF NOT EXISTS admin (
     password   TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- ========= CUSTOMER END =========
+
+-- featured products
+CREATE TABLE IF NOT EXISTS featured_product (
+    featured_id SERIAL PRIMARY KEY,
+    shop_id     INT NOT NULL REFERENCES shop(shop_id) ON DELETE CASCADE,
+    product_id  INT NOT NULL REFERENCES product(product_id) ON DELETE CASCADE,
+    sort_order  INT DEFAULT 0,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (shop_id, product_id)
+);

@@ -22,6 +22,7 @@ export interface CreateProductRequest {
   name: string;
   categoryId?: number;
   description?: string;
+  image?: string;
   vendorName?: string;
   stock: number;
   costPrice?: number;

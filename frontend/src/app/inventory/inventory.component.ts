@@ -7,11 +7,13 @@ import { InventoryService } from '../core/services/inventory.service';
 import { Category, ProductListItem } from '../core/models/inventory.models';
 import { ProductDetailComponent } from './product-detail/product-detail.component';
 import { DestroyableComponent } from '../core/base/destroyable.base';
+import { ShopService } from '../core/services/shop.service';
+import { ImageProxyPipe } from '../core/pipes/image-proxy.pipe';
 
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ProductDetailComponent],
+  imports: [CommonModule, ReactiveFormsModule, ProductDetailComponent, ImageProxyPipe],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.css'
 })
@@ -23,6 +25,9 @@ export class InventoryComponent extends DestroyableComponent implements OnInit {
   saving          = false;
   saveError       = '';
   saveSuccess     = false;
+  uploadingImage  = false;
+  imageUploadError = '';
+  newProductImageUrl = '';
 
   selectedProductId: number | null = null;
   get showProductDetail(): boolean { return this.selectedProductId !== null; }
@@ -33,6 +38,7 @@ export class InventoryComponent extends DestroyableComponent implements OnInit {
     name:            ['', Validators.required],
     categoryId:      [null as number | null],
     description:     [''],
+    image:           [''],
     vendorName:      [''],
     stock:           [0, [Validators.required, Validators.min(0)]],
     costPrice:       [null as number | null],
@@ -42,7 +48,7 @@ export class InventoryComponent extends DestroyableComponent implements OnInit {
     variations:      this.fb.array([])
   });
 
-  constructor(private inv: InventoryService, private fb: FormBuilder) { super(); }
+  constructor(private inv: InventoryService, private shopSvc: ShopService, private fb: FormBuilder) { super(); }
 
   ngOnInit(): void {
     this.loadProducts();
@@ -84,9 +90,9 @@ export class InventoryComponent extends DestroyableComponent implements OnInit {
   }
 
   openManualEntry(): void {
-    this.productForm.reset({ onlineAvailable: true, addVariations: false, stock: 0 });
+    this.productForm.reset({ onlineAvailable: true, addVariations: false, stock: 0, image: '' });
     this.variationsArray.clear();
-    this.saveError = ''; this.saveSuccess = false;
+    this.saveError = ''; this.saveSuccess = false; this.imageUploadError = ''; this.newProductImageUrl = '';
     this.showManualEntry = true;
   }
 
@@ -105,6 +111,28 @@ export class InventoryComponent extends DestroyableComponent implements OnInit {
   }
 
   removeVariation(i: number): void { this.variationsArray.removeAt(i); }
+
+  onProductImageUpload(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    this.uploadingImage = true;
+    this.imageUploadError = '';
+
+    this.shopSvc.uploadImage(file)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: res => {
+          this.uploadingImage = false;
+          this.newProductImageUrl = res.url;
+          this.productForm.patchValue({ image: res.url });
+        },
+        error: (err: { error?: { message?: string } }) => {
+          this.uploadingImage = false;
+          this.imageUploadError = err?.error?.message ?? 'Image upload failed.';
+        }
+      });
+  }
 
   onAddVariationsChange(): void {
     const checked = this.productForm.get('addVariations')?.value;
@@ -132,6 +160,7 @@ export class InventoryComponent extends DestroyableComponent implements OnInit {
       name:            v.name            ?? '',
       categoryId:      v.categoryId      ?? undefined,
       description:     v.description     || undefined,
+      image:           v.image           || undefined,
       vendorName:      v.vendorName      || undefined,
       stock:           v.stock           ?? 0,
       costPrice:       v.costPrice       ?? undefined,

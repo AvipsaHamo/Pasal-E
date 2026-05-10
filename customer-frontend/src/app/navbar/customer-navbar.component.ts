@@ -1,4 +1,3 @@
-// customer-frontend/src/app/navbar/customer-navbar.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';

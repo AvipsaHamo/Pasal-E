@@ -49,7 +49,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": { "buildTarget": "pasal-e-admin:build:production" },
-            "development": { "buildTarget": "pasal-e-admin:build:development" }
+            "development": {
+              "buildTarget": "pasal-e-admin:build:development",
+              "proxyConfig": "proxy.conf.json"
+            }
           },
           "defaultConfiguration": "development"
         }

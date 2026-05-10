@@ -7,15 +7,16 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    public DbSet<Owner>       Owners       => Set<Owner>();
-    public DbSet<Shop>        Shops        => Set<Shop>();
-    public DbSet<Category>    Categories   => Set<Category>();
-    public DbSet<Product>     Products     => Set<Product>();
-    public DbSet<Variation>   Variations   => Set<Variation>();
-    public DbSet<Customer>    Customers    => Set<Customer>();
-    public DbSet<Order>       Orders       => Set<Order>();
-    public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
-    public DbSet<Admin>       Admins       => Set<Admin>();
+    public DbSet<Owner>           Owners          => Set<Owner>();
+    public DbSet<Shop>            Shops           => Set<Shop>();
+    public DbSet<Category>        Categories      => Set<Category>();
+    public DbSet<Product>         Products        => Set<Product>();
+    public DbSet<Variation>       Variations      => Set<Variation>();
+    public DbSet<Customer>        Customers       => Set<Customer>();
+    public DbSet<Order>           Orders          => Set<Order>();
+    public DbSet<OrderDetail>     OrderDetails    => Set<OrderDetail>();
+    public DbSet<Admin>           Admins          => Set<Admin>();
+    public DbSet<FeaturedProduct> FeaturedProducts => Set<FeaturedProduct>();
 
     protected override void OnModelCreating(ModelBuilder mb)
     {
@@ -148,6 +149,18 @@ public class AppDbContext : DbContext
             e.Property(a => a.Password).HasColumnName("password").IsRequired();
             e.Property(a => a.CreatedAt).HasColumnName("created_at");
             e.HasIndex(a => a.Email).IsUnique();
+        });
+
+        mb.Entity<FeaturedProduct>(e =>
+        {
+            e.ToTable("featured_product");
+            e.HasKey(f => f.FeaturedId);
+            e.Property(f => f.FeaturedId).HasColumnName("featured_id").UseIdentityByDefaultColumn();
+            e.Property(f => f.ShopId).HasColumnName("shop_id");
+            e.Property(f => f.ProductId).HasColumnName("product_id");
+            e.Property(f => f.SortOrder).HasColumnName("sort_order");
+            e.Property(f => f.CreatedAt).HasColumnName("created_at");
+            e.HasIndex(f => new { f.ShopId, f.ProductId }).IsUnique();
         });
     }
 }

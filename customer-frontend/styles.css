@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+/* ── CSS Custom Properties — default Green Light theme ── */
+/* These are overwritten at runtime by ThemeService based on shop DB values */
+:root {
+  --c-primary:         #4a7c3f;
+  --c-primary-dark:    #2f5227;
+  --c-primary-light:   #c8dfc4;
+  --c-primary-muted:   #e8f3e6;
+  --c-accent:          #f0a500;
+  --c-bg-page:         #f2f8f0;
+  --c-bg-card:         #ffffff;
+  --c-bg-banner:       #4a7c3f;
+  --c-text-primary:    #1a2e18;
+  --c-text-secondary:  #4a7c3f;
+  --c-text-on-primary: #ffffff;
+  --c-border:          #c8dfc4;
+  --c-nav-bg:          #ffffff;
+  --c-nav-text:        #4a7c3f;
+  --c-nav-text-active: #2f5227;
+  --c-badge-bg:        #4a7c3f;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+  background: var(--c-bg-page);
+  color: var(--c-text-primary);
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Smooth theme transitions */
+*, *::before, *::after {
+  transition: background-color 0.25s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Don't animate transitions on images */
+img { transition: none !important; }

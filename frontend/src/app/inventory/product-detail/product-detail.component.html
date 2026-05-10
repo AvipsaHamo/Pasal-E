@@ -26,14 +26,19 @@
       <div class="pd-col pd-col-left">
 
         <!-- Image upload -->
-        <div class="pd-img-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <circle cx="12" cy="12" r="9"/>
-            <line x1="12" y1="8" x2="12" y2="16"/>
-            <line x1="8" y1="12" x2="16" y2="12"/>
-          </svg>
-          <span>Add product image</span>
+        <div class="pd-img-box" (click)="productImageInput.click()">
+          @if (form.controls.image.value) {
+            <img [src]="form.controls.image.value | imageProxy" alt="Product preview" class="pd-image-preview" />
+          } @else {
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="9"/>
+              <line x1="12" y1="8" x2="12" y2="16"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            <span>Add product image</span>
+          }
         </div>
+        <input #productImageInput type="file" accept="image/*" hidden (change)="onImageUpload($event)" />
 
         <!-- Description -->
         <div class="pd-field-group">
@@ -41,6 +46,14 @@
           <textarea placeholder="Add a Description......."
             rows="3" [formControl]="form.controls.description"></textarea>
         </div>
+
+        @if (imageUploadError) {
+          <div class="pd-error">{{ imageUploadError }}</div>
+        }
+
+        @if (uploadingImage) {
+          <div class="pd-success">Uploading image...</div>
+        }
 
         <!-- Vendor -->
         <div class="pd-field-group">

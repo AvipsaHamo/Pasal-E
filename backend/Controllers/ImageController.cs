@@ -14,9 +14,11 @@ public class ImageController : ControllerBase
 {
     private readonly string _connectionString;
     private readonly string _containerName;
+    private readonly ILogger<ImageController> _logger;
 
-    public ImageController()
+    public ImageController(ILogger<ImageController> logger)
     {
+        _logger = logger;
         _connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING") ?? "";
         _containerName    = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONTAINER")         ?? "pasal-e-images";
     }
@@ -46,9 +48,37 @@ public class ImageController : ControllerBase
         using var stream = file.OpenReadStream();
         await blob.UploadAsync(stream, new BlobHttpHeaders { ContentType = file.ContentType });
 
-        // Generate SAS URL for secure access
-        var sasUri = GenerateSasUrl(blob, blobName);
-        return Ok(new ImageUploadResponse(sasUri));
+        // Return blob name instead of direct Azure URL to avoid CORS issues
+        return Ok(new ImageUploadResponse($"/api/images/{blobName}"));
+    }
+
+    // GET api/images/{blobName} - Stream image from Azure (avoids CORS)
+    [HttpGet("{blobName}")]
+    public async Task<IActionResult> GetImage(string blobName)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(blobName))
+                return BadRequest("Blob name is required.");
+
+            var containerClient = new BlobContainerClient(_connectionString, _containerName);
+            var blob = containerClient.GetBlobClient(blobName);
+
+            // Check if blob exists
+            if (!await blob.ExistsAsync())
+                return NotFound("Image not found.");
+
+            // Download blob
+            var download = await blob.DownloadAsync();
+
+            // Return with proper content type
+            return File(download.Value.Content, download.Value.Details.ContentType ?? "image/jpeg");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error retrieving image {blobName}: {ex.Message}");
+            return StatusCode(500, new { message = "Failed to retrieve image." });
+        }
     }
 
     private string GenerateSasUrl(BlobClient blob, string blobName)
@@ -74,17 +104,28 @@ public class ImageController : ControllerBase
                     accountKey = part.Substring("AccountKey=".Length);
             }
 
-            if (string.IsNullOrEmpty(accountName) || string.IsNullOrEmpty(accountKey))
+            if (string.IsNullOrEmpty(accountName))
+            {
+                _logger.LogWarning("Failed to extract account name from connection string");
                 return blob.Uri.ToString();
+            }
+
+            if (string.IsNullOrEmpty(accountKey))
+            {
+                _logger.LogWarning("Failed to extract account key from connection string");
+                return blob.Uri.ToString();
+            }
 
             var credential = new Azure.Storage.StorageSharedKeyCredential(accountName, accountKey);
             var sasToken = sasBuilder.ToSasQueryParameters(credential).ToString();
-
-            return $"{blob.Uri}?{sasToken}";
+            
+            var sasUrl = $"{blob.Uri}?{sasToken}";
+            _logger.LogInformation($"Generated SAS URL successfully for blob: {blobName}");
+            return sasUrl;
         }
-        catch
+        catch (Exception ex)
         {
-            // Fallback to regular URI if SAS generation fails
+            _logger.LogError($"Error generating SAS URL: {ex.Message}\n{ex.StackTrace}");
             return blob.Uri.ToString();
         }
     }

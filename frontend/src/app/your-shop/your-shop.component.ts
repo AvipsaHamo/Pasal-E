@@ -2,14 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
-import { ShopService } from '../core/services/shop.service';
-import { ShopInfo, CategoryDetail } from '../core/models/shop.models';
+import { ShopService } from '../core/services/shop.service';import { ImageProxyPipe } from '../core/pipes/image-proxy.pipe';import { ShopInfo, CategoryDetail } from '../core/models/shop.models';
 import { DestroyableComponent } from '../core/base/destroyable.base';
 
 @Component({
   selector: 'app-your-shop',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ImageProxyPipe],
   templateUrl: './your-shop.component.html',
   styleUrl: './your-shop.component.css'
 })

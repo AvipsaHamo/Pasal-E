@@ -109,10 +109,18 @@
   cursor: pointer;
   margin-bottom: 20px;
   transition: border-color 0.2s, background 0.2s;
+  overflow: hidden;
 }
 .pd-img-box:hover { border-color: #5a7030; background: #e4ecc8; }
 .pd-img-box svg   { width: 36px; height: 36px; stroke: #6a8030; }
 .pd-img-box span  { font-size: 12px; font-weight: 700; color: #6a8030; }
+
+.pd-image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
 /* Field groups (left col) */
 .pd-field-group { margin-bottom: 14px; }

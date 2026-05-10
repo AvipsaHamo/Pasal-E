@@ -57,6 +57,7 @@ public class InventoryService : IInventoryService
             CategoryId      = req.CategoryId,
             Name            = req.Name,
             Description     = req.Description,
+            Image           = req.Image,
             VendorName      = req.VendorName,
             Stock           = req.Stock,
             CostPrice       = req.CostPrice,

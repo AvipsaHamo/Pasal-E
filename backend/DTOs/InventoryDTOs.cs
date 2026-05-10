@@ -19,6 +19,7 @@ public record CreateProductRequest(
     [Required] string  Name,
     int?               CategoryId,
     string?            Description,
+    string?            Image,
     string?            VendorName,
     int                Stock,
     decimal?           CostPrice,

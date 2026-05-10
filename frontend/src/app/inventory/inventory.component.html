@@ -101,14 +101,19 @@
       <h2 class="panel-title">Manually Enter New Product</h2>
 
       <div class="panel-top-row">
-        <div class="img-upload-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <circle cx="12" cy="12" r="9"/>
-            <line x1="12" y1="8" x2="12" y2="16"/>
-            <line x1="8" y1="12" x2="16" y2="12"/>
-          </svg>
-          <span>Add product image</span>
+        <div class="img-upload-box" (click)="productImageInput.click()">
+          @if (newProductImageUrl) {
+            <img [src]="newProductImageUrl | imageProxy" alt="Product preview" class="image-preview" />
+          } @else {
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="9"/>
+              <line x1="12" y1="8" x2="12" y2="16"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            <span>Add product image</span>
+          }
         </div>
+        <input #productImageInput type="file" accept="image/*" hidden (change)="onProductImageUpload($event)" />
 
         <div class="panel-name-cat">
           <div class="panel-field">
@@ -137,6 +142,14 @@
                   placeholder="Add a Description......."
                   formControlName="description"></textarea>
       </div>
+
+      @if (imageUploadError) {
+        <div class="save-error">{{ imageUploadError }}</div>
+      }
+
+      @if (uploadingImage) {
+        <div class="save-success">Uploading image...</div>
+      }
 
       <div class="panel-section">
         <label class="section-label">Vendor</label>
