@@ -79,4 +79,14 @@ public class InventoryController : ControllerBase
         var product = await _inventory.UpdateProductAsync(id, shopId.Value, req);
         return Ok(product);
     }
+
+    // DELETE api/inventory/products/{id}
+    [HttpDelete("products/{id:int}")]
+    public async Task<IActionResult> DeleteProduct(int id)
+    {
+        var shopId = await GetShopIdAsync();
+        if (shopId is null) return Unauthorized();
+        await _inventory.DeleteProductAsync(id, shopId.Value);
+        return NoContent();
+    }
 }

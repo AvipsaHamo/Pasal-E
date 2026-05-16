@@ -15,8 +15,19 @@ import { NavbarComponent } from '../navbar/navbar.component';
     </div>
   `,
   styles: [`
-    .app-shell { display: flex; min-height: 100vh; background: var(--cream); }
-    .main-content { flex: 1; overflow-y: auto; }
-  `]
+  .app-shell {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: #708848;
+  }
+  .main-content {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    background: #f0f4dc;
+    border-radius: 40px 0 0 40px;
+  }
+`]
 })
 export class LayoutComponent {}

@@ -34,6 +34,13 @@ export class YourShopComponent extends DestroyableComponent implements OnInit {
   showAddFeatured = false;
   addingFeatured = false;
 
+  // Delete confirmation modal for featured items
+  showDeleteConfirmModal = false;
+  deleteFeaturedId: number | null = null;
+  deleteFeaturedName = '';
+  deletingFeatured = false;
+  deleteError = '';
+
   uploadingLogo    = false;
   uploadingBanner  = false;
   uploadingCatImg  = false;
@@ -224,47 +231,47 @@ export class YourShopComponent extends DestroyableComponent implements OnInit {
       });
   }
 
-  openAddCategory(): void {
-    this.categoryForm.reset();
-    this.newCategoryImageUrl = null;
-    this.addCategoryError    = '';
-    this.showAddCategory     = true;
-  }
+  // openAddCategory(): void {
+  //   this.categoryForm.reset();
+  //   this.newCategoryImageUrl = null;
+  //   this.addCategoryError    = '';
+  //   this.showAddCategory     = true;
+  // }
 
-  closeAddCategory(): void { this.showAddCategory = false; }
+  // closeAddCategory(): void { this.showAddCategory = false; }
 
-  onAddCategory(): void {
-    if (this.categoryForm.invalid) { this.categoryForm.markAllAsTouched(); return; }
-    this.addingCategory   = true;
-    this.addCategoryError = '';
+  // onAddCategory(): void {
+  //   if (this.categoryForm.invalid) { this.categoryForm.markAllAsTouched(); return; }
+  //   this.addingCategory   = true;
+  //   this.addCategoryError = '';
 
-    const name = this.categoryForm.value.name ?? '';
+  //   const name = this.categoryForm.value.name ?? '';
 
-    this.shopSvc.addCategory({ name, image: this.newCategoryImageUrl ?? undefined })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.addingCategory  = false;
-          this.showAddCategory = false;
-          this.loadCategories();
-        },
-        error: (err: { error?: { message?: string } }) => {
-          this.addingCategory   = false;
-          this.addCategoryError = err?.error?.message ?? 'Failed to add category.';
-        }
-      });
-  }
+  //   this.shopSvc.addCategory({ name, image: this.newCategoryImageUrl ?? undefined })
+  //     .pipe(takeUntil(this.destroy$))
+  //     .subscribe({
+  //       next: () => {
+  //         this.addingCategory  = false;
+  //         this.showAddCategory = false;
+  //         this.loadCategories();
+  //       },
+  //       error: (err: { error?: { message?: string } }) => {
+  //         this.addingCategory   = false;
+  //         this.addCategoryError = err?.error?.message ?? 'Failed to add category.';
+  //       }
+  //     });
+  // }
 
-  deleteCategory(id: number): void {
-    if (!confirm('Delete this category? Products in this category will be uncategorised.')) return;
-    this.shopSvc.deleteCategory(id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next:  () => this.loadCategories(),
-        error: (err: { error?: { message?: string } }) =>
-          console.error('Delete failed:', err?.error?.message ?? err)
-      });
-  }
+  // deleteCategory(id: number): void {
+  //   if (!confirm('Delete this category? Products in this category will be uncategorised.')) return;
+  //   this.shopSvc.deleteCategory(id)
+  //     .pipe(takeUntil(this.destroy$))
+  //     .subscribe({
+  //       next:  () => this.loadCategories(),
+  //       error: (err: { error?: { message?: string } }) =>
+  //         console.error('Delete failed:', err?.error?.message ?? err)
+  //     });
+  // }
 
   // Featured
   get availableToFeature(): ProductListItem[] {
@@ -288,6 +295,37 @@ export class YourShopComponent extends DestroyableComponent implements OnInit {
     this.shopSvc.removeFeatured(featuredId).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => this.loadFeatured(),
       error: (err: { error?: { message?: string } }) => console.error('Remove featured failed:', err?.error?.message)
+    });
+  }
+
+  openDeleteConfirmFeaturedModal(featuredId: number, productName: string): void {
+    this.deleteFeaturedId = featuredId;
+    this.deleteFeaturedName = productName;
+    this.deleteError = '';
+    this.showDeleteConfirmModal = true;
+  }
+
+  closeDeleteConfirmModal(): void {
+    this.showDeleteConfirmModal = false;
+    this.deleteFeaturedId = null;
+    this.deleteFeaturedName = '';
+    this.deleteError = '';
+  }
+
+  onConfirmDeleteFeatured(): void {
+    if (!this.deleteFeaturedId) return;
+    this.deletingFeatured = true;
+    this.deleteError = '';
+    this.shopSvc.removeFeatured(this.deleteFeaturedId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => {
+        this.deletingFeatured = false;
+        this.showDeleteConfirmModal = false;
+        this.loadFeatured();
+      },
+      error: (err: { error?: { message?: string } }) => {
+        this.deletingFeatured = false;
+        this.deleteError = err?.error?.message ?? 'Failed to remove featured.';
+      }
     });
   }
 

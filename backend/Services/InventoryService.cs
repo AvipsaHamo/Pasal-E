@@ -11,6 +11,7 @@ public interface IInventoryService
     Task<ProductDto> CreateProductAsync(int shopId, CreateProductRequest req);
     Task<ProductDetailDto?> GetProductDetailAsync(int productId, int shopId);
     Task<ProductDetailDto> UpdateProductAsync(int productId, int shopId, UpdateProductRequest req);
+    Task DeleteProductAsync(int productId, int shopId);
 }
 
 public class InventoryService : IInventoryService
@@ -181,6 +182,14 @@ public class InventoryService : IInventoryService
         var catMap = categories.ToDictionary(c => c.CategoryId, c => c.Name);
 
         return MapProductDetail(product, updatedVariations, catMap);
+    }
+
+    public async Task DeleteProductAsync(int productId, int shopId)
+    {
+        var product = await _repo.GetProductByIdAsync(productId, shopId)
+            ?? throw new InvalidOperationException("Product not found.");
+
+        await _repo.DeleteProductAsync(product);
     }
 
     private static ProductDetailDto MapProductDetail(

@@ -1,3 +1,4 @@
+<!-- inventory.component.html -->
 <div class="inventory-page">
 
   <!-- Header -->
@@ -5,29 +6,17 @@
     <h1 class="inv-title">Inventory</h1>
     <div class="inv-search-wrap">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
-      <input type="text"
-             placeholder="Search for a specific product"
-             class="inv-search"
-             (input)="onSearch($event)" />
+      <input type="text" placeholder="Search for a specific product" class="inv-search"
+        (input)="onSearch($event)" />
     </div>
   </div>
 
-  <!-- Action buttons -->
+  <!-- ── 3 Action Buttons ─────────────────────────────────────────────── -->
   <div class="inv-actions">
-    <button class="action-btn action-btn--disabled" disabled>
-      <div class="action-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-          <circle cx="12" cy="13" r="4"/>
-        </svg>
-      </div>
-      <span class="action-divider"></span>
-      <span class="action-label">Scan and Upload<br>Receipt</span>
-    </button>
 
+    <!-- 1. Add a new Product (was "Manual Entry") -->
     <button class="action-btn" (click)="openManualEntry()">
       <div class="action-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -36,23 +25,38 @@
         </svg>
       </div>
       <span class="action-divider"></span>
-      <span class="action-label">Manual<br>Entry</span>
+      <span class="action-label">Add a new<br>Product</span>
     </button>
 
-    <button class="action-btn action-btn--disabled" disabled>
+    <!-- 2. Add Category -->
+    <button class="action-btn" (click)="openCategoryWindow()">
       <div class="action-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="18" height="18" rx="2"/>
-          <circle cx="8.5" cy="8.5" r="1.5"/>
-          <polyline points="21 15 16 10 5 21"/>
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <path d="M14 17.5h7M17.5 14v7"/>
         </svg>
       </div>
       <span class="action-divider"></span>
-      <span class="action-label">Receipt<br>Gallery</span>
+      <span class="action-label">Add<br>Category</span>
     </button>
+
+    <!-- 3. Scan Barcode (stub) -->
+    <button class="action-btn action-btn--disabled" disabled>
+      <div class="action-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+      </div>
+      <span class="action-divider"></span>
+      <span class="action-label">Scan<br>Barcode</span>
+    </button>
+
   </div>
 
-  <!-- Table -->
+  <!-- ── Product Table ─────────────────────────────────────────────────── -->
   <div class="inv-table-wrap">
     <table class="inv-table">
       <thead>
@@ -61,14 +65,14 @@
           <th>Product Name</th>
           <th>Vendor</th>
           <th>In Stock</th>
-          <th>Product Details</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
         @if (loadingProducts) {
           <tr><td colspan="5" class="table-empty">Loading...</td></tr>
         } @else if (products.length === 0) {
-          <tr><td colspan="5" class="table-empty">No products yet. Add one using Manual Entry.</td></tr>
+          <tr><td colspan="5" class="table-empty">No products yet. Use "Add a new Product" to get started.</td></tr>
         } @else {
           @for (p of products; track p.productId) {
             <tr class="inv-row">
@@ -80,6 +84,9 @@
                 <button class="view-details-btn" (click)="openProductDetail(p.productId)">
                   View Details
                 </button>
+                <button class="delete-product-btn" (click)="openDeleteConfirmModal(p.productId, p.name)" title="Delete product">
+                  <img src="assets/icons/trashicon.svg" alt="Delete product" class="trash-icon" />
+                </button>
               </td>
             </tr>
           }
@@ -89,50 +96,40 @@
   </div>
 </div>
 
-<!-- Manual Entry Overlay -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- Manual Entry Slide Panel                                              -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
 @if (showManualEntry) {
   <div class="overlay-backdrop" (click)="closeManualEntry()"></div>
-
   <div class="manual-panel" (click)="$event.stopPropagation()">
-
-    <!-- IMPORTANT: formGroup added -->
-    <div class="manual-scroll" [formGroup]="productForm">
-
+    <div class="manual-scroll">
       <h2 class="panel-title">Manually Enter New Product</h2>
 
       <div class="panel-top-row">
         <div class="img-upload-box" (click)="productImageInput.click()" [class.invalid]="isControlInvalid('image')">
           @if (newProductImageUrl) {
-            <img [src]="newProductImageUrl | imageProxy" alt="Product preview" class="image-preview" />
+            <img [src]="newProductImageUrl | imageProxy" alt="Product preview" class="img-upload-preview" />
           } @else {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <circle cx="12" cy="12" r="9"/>
-              <line x1="12" y1="8" x2="12" y2="16"/>
-              <line x1="8" y1="12" x2="16" y2="12"/>
+              <circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
             </svg>
             <span>Add product image</span>
           }
         </div>
         <input #productImageInput type="file" accept="image/*" hidden (change)="onProductImageUpload($event)" />
-        @if (isRequiredError(productForm.get('image'))) {
-          <div class="field-required-error">This field is mandatory</div>
-        }
-
         <div class="panel-name-cat">
           <div class="panel-field">
             <label>Product Name:</label>
-            <input type="text"
-                   placeholder="Name of Product"
-                   formControlName="name"
-                   [class.invalid]="isControlInvalid('name')" />
-          </div>
-          @if (isRequiredError(productForm.get('name'))) {
-            <div class="field-required-error">This field is mandatory</div>
+            <input type="text" placeholder="Name of Product"
+              [formControl]="productForm.controls.name"
+              [class.invalid]="productForm.controls.name.invalid && productForm.controls.name.touched" />
+            @if (isRequiredError(productForm.get('name'))) {
+              <div class="field-required-error">This field is mandatory</div>
             }
-
+          </div>
           <div class="panel-field">
             <label>Category:</label>
-            <select formControlName="categoryId">
+            <select [formControl]="productForm.controls.categoryId">
               <option [ngValue]="null">Select Category</option>
               @for (cat of categories; track cat.categoryId) {
                 <option [ngValue]="cat.categoryId">{{ cat.name }}</option>
@@ -144,51 +141,40 @@
 
       <div class="panel-section">
         <label class="section-label">Product Description</label>
-        <textarea rows="3"
-                  placeholder="Add a Description......."
-                  formControlName="description"
-                  [class.invalid]="isControlInvalid('description')"></textarea>
+        <textarea placeholder="Add a Description......." rows="3"
+          [formControl]="productForm.controls.description"
+          [class.invalid]="productForm.controls.description.invalid && productForm.controls.description.touched"></textarea>
         @if (isRequiredError(productForm.get('description'))) {
           <div class="field-required-error">This field is mandatory</div>
         }
       </div>
-
-      @if (imageUploadError) {
-        <div class="save-error">{{ imageUploadError }}</div>
-      }
-
-      @if (uploadingImage) {
-        <div class="save-success">Uploading image...</div>
-      }
-
       <div class="panel-section">
         <label class="section-label">Vendor</label>
-        <input type="text" placeholder="Vendor's Name" formControlName="vendorName" />
+        <input type="text" placeholder="Vendor's Name" [formControl]="productForm.controls.vendorName" />
       </div>
-
       <div class="panel-section">
         <label class="section-label">In Stock</label>
-        <input type="number" min="0" placeholder="eg. 1" formControlName="stock" [class.invalid]="isControlInvalid('stock')" />
+        <input type="number" placeholder="eg. 1" min="0"
+          [formControl]="productForm.controls.stock"
+          [class.invalid]="productForm.controls.stock.invalid && productForm.controls.stock.touched" />
         @if (isRequiredError(productForm.get('stock'))) {
           <div class="field-required-error">This field is mandatory</div>
         }
       </div>
-
       <div class="panel-section">
         <label class="section-label">Cost Price</label>
-        <input type="number" min="0" step="0.01" placeholder="Type your Cost Price"
-               formControlName="costPrice"
-               [class.invalid]="isControlInvalid('costPrice')" />
+        <input type="number" placeholder="Type your Cost Price" min="0" step="0.01"
+          [formControl]="productForm.controls.costPrice"
+          [class.invalid]="productForm.controls.costPrice.invalid && productForm.controls.costPrice.touched" />
         @if (isRequiredError(productForm.get('costPrice'))) {
           <div class="field-required-error">This field is mandatory</div>
         }
       </div>
-
       <div class="panel-section">
         <label class="section-label">Selling Price</label>
-        <input type="number" min="0" step="0.01" placeholder="Type your selling price..."
-               formControlName="sellingPrice"
-               [class.invalid]="isControlInvalid('sellingPrice')" />
+        <input type="number" placeholder="Type your selling price..." min="0" step="0.01"
+          [formControl]="productForm.controls.sellingPrice"
+          [class.invalid]="productForm.controls.sellingPrice.invalid && productForm.controls.sellingPrice.touched" />
         @if (isRequiredError(productForm.get('sellingPrice'))) {
           <div class="field-required-error">This field is mandatory</div>
         }
@@ -196,62 +182,45 @@
 
       <div class="panel-checkbox-row">
         <label class="custom-checkbox">
-          <input type="checkbox"
-                 formControlName="addVariations"
-                 (change)="onAddVariationsChange()" />
+          <input type="checkbox" [formControl]="productForm.controls.addVariations"
+            (change)="onAddVariationsChange()" />
           <span class="checkmark"></span>
           <span class="checkbox-label">Add Product Variation</span>
         </label>
       </div>
 
-      <!-- ✅ FIXED VARIATIONS -->
       @if (showVariations) {
-        <div class="variations-section" formArrayName="variations">
-
+        <div class="variations-section">
           @for (varCtrl of variationsArray.controls; track varCtrl; let i = $index) {
-            <div class="variation-row" [formGroupName]="i">
-
+            <div class="variation-row">
               <div class="variation-img-box">
-                @if (variationPreviewImage()) {
-                  <img [src]="variationPreviewImage() | imageProxy" alt="Variation preview" class="variation-image-preview" />
-                } @else {
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <circle cx="12" cy="12" r="9"/>
-                    <line x1="12" y1="8" x2="12" y2="16"/>
-                    <line x1="8" y1="12" x2="16" y2="12"/>
-                  </svg>
-                }
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
               </div>
-
-              <input type="text"
-                     placeholder="Option"
-                     formControlName="name"
-                     class="var-name-input"
-                     [class.invalid]="isVariationControlInvalid(i, 'name')" />
-
+              <input type="text" placeholder="Option"
+                [formControl]="getVariationNameControl(varCtrl)"
+                [class.invalid]="isVariationControlInvalid(i, 'name')"
+                class="var-name-input" />
+              @if (isVariationControlInvalid(i, 'name')) {
+                <div class="field-required-error variation-error">Required</div>
+              }
               <span class="var-price-label">Price:</span>
-
-              <input type="number"
-                     min="0"
-                     step="0.01"
-                     placeholder="Price"
-                     formControlName="sellingPrice"
-                     class="var-price-input"
-                     [class.invalid]="isVariationControlInvalid(i, 'sellingPrice')" />
-
+              <input type="number" placeholder="Price" min="0" step="0.01"
+                [formControl]="getVariationPriceControl(varCtrl)"
+                [class.invalid]="isVariationControlInvalid(i, 'sellingPrice')"
+                class="var-price-input" />
+              @if (isVariationControlInvalid(i, 'sellingPrice')) {
+                <div class="field-required-error variation-error">Required</div>
+              }
               @if (variationsArray.length > 1) {
                 <button class="remove-var-btn" (click)="removeVariation(i)">✕</button>
               }
             </div>
-            @if (isRequiredError(variationsArray.at(i).get('name')) || isRequiredError(variationsArray.at(i).get('sellingPrice'))) {
-              <div class="field-required-error variation-required-error">This field is mandatory</div>
-            }
           }
-
           <button class="add-more-btn" (click)="addVariationRow()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
             More Variation
           </button>
@@ -260,7 +229,7 @@
 
       <div class="panel-checkbox-row">
         <label class="custom-checkbox">
-          <input type="checkbox" formControlName="onlineAvailable" />
+          <input type="checkbox" [formControl]="productForm.controls.onlineAvailable" />
           <span class="checkmark"></span>
           <span class="checkbox-label">Show it in your Online Shop.</span>
         </label>
@@ -270,13 +239,122 @@
       @if (saveSuccess) { <div class="save-success">Product saved successfully!</div> }
 
       <div class="panel-footer">
-        <button class="add-product-btn"
-                (click)="onSubmit()"
-                [disabled]="saving">
+        <button class="add-product-btn" (click)="onSubmitProduct()" [disabled]="saving">
           {{ saving ? 'Saving...' : (showVariations ? 'Save Changes' : 'Add New Product') }}
         </button>
       </div>
+    </div>
+  </div>
+}
 
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- Layer 1: Shop Category Window                                         -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+@if (showCategoryWindow) {
+  <!-- Backdrop: click → close window entirely, back to inventory -->
+  <div class="overlay-backdrop" (click)="closeCategoryWindow()"></div>
+
+  <div class="category-window" (click)="$event.stopPropagation()">
+
+    <div class="cat-window-header">
+      <h2 class="cat-window-title">Shop Category</h2>
+      <button class="add-cat-window-btn" (click)="openAddCategoryModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Add Category
+      </button>
+    </div>
+
+    <div class="cat-window-body">
+      <!-- Category table -->
+      <table class="cat-window-table">
+        <thead>
+          <tr>
+            <th>Category_id</th>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loadingCategories) {
+            <tr><td colspan="4" class="cat-window-empty">Loading...</td></tr>
+          } @else if (shopCategories.length === 0) {
+            <tr><td colspan="4" class="cat-window-empty">No categories yet. Add one above.</td></tr>
+          } @else {
+            @for (cat of shopCategories; track cat.categoryId) {
+              <tr class="cat-window-row">
+                <td class="td-center">{{ cat.categoryId }}</td>
+                <td>
+                  @if (cat.image) {
+                    <img [src]="cat.image" [alt]="cat.name" class="cat-thumb" />
+                  } @else {
+                    <div class="cat-thumb-placeholder"></div>
+                  }
+                </td>
+                <td class="td-name">{{ cat.name }}</td>
+                <td class="td-center">
+                  <button class="delete-cat-btn" (click)="openDeleteConfirmCategoryModal(cat.categoryId, cat.name)">
+                    <img src="assets/icons/trashicon.svg" alt="Delete category" class="trash-icon" />
+                  </button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- Layer 2: Add New Category Modal                                       -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+@if (showAddCategoryModal) {
+  <!-- Backdrop: click → close Layer 2 only, go back to Layer 1 (category window stays open) -->
+  <div class="modal-backdrop-l2" (click)="closeAddCategoryModal()"></div>
+
+  <div class="add-cat-modal" (click)="$event.stopPropagation()">
+    <h3 class="modal-title">Add New Category</h3>
+
+    <!-- Image upload box -->
+    <div class="modal-img-box" (click)="catImgInput.click()">
+      @if (newCategoryImageUrl) {
+        <img [src]="newCategoryImageUrl" alt="Category preview" class="modal-img-preview" />
+      } @else {
+        <div class="modal-img-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="9"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+          <span>Add image</span>
+        </div>
+      }
+    </div>
+    <input #catImgInput type="file" accept="image/*" hidden (change)="onCategoryImageUpload($event)" />
+    @if (uploadingCatImg) {
+      <p class="uploading-msg">Uploading image...</p>
+    }
+
+    <!-- Name field -->
+    <div class="modal-field">
+      <label class="modal-label">Category Name</label>
+      <input type="text" placeholder="eg: Winter Clothes"
+        [formControl]="categoryForm.controls.name"
+        [class.invalid]="categoryForm.controls.name.invalid && categoryForm.controls.name.touched" />
+    </div>
+
+    @if (addCategoryError) {
+      <div class="modal-error">{{ addCategoryError }}</div>
+    }
+
+    <div class="modal-footer">
+      <button class="modal-cancel-btn" (click)="closeAddCategoryModal()">Cancel</button>
+      <button class="modal-add-btn" (click)="onAddCategory()" [disabled]="addingCategory">
+        {{ addingCategory ? 'Adding...' : 'Add Category' }}
+      </button>
     </div>
   </div>
 }
@@ -287,4 +365,38 @@
     [productId]="selectedProductId!"
     (close)="onProductDetailClose($event)">
   </app-product-detail>
+}
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- Delete Product Confirmation Modal                                     -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+@if (showDeleteConfirmModal) {
+  <div class="modal-backdrop-delete" (click)="closeDeleteConfirmModal()"></div>
+
+  <div class="delete-confirm-modal" (click)="$event.stopPropagation()">
+    <div class="delete-modal-icon-box">
+      <img src="assets/icons/alerticon.svg" alt="Alert" class="delete-modal-icon" />
+    </div>
+    
+    @if (deleteTargetIsCategory) {
+      <h3 class="delete-modal-title">Delete Category</h3>
+    } @else {
+      <h3 class="delete-modal-title">Delete Product</h3>
+    }
+    
+    <p class="delete-modal-subtitle">
+      Are you sure you want to delete {{ deleteProductName }}?
+    </p>
+
+    @if (deleteError) {
+      <div class="delete-modal-error">{{ deleteError }}</div>
+    }
+
+    <div class="delete-modal-footer">
+      <button class="delete-cancel-btn" (click)="closeDeleteConfirmModal()">Cancel</button>
+      <button class="delete-confirm-btn" (click)="onConfirmDeleteProduct()" [disabled]="deletingProduct">
+        {{ deletingProduct ? 'Deleting...' : 'Delete' }}
+      </button>
+    </div>
+  </div>
 }

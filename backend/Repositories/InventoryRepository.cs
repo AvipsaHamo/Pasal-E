@@ -18,6 +18,7 @@ public interface IInventoryRepository
     Task<Variation?> GetVariationByIdAsync(int variationId, int productId);
     Task DeleteVariationAsync(Variation variation);
 
+    Task DeleteProductAsync(Product product);
     Task SaveChangesAsync();
 }
 
@@ -85,6 +86,12 @@ public class InventoryRepository : IInventoryRepository
     public async Task DeleteVariationAsync(Variation variation)
     {
         _db.Variations.Remove(variation);
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task DeleteProductAsync(Product product)
+    {
+        _db.Products.Remove(product);
         await _db.SaveChangesAsync();
     }
 

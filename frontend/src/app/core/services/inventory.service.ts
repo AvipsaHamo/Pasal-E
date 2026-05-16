@@ -24,4 +24,8 @@ export class InventoryService {
   createProduct(req: CreateProductRequest): Observable<ProductDto> {
     return this.http.post<ProductDto>(`${this.base}/products`, req);
   }
+
+  deleteProduct(productId: number): Observable<void> {
+    return this.http.delete<void>(`${this.base}/products/${productId}`);
+  }
 }
