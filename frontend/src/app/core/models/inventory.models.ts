@@ -11,6 +11,7 @@ export interface ProductListItem {
   vendorName?: string;
   stock: number;
   categoryName?: string;
+  image?: string;
 }
 
 export interface VariationRequest {

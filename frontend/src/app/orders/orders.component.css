@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap');
 
 .orders-page {
-  padding: 36px 40px;
+  padding: 60px 90px;
   background: #f0f4dc;
   min-height: 100vh;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 /* ── Header ── */
@@ -17,7 +17,7 @@
 
 .orders-title {
   font-size: 36px;
-  font-weight: 900;
+  font-weight: 650;
   color: #1a1a1a;
   letter-spacing: -0.5px;
 }
@@ -41,9 +41,9 @@
   background: #eef3d8;
   border: 1.5px solid #c8d890;
   border-radius: 24px;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: #4a5c24;
   cursor: pointer;
   transition: border-color 0.18s, background 0.18s;
@@ -85,9 +85,9 @@
   background: none;
   border: none;
   text-align: left;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 550;
   color: #333;
   cursor: pointer;
   transition: background 0.15s;
@@ -124,9 +124,9 @@
   background: #ffffff;
   border: 1.5px solid #e0e8c8;
   border-radius: 24px;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: #444;
   outline: none;
   transition: border-color 0.2s;
@@ -138,55 +138,72 @@
 /* ── Table header ── */
 .table-header {
   display: grid;
-  grid-template-columns: 90px 1fr 130px 140px 120px 140px;
-  padding: 0 20px 10px;
+  /* flexible layout: let Customer Name take remaining space so table spreads out */
+  /* grid-template-columns: 100px minmax(160px, 1fr) 200px 140px 120px 140px; */
+  grid-template-columns: 1fr 2fr 1fr 1fr 0.5fr 1fr;
+  padding: 0 70px 10px;
   font-size: 15px;
-  font-weight: 800;
-  color: #1a1a1a;
+  font-weight: 600;
+  color: #000000;
+  align-items: center;
 }
+
 
 /* ── Order card ── */
 .order-card {
   background: #ffffff;
   border-radius: 16px;
-  margin-bottom: 8px;
+  margin-bottom: 14px;
   overflow: hidden;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s, filter 0.2s;
+  /* base shadow that follows rounded corners */
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.11));
 }
 
-.order-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
-.order-card.expanded { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.order-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.10); filter: drop-shadow(0 8px 22px rgba(0,0,0,0.12)); }
+.order-card.expanded { box-shadow: 0 6px 28px rgba(0,0,0,0.12); filter: drop-shadow(0 10px 26px rgba(190, 126, 23, 0.603)); }
 
 .order-row {
   display: grid;
-  grid-template-columns: 90px 1fr 130px 140px 120px 140px;
+  /* match header: six equal columns so body aligns with header using 1fr units */
+  grid-template-columns: 1fr 2fr 1fr 1fr 0.5fr 1fr;
   align-items: center;
-  padding: 18px 20px;
+  /* apply same horizontal padding as header so rows align visually */
+  padding: 18px 80px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   color: #333;
+  gap: 12px;
 }
 
-/* Column alignment */
-.col-id     { color: #666; font-weight: 600; }
-.col-name   { font-weight: 700; color: #222; }
-.col-date   { color: #555; }
-.col-contact{ color: #555; }
-.col-action { display: flex; justify-content: flex-end; }
+
+/* center body cell content by default, except where explicit layout needed */
+/* header labels and body cells use their default alignment */
 
 /* Status badge */
 .status-badge {
   display: inline-block;
   font-size: 13px;
-  font-weight: 700;
-  padding: 3px 0;
-  color: #444;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 16px;
+  text-transform: capitalize;
+  white-space: nowrap;
 }
 
-.status-pending    { color: #b87d00; }
-.status-inprogress { color: #1a6fa8; }
-.status-delivered  { color: #2a7a3a; }
-.status-dismissed  { color: #888; }
+/* Highlighted status badges (background + border) — similar to other admin styles, no underline */
+.status-pending {
+  background: #fff4d6; color: #b87d00; border: 1.5px solid #f0c040;
+}
+.status-inprogress {
+  background: #e8f4ff; color: #1a6fa8; border: 1.5px solid #8fc6f2;
+}
+.status-delivered {
+  background: #e4f4e8; color: #2a7a3a; border: 1.5px solid #6abf78;
+}
+.status-dismissed {
+  background: #fafafa; color: #888; border: 1.5px solid #e0e0e0;
+}
 
 /* View more/less button */
 .view-btn {
@@ -195,9 +212,9 @@
   color: #ffffff;
   border: none;
   border-radius: 8px;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.18s;
   white-space: nowrap;
@@ -207,7 +224,8 @@
 
 /* ── Expanded detail ── */
 .order-detail {
-  padding: 0 20px 20px;
+  /* keep detail aligned with header/body padding */
+  padding: 0 70px 20px;
   animation: expandDown 0.2s ease;
 }
 
@@ -223,10 +241,11 @@
 }
 
 .detail-title {
-  font-size: 18px;
-  font-weight: 800;
-  color: #4a5c24;
-  margin-bottom: 14px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #708848;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .detail-loading {
@@ -247,13 +266,13 @@
 }
 
 .detail-table thead tr {
-  background: #4a5c24;
+  background: #708848;
 }
 
 .detail-table thead th {
-  padding: 10px 16px;
-  font-size: 13px;
-  font-weight: 700;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
   color: #ffffff;
   text-align: left;
 }
@@ -261,16 +280,24 @@
 .detail-table thead th:first-child { border-radius: 0; }
 
 .detail-table tbody tr {
-  border-bottom: 1px solid #eef3d8;
+  border-bottom: 1px solid #cbcfb797;
 }
 
 .detail-table tbody tr:last-child { border-bottom: none; }
 
 .detail-table tbody td {
-  padding: 11px 16px;
+  padding: 11px 24px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   color: #333;
+}
+
+/* Responsive: reduce horizontal padding on small screens */
+@media (max-width: 768px) {
+  .table-header { padding: 0 12px 10px; }
+  .order-row   { padding: 12px 12px; grid-template-columns: repeat(6, 1fr); }
+  .order-detail{ padding: 0 12px 14px; }
+  .detail-table thead th, .detail-table tbody td { padding-left: 12px; padding-right: 12px; }
 }
 
 .detail-table tbody td[colspan="5"] {
@@ -289,14 +316,14 @@
 }
 
 .customer-info p {
-  font-size: 14px;
+  font-size: 15px;
   color: #444;
   margin-bottom: 5px;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .customer-info strong {
-  font-weight: 800;
+  font-weight: 600;
   color: #222;
 }
 
@@ -308,8 +335,8 @@
 }
 
 .total-amount {
-  font-size: 18px;
-  font-weight: 900;
+  font-size: 20px;
+  font-weight: 700;
   color: #1a1a1a;
 }
 
@@ -323,7 +350,7 @@
   padding: 9px 20px;
   border: 1.5px solid transparent;
   border-radius: 10px;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;

@@ -17,8 +17,8 @@
 .nav-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 22px 20px 20px;
+  gap: 25px;
+  padding: 30px 30px 30px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
@@ -35,14 +35,14 @@
 }
 
 .nav-logo img {
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
 }
 
 .nav-brand-name {
   font-family: 'Baloo 2', sans-serif;
-  font-size: 20px;
+  font-size: 30px;
   font-weight: 900;
   color: #ffffff;
   letter-spacing: -0.3px;
@@ -51,23 +51,23 @@
 /* Nav links */
 .nav-links {
   list-style: none;
-  padding: 16px 12px;
+  padding: 20px 22px;
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 20px;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 30px;
   padding: 11px 14px;
   border-radius: 10px;
   font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.65);
+  font-size: 18px;
+  font-weight: 450;
+  color: rgba(255, 255, 255, 0.65);
   text-decoration: none;
   cursor: pointer;
   transition: background 0.18s, color 0.18s;
@@ -84,13 +84,20 @@
   stroke: currentColor;
 }
 
+.nav-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
 .nav-item:hover {
   background: rgba(255,255,255,0.1);
   color: #ffffff;
 }
 
 .nav-item.active {
-  background: #5a7030;
+  background: #85a04f;
   color: #ffffff;
 }
 

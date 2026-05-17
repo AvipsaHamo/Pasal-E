@@ -1,0 +1,12 @@
+--- backend/Services/InventoryService.cs
++++ backend/Services/InventoryService.cs
+@@ -42,7 +42,8 @@ public class InventoryService : IInventoryService
+             p.Name,
+             p.VendorName,
+             p.Stock,
+             p.CategoryId.HasValue && catMap.TryGetValue(p.CategoryId.Value, out var name)
+                 ? name
+-                : null
++                : null,
++            p.Image
+         )).ToList();

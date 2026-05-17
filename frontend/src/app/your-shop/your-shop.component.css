@@ -1,16 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap');
 
 /* ── Page ── */
 .shop-page {
-  padding: 36px 48px;
+  padding: 60px 90px;
   background: #f0f4dc;
   min-height: 100vh;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 .shop-title {
   font-size: 36px;
-  font-weight: 900;
+  font-weight: 700;
   color: #1a1a1a;
   letter-spacing: -0.5px;
   margin-bottom: 32px;
@@ -41,8 +41,8 @@
 .logo-upload-box:hover { border-color: #5a7030; background: #e4ecc8; }
 .logo-upload-box svg  { width: 40px; height: 40px; stroke: #6a8030; }
 .logo-preview { width: 100%; height: 100%; object-fit: cover; }
-.logo-label   { font-size: 13px; font-weight: 700; color: #5a7030; }
-.uploading-msg{ font-size: 12px; font-weight: 700; color: #5a7030; }
+.logo-label   { font-size: 13px; font-weight: 500; color: #5a7030; }
+.uploading-msg{ font-size: 12px; font-weight: 500; color: #5a7030; }
 
 /* Fields */
 .shop-fields { flex: 1; display: flex; flex-direction: column; gap: 18px; }
@@ -50,15 +50,15 @@
 .shop-field-row { display: flex; align-items: center; gap: 20px; }
 
 .shop-field-label {
-  font-size: 15px; font-weight: 700; color: #4a5c24;
-  min-width: 160px; white-space: nowrap;
+  font-size: 16px; font-weight: 600; color: #708848; padding-left: 40px;
+  min-width: 250px; white-space: nowrap;
 }
 
 .shop-field-row input,
 .shop-field-row select {
-  flex: 1; padding: 14px 20px;
+  flex: 1; padding: 20px 40px;
   background: #ffffff; border: 1.5px solid #e0e8c8; border-radius: 28px;
-  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 600; color: #333;
+  font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 500; color: #333; padding-left: 50px;
   outline: none; transition: border-color 0.2s, box-shadow 0.2s;
 }
 .shop-field-row input:focus,
@@ -67,11 +67,11 @@
 
 /* Subdomain row */
 .subdomain-row { display: flex; align-items: center; gap: 12px; flex: 1; }
-.subdomain-link { font-size: 15px; font-weight: 700; color: #1a1a1a; text-decoration: underline; flex: 1; }
+.subdomain-link { font-size: 15px; font-weight: 600; color: #1a1a1a; text-decoration: underline; flex: 1; padding-left: 50px; }
 
 .status-badge {
   padding: 4px 12px; border-radius: 20px;
-  font-size: 12px; font-weight: 800; letter-spacing: 0.3px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
   text-transform: capitalize; white-space: nowrap;
 }
 .status-pending     { background: #fff4d6; color: #b87d00; border: 1.5px solid #f0c040; }
@@ -81,7 +81,7 @@
 .copy-btn {
   padding: 8px 16px; background: #ffffff;
   border: 1.5px solid #c8d890; border-radius: 20px;
-  font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; color: #4a5c24;
+  font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; color: #4a5c24;
   cursor: pointer; white-space: nowrap; transition: background 0.15s, border-color 0.15s;
 }
 .copy-btn:hover { background: #eef3d8; border-color: #5a7030; }
@@ -103,13 +103,13 @@
   display: flex; align-items: center; justify-content: flex-end;
   gap: 14px; margin: 16px 0 24px;
 }
-.save-ok  { font-size: 13px; font-weight: 700; color: #4a5c24; }
-.save-err { font-size: 13px; font-weight: 700; color: #c0392b; }
+.save-ok  { font-size: 13px; font-weight: 600; color: #4a5c24; }
+.save-err { font-size: 13px; font-weight: 600; color: #c0392b; }
 
 .save-btn {
-  padding: 12px 28px; background: #4a5c24; color: #ffffff;
-  border: none; border-radius: 12px;
-  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800;
+  padding: 14px 32px; background: #708848; color: #ffffff;
+  border: none; border-radius: 30px;
+  font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 500;
   cursor: pointer; transition: background 0.18s, transform 0.1s;
 }
 .save-btn:hover:not(:disabled) { background: #3a4a1c; }
@@ -118,7 +118,7 @@
 .upload-error {
   background: rgba(192,57,43,.1); border: 1.5px solid #c0392b;
   border-radius: 8px; padding: 10px 14px;
-  font-size: 13px; font-weight: 700; color: #c0392b; margin: 8px 0;
+  font-size: 13px; font-weight: 500; color: #c0392b; margin: 8px 0;
 }
 
 /* Divider */
@@ -131,18 +131,18 @@
 }
 
 .featured-title {
-  font-size: 26px; font-weight: 900; color: #4a5c24; letter-spacing: -0.3px;
+  font-size: 26px; font-weight: 600; color: #4a5c24; letter-spacing: -0.3px;
 }
 
 .featured-hint {
-  font-size: 13px; font-weight: 600; color: #888; margin-top: 4px;
+  font-size: 13px; font-weight: 500; color: #888; margin-top: 4px;
 }
 
 .add-featured-btn {
   display: flex; align-items: center; gap: 8px;
   padding: 12px 24px; background: #e8720c; color: #ffffff;
   border: none; border-radius: 28px;
-  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800;
+  font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 600;
   cursor: pointer; transition: background 0.18s, transform 0.1s;
   white-space: nowrap; flex-shrink: 0;
 }
@@ -158,8 +158,8 @@
 }
 
 .featured-table thead th {
-  font-family: 'Nunito', sans-serif;
-  font-size: 15px; font-weight: 800; color: #1a1a1a;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px; font-weight: 600; color: #1a1a1a;
   padding: 0 20px 8px; text-align: left;
 }
 .featured-table thead th:first-child { text-align: center; }
@@ -168,15 +168,15 @@
 .featured-row td {
   background: #ffffff;
   padding: 14px 20px;
-  font-size: 15px; font-weight: 600; color: #333;
+  font-size: 15px; font-weight: 450; color: #333;
 }
 .featured-row td:first-child { border-radius: 14px 0 0 14px; }
 .featured-row td:last-child  { border-radius: 0 14px 14px 0; }
 .featured-row:hover td { background: #f8faee; }
 
 .td-num    { text-align: center; color: #666; font-size: 13px; }
-.td-name   { font-weight: 700; color: #222; }
-.td-price  { color: #4a5c24; font-weight: 700; }
+.td-name   { font-weight: 500; color: #222; }
+.td-price  { color: #4a5c24; font-weight: 500; }
 .td-action { text-align: center; }
 
 .feat-thumb {
@@ -198,7 +198,7 @@
 
 .featured-empty {
   text-align: center; padding: 40px 20px;
-  font-size: 14px; color: #999; font-weight: 600;
+  font-size: 14px; color: #999; font-weight: 500;
   background: #ffffff; border-radius: 14px;
 }
 
@@ -219,26 +219,26 @@
   padding: 32px 32px 28px; z-index: 201;
   box-shadow: 0 16px 48px rgba(0,0,0,0.2);
   animation: popIn 0.2s ease;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 @keyframes popIn {
   from { opacity: 0; transform: translate(-50%, -47%); }
   to   { opacity: 1; transform: translate(-50%, -50%); }
 }
 
-.modal-title { font-size: 20px; font-weight: 900; color: #4a5c24; margin-bottom: 20px; }
+.modal-title { font-size: 20px; font-weight: 700; color: #4a5c24; margin-bottom: 20px; }
 
 .modal-field { margin-bottom: 18px; }
 
 .modal-label {
-  display: block; font-size: 14px; font-weight: 800;
+  display: block; font-size: 15px; font-weight: 600;
   color: #3d4f1c; margin-bottom: 8px;
 }
 
 .modal-select {
   width: 100%; padding: 13px 16px;
   background: #ffffff; border: 1.5px solid #dde8bc; border-radius: 12px;
-  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 600; color: #333;
+  font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #333;
   outline: none; transition: border-color 0.2s;
 }
 .modal-select:focus { border-color: #5a7030; }
@@ -255,16 +255,16 @@
 
 .modal-cancel-btn {
   padding: 11px 22px; background: #eef3d8; border: 1.5px solid #c8d890;
-  border-radius: 10px; font-family: 'Nunito', sans-serif;
-  font-size: 14px; font-weight: 700; color: #4a5c24;
+  border-radius: 10px; font-family: 'Poppins', sans-serif;
+  font-size: 14px; font-weight: 600; color: #4a5c24;
   cursor: pointer; transition: background 0.15s;
 }
 .modal-cancel-btn:hover { background: #e4ecc8; }
 
 .modal-add-btn {
   padding: 11px 24px; background: #e8720c; color: #ffffff;
-  border: none; border-radius: 10px; font-family: 'Nunito', sans-serif;
-  font-size: 14px; font-weight: 800; cursor: pointer; transition: background 0.18s;
+  border: none; border-radius: 10px; font-family: 'Poppins', sans-serif;
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.18s;
 }
 .modal-add-btn:hover:not(:disabled) { background: #cc6008; }
 .modal-add-btn:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -284,7 +284,7 @@
   background: #f5f8e8; border-radius: 20px;
   padding: 32px 32px 28px; z-index: 600;
   box-shadow: 0 16px 48px rgba(0,0,0,0.25);
-  animation: popIn 0.2s ease; font-family: 'Nunito', sans-serif;
+  animation: popIn 0.2s ease; font-family: 'Poppins', sans-serif;
   display: flex; flex-direction: column; align-items: center; text-align: center;
 }
 
@@ -300,9 +300,9 @@
 }
 
 .delete-modal-footer { display: flex; gap: 24px; justify-content: center; width: 100%; margin-top: 0; }
-.delete-cancel-btn { padding: 11px 40px; background: #eef3d8; border: 1.5px solid #c8d890; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; color: #4a5c24; cursor: pointer; transition: background 0.15s; }
+.delete-cancel-btn { padding: 11px 40px; background: #eef3d8; border: 1.5px solid #c8d890; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700; color: #4a5c24; cursor: pointer; transition: background 0.15s; }
 .delete-cancel-btn:hover { background: #e4ecc8; }
-.delete-confirm-btn { padding: 11px 40px; background: #c0392b; color: #ffffff; border: none; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.18s, transform 0.1s; }
+.delete-confirm-btn { padding: 11px 40px; background: #c0392b; color: #ffffff; border: none; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.18s, transform 0.1s; }
 .delete-confirm-btn:hover:not(:disabled) { background: #a93226; }
 .delete-confirm-btn:active:not(:disabled) { transform: scale(0.98); }
 .delete-confirm-btn:disabled { opacity: 0.6; cursor: not-allowed; }

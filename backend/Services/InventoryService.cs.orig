@@ -47,7 +47,6 @@ public class InventoryService : IInventoryService
             p.CategoryId.HasValue && catMap.TryGetValue(p.CategoryId.Value, out var name)
                 ? name
                 : null
-            , p.Image
         )).ToList();
     }
 

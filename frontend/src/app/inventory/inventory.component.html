@@ -43,7 +43,7 @@
     </button>
 
     <!-- 3. Scan Barcode (stub) -->
-    <button class="action-btn action-btn--disabled" disabled>
+    <!-- <button class="action-btn action-btn--disabled" disabled>
       <div class="action-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
@@ -52,7 +52,7 @@
       </div>
       <span class="action-divider"></span>
       <span class="action-label">Scan<br>Barcode</span>
-    </button>
+    </button> -->
 
   </div>
 
@@ -62,6 +62,7 @@
       <thead>
         <tr>
           <th>Product_id</th>
+          <th>Image</th>
           <th>Product Name</th>
           <th>Vendor</th>
           <th>In Stock</th>
@@ -70,13 +71,20 @@
       </thead>
       <tbody>
         @if (loadingProducts) {
-          <tr><td colspan="5" class="table-empty">Loading...</td></tr>
+          <tr><td colspan="6" class="table-empty">Loading...</td></tr>
         } @else if (products.length === 0) {
-          <tr><td colspan="5" class="table-empty">No products yet. Use "Add a new Product" to get started.</td></tr>
+          <tr><td colspan="6" class="table-empty">No products yet. Use "Add a new Product" to get started.</td></tr>
         } @else {
           @for (p of products; track p.productId) {
             <tr class="inv-row">
               <td>{{ p.productId }}</td>
+              <td>
+                @if (p.image) {
+                  <img [src]="p.image" [alt]="p.name" class="inv-product-thumb" />
+                } @else {
+                  <div class="inv-product-thumb-placeholder"></div>
+                }
+              </td>
               <td class="product-name">{{ p.name }}</td>
               <td>{{ p.vendorName ?? '—' }}</td>
               <td>{{ p.stock }}</td>
@@ -379,9 +387,9 @@
     </div>
     
     @if (deleteTargetIsCategory) {
-      <h3 class="delete-modal-title">Delete Category</h3>
+      <h3 class="delete-modal-title">Delete Category?</h3>
     } @else {
-      <h3 class="delete-modal-title">Delete Product</h3>
+      <h3 class="delete-modal-title">Delete Product?</h3>
     }
     
     <p class="delete-modal-subtitle">

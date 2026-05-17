@@ -168,12 +168,12 @@ export class DashboardComponent extends DestroyableComponent implements OnInit, 
         scales: {
           x: {
             grid: { display: false }, border: { display: false },
-              ticks: { color: '#999', font: { family: 'Nunito', size: 12, weight: 600 } }
+              ticks: { color: '#999', font: { family: 'Poppins', size: 12, weight: 400 } }
           },
           y: {
             grid: { color: 'rgba(0,0,0,0.06)' }, border: { display: false },
             ticks: {
-                color: '#999', font: { family: 'Nunito', size: 12, weight: 600 },
+                color: '#999', font: { family: 'Poppins', size: 12, weight: 400 },
               callback: v => `Rs ${Number(v).toLocaleString()}`
             }
           }

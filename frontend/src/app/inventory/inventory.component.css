@@ -1,12 +1,12 @@
 /* inventory.component.css */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap');
 
 /* ── Page ── */
 .inventory-page {
-  padding: 36px 40px;
+  padding: 60px 90px;
   background: #f0f4dc;
   min-height: 100vh;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 /* ── Header ── */
@@ -19,7 +19,7 @@
 
 .inv-title {
   font-size: 36px;
-  font-weight: 900;
+  font-weight: 650;
   color: #1a1a1a;
   letter-spacing: -0.5px;
 }
@@ -40,25 +40,25 @@
 }
 
 .inv-search {
-  width: 320px;
-  padding: 12px 16px 12px 42px;
+  width: 400px;
+  padding: 12px 16px 12px 70px;
   background: #ffffff;
   border: 1.5px solid #e0e8c8;
   border-radius: 24px;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: #444;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .inv-search::placeholder { color: #b0b8a0; }
-.inv-search:focus { border-color: #5a7030; box-shadow: 0 0 0 3px rgba(90,112,48,0.1); }
+.inv-search:focus { border-color: #5a7030; box-shadow: 0 0 0 3px rgba(90,112,48,0.9); }
 
 /* ── Action Buttons ── */
 .inv-actions {
   display: flex;
-  gap: 16px;
+  gap: 56px;
   margin-bottom: 32px;
 }
 
@@ -67,11 +67,11 @@
   align-items: center;
   background: #ffffff;
   border: 1.5px solid #e0e8c8;
-  border-radius: 16px;
+  border-radius: 30px;
   padding: 14px 22px;
   cursor: pointer;
   transition: box-shadow 0.2s, border-color 0.2s, transform 0.1s;
-  min-width: 180px;
+  min-width: 250px;
 }
 .action-btn:hover:not(:disabled) {
   border-color: #5a7030;
@@ -81,7 +81,7 @@
 .action-btn:active:not(:disabled) { transform: translateY(0); }
 .action-btn--disabled { opacity: 0.45; cursor: not-allowed; }
 
-.action-icon { display: flex; align-items: center; justify-content: center; }
+.action-icon { display: flex; align-items: center; justify-content: center; padding-left: 30px; padding-right: 10px; }
 .action-icon svg { width: 26px; height: 26px; stroke: #5a7030; }
 
 .action-divider {
@@ -94,7 +94,8 @@
 
 .action-label {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
+  padding-left: 20px;
   color: #4a5c24;
   line-height: 1.35;
   text-align: left;
@@ -106,33 +107,67 @@
 .inv-table {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 8px;
+  border-spacing: 0 14px;
 }
 
 .inv-table thead tr th {
-  font-family: 'Nunito', sans-serif;
-  font-size: 15px;
-  font-weight: 800;
+  font-family: 'Poppins', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
   color: #1a1a1a;
   padding: 0 20px 8px;
   text-align: left;
 }
 .inv-table thead tr th:first-child { text-align: center; }
-.inv-table thead tr th:nth-child(4) { text-align: center; }
+.inv-table thead tr th:nth-child(2) { text-align: center; }
+.inv-table thead tr th:nth-child(3) { padding: 0 20px 8px; }
+.inv-table thead tr th:nth-child(5) { text-align: center; }
 .inv-table thead tr th:last-child { text-align: center; }
+
+/* Narrow Product ID column to save horizontal space */
+.inv-table thead tr th:first-child,
+.inv-row td:first-child {
+  width: 150px;
+  max-width: 150px;
+  padding-left: 20px;
+  padding-right: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 14px 0 0 14px; text-align: center; color: #000000;
+}
 
 .inv-row td {
   background: #ffffff;
   padding: 18px 20px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 450;
   color: #333;
 }
-.inv-row td:first-child { border-radius: 14px 0 0 14px; text-align: center; color: #666; }
+.inv-row {
+  /* drop-shadow follows the rounded row silhouette better than box-shadow on table rows */
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.09));
+}
+/* .inv-row td:first-child { border-radius: 14px 0 0 14px; text-align: center; color: #666; } */
+.inv-row td:nth-child(2) { text-align: center; }
+.inv-row td:nth-child(5) { text-align: center; }
 .inv-row td:last-child  { border-radius: 0 14px 14px 0; text-align: center; }
-.inv-row td:nth-child(4) { text-align: center; }
 .inv-row:hover td { background: #f8faee; }
-.product-name { font-weight: 700; color: #222; }
+.product-name { font-weight: 600; color: #222; }
+
+.inv-product-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.inv-product-thumb-placeholder {
+  width: 52px;
+  height: 52px;
+  background: #eef3d8;
+  border-radius: 8px;
+}
 
 .table-empty {
   background: #ffffff;
@@ -150,9 +185,9 @@
   border: none;
   border-radius: 8px;
   padding: 8px 18px;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.18s;
 }
@@ -221,7 +256,7 @@
 
 .panel-title {
   font-size: 24px;
-  font-weight: 900;
+  font-weight: 600;
   color: #4a5c24;
   margin-bottom: 24px;
   letter-spacing: -0.3px;
@@ -239,16 +274,16 @@
 }
 .img-upload-box:hover { border-color: #5a7030; background: #e8f0cc; }
 .img-upload-box svg  { width: 36px; height: 36px; stroke: #6a8030; }
-.img-upload-box span { font-size: 12px; font-weight: 700; color: #6a8030; text-align: center; }
+.img-upload-box span { font-size: 12px; font-weight: 600; color: #6a8030; text-align: center; }
 
 .panel-name-cat { flex: 1; display: flex; flex-direction: column; gap: 14px; padding-top: 4px; }
 .panel-field { display: flex; align-items: center; gap: 12px; }
-.panel-field label { font-size: 14px; font-weight: 800; color: #3d4f1c; white-space: nowrap; min-width: 110px; }
+.panel-field label { font-size: 14px; font-weight: 600; color: #3d4f1c; white-space: nowrap; min-width: 110px; }
 .panel-field input,
 .panel-field select {
   flex: 1; padding: 12px 16px; background: #ffffff;
   border: 1.5px solid #dde8bc; border-radius: 10px;
-  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 600; color: #333;
+  font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; color: #333;
   outline: none; transition: border-color 0.2s;
 }
 .panel-field input:focus, .panel-field select:focus { border-color: #5a7030; }
@@ -257,7 +292,7 @@
 .field-required-error {
   margin-top: 6px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: #c0392b;
 }
 
@@ -274,12 +309,12 @@
 }
 
 .panel-section { margin-bottom: 16px; }
-.section-label { display: block; font-size: 14px; font-weight: 800; color: #3d4f1c; margin-bottom: 8px; }
+.section-label { display: block; font-size: 14px; font-weight: 600; color: #3d4f1c; margin-bottom: 8px; }
 .panel-section input,
 .panel-section textarea {
   width: 100%; padding: 12px 16px; background: #ffffff;
   border: 1.5px solid #dde8bc; border-radius: 10px;
-  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 600; color: #333;
+  font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; color: #333;
   outline: none; resize: vertical; transition: border-color 0.2s;
 }
 .panel-section input:focus, .panel-section textarea:focus { border-color: #5a7030; }
@@ -316,15 +351,15 @@
 .var-name-input {
   flex: 1; padding: 10px 14px; background: #ffffff;
   border: 1.5px solid #dde8bc; border-radius: 8px;
-  font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 600; color: #333; outline: none;
+  font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; color: #333; outline: none;
 }
 .var-name-input:focus { border-color: #5a7030; }
 .var-name-input.invalid { border-color: #c0392b; }
-.var-price-label { font-size: 13px; font-weight: 800; color: #4a5c24; white-space: nowrap; }
+.var-price-label { font-size: 13px; font-weight: 600; color: #4a5c24; white-space: nowrap; }
 .var-price-input {
   width: 90px; padding: 10px 12px; background: #ffffff;
   border: 1.5px solid #dde8bc; border-radius: 8px;
-  font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 600; color: #333; outline: none;
+  font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; color: #333; outline: none;
 }
 .var-price-input:focus { border-color: #5a7030; }
 .var-price-input.invalid { border-color: #c0392b; }
@@ -337,7 +372,7 @@
 .add-more-btn {
   display: flex; align-items: center; gap: 8px; padding: 10px 20px;
   background: #4a5c24; color: #ffffff; border: none; border-radius: 10px;
-  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700;
+  font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
   cursor: pointer; width: fit-content; transition: background 0.18s;
 }
 .add-more-btn svg { width: 16px; height: 16px; stroke: #ffffff; }
@@ -349,7 +384,7 @@
 }
 .add-product-btn {
   padding: 13px 28px; background: #e8720c; color: #ffffff; border: none;
-  border-radius: 12px; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800;
+  border-radius: 12px; font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 600;
   cursor: pointer; transition: background 0.18s, transform 0.1s;
 }
 .add-product-btn:hover:not(:disabled) { background: #cc6008; }
@@ -400,7 +435,7 @@
 
 .cat-window-title {
   font-size: 26px;
-  font-weight: 900;
+  font-weight: 700;
   color: #4a5c24;
   letter-spacing: -0.3px;
 }
@@ -414,9 +449,9 @@
   color: #ffffff;
   border: none;
   border-radius: 28px;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.18s, transform 0.1s;
 }
@@ -433,9 +468,9 @@
 }
 
 .cat-window-table thead th {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 600;
   color: #1a1a1a;
   padding: 0 16px 8px;
   text-align: left;
@@ -509,7 +544,7 @@
   z-index: 400;
   box-shadow: 0 16px 48px rgba(0,0,0,0.25);
   animation: popIn 0.2s ease;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 .modal-title {
@@ -574,7 +609,7 @@
   background: #ffffff;
   border: 1.5px solid #dde8bc;
   border-radius: 28px;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 600;
   color: #333;
@@ -619,7 +654,7 @@
   z-index: 600;
   box-shadow: 0 16px 48px rgba(0,0,0,0.25);
   animation: popIn 0.2s ease;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -675,7 +710,7 @@
   background: #eef3d8;
   border: 1.5px solid #c8d890;
   border-radius: 10px;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: #4a5c24;
@@ -690,7 +725,7 @@
   color: #ffffff;
   border: none;
   border-radius: 10px;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -711,7 +746,7 @@
   background: #eef3d8;
   border: 1.5px solid #c8d890;
   border-radius: 10px;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: #4a5c24;
@@ -726,7 +761,7 @@
   color: #ffffff;
   border: none;
   border-radius: 10px;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 800;
   cursor: pointer;
