@@ -144,7 +144,7 @@ import { CartService } from '../../core/services/cart.service';
 .back-btn svg { width:22px; height:22px; stroke:var(--c-text-primary,#1a2e18); }
 
 .detail-layout { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
-@media(max-width:768px){ .detail-layout{grid-template-columns:1fr; gap:32px;} .page-container{padding:20px;} }
+@media(max-width:768px){ .detail-layout{grid-template-columns:1fr; gap:32px;} .page-container{padding:20px 20px 90px;} }
 
 .images-col { display:flex; flex-direction:column; gap:16px; }
 .main-img-wrap { width:100%; aspect-ratio:3/4; overflow:hidden; border-radius:16px; background:var(--c-primary-muted,#f0f4f0); }

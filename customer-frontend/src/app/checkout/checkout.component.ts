@@ -187,7 +187,7 @@ import { CustomerShopService } from '../core/services/shop.service';
 }
 @media (max-width: 900px) {
   .checkout-layout { grid-template-columns: 1fr; }
-  .checkout-page   { padding: 20px; }
+  .checkout-page   { padding: 20px 20px 90px; }
 }
 
 .back-row { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }

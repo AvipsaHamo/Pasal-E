@@ -182,7 +182,7 @@
 /* ── Responsive Media Queries ── */
 @media (max-width: 900px) {
   .checkout-page {
-    padding: 23px 23px 900px;
+    padding: 23px 23px 90px;
   }
   .checkout-layout {
     grid-template-columns: 1fr;
