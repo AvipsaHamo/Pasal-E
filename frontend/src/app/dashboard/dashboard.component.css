@@ -279,3 +279,107 @@ canvas {
   width: 100% !important;
   height: 100% !important;
 }
+
+/* ── Mobile Responsive (≤ 768px) ── */
+@media (max-width: 768px) {
+
+  .dashboard-page {
+    padding: 32px 20px 24px;
+  }
+
+  .dash-title {
+    font-size: 26px;
+  }
+
+  .dash-header {
+    margin-bottom: 24px;
+  }
+
+  /* Stack cards vertically */
+  .cards-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  /* Card becomes horizontal: icon+label left, value+delta right */
+  .summary-card {
+    padding: 20px 24px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .card-top {
+    flex-direction: column;
+    align-items: left;
+    justify-content: center;
+    margin-left: 20px;
+    margin-bottom: 0;
+    gap: 8px;
+    flex-shrink: 0;
+    width: 120px;
+  }
+
+  /* Icon on top, label below it — left side */
+  .card-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .card-label {
+    font-size: 13px;
+    padding: 0;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .card-body{
+    margin-left: 30px;
+  }
+
+  /* Value + delta pushed to the right */
+  .card-value {
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+
+  .card-delta {
+    font-size: 12px;
+  }
+
+  .card-skeleton {
+    height: 40px;
+    flex: 1;
+  }
+
+  /* ── Chart section ── */
+  .chart-title {
+    font-size: 20px;
+  }
+
+  .chart-header {
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .chart-filters {
+    gap: 8px;
+  }
+
+  .filter-btn {
+    font-size: 12px;
+    padding: 7px 12px;
+  }
+
+  .chart-card {
+    padding: 16px 16px 14px;
+    border-radius: 20px;
+  }
+
+  .chart-wrap {
+    height: 220px;
+  }
+}

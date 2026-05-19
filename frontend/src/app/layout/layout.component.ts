@@ -15,19 +15,34 @@ import { NavbarComponent } from '../navbar/navbar.component';
     </div>
   `,
   styles: [`
-  .app-shell {
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-    background: #708848;
-  }
-  .main-content {
-    flex: 1;
-    height: 100vh;
-    overflow-y: auto;
-    background: #f0f4dc;
-    border-radius: 40px 0 0 40px;
-  }
-`]
+    .app-shell {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      background: #708848;
+    }
+
+    .main-content {
+      flex: 1;
+      height: 100vh;
+      overflow-y: auto;
+      background: #f0f4dc;
+      border-radius: 40px 0 0 40px;
+    }
+
+    @media (max-width: 768px) {
+      .app-shell {
+        flex-direction: column;
+        background: #f0f4dc;
+      }
+
+      .main-content {
+        height: 100vh;
+        border-radius: 0;
+        overflow-y: auto;
+        padding-bottom: 72px;
+      }
+    }
+  `]
 })
 export class LayoutComponent {}

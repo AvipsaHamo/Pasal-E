@@ -8,6 +8,7 @@ import { ShopInfo, CategoryDetail } from '../core/models/shop.models';
 import { ProductListItem } from '../core/models/inventory.models';
 import { InventoryService } from '../core/services/inventory.service';
 import { DestroyableComponent } from '../core/base/destroyable.base';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-your-shop',
@@ -65,7 +66,7 @@ export class YourShopComponent extends DestroyableComponent implements OnInit {
     name: ['', Validators.required]
   });
 
-  constructor(private shopSvc: ShopService, private invSvc: InventoryService, private fb: FormBuilder) { super(); }
+  constructor(private shopSvc: ShopService, private invSvc: InventoryService, private fb: FormBuilder, public  auth:    AuthService) { super(); }
 
   ngOnInit(): void {
     this.loadShop();
@@ -230,48 +231,6 @@ export class YourShopComponent extends DestroyableComponent implements OnInit {
         }
       });
   }
-
-  // openAddCategory(): void {
-  //   this.categoryForm.reset();
-  //   this.newCategoryImageUrl = null;
-  //   this.addCategoryError    = '';
-  //   this.showAddCategory     = true;
-  // }
-
-  // closeAddCategory(): void { this.showAddCategory = false; }
-
-  // onAddCategory(): void {
-  //   if (this.categoryForm.invalid) { this.categoryForm.markAllAsTouched(); return; }
-  //   this.addingCategory   = true;
-  //   this.addCategoryError = '';
-
-  //   const name = this.categoryForm.value.name ?? '';
-
-  //   this.shopSvc.addCategory({ name, image: this.newCategoryImageUrl ?? undefined })
-  //     .pipe(takeUntil(this.destroy$))
-  //     .subscribe({
-  //       next: () => {
-  //         this.addingCategory  = false;
-  //         this.showAddCategory = false;
-  //         this.loadCategories();
-  //       },
-  //       error: (err: { error?: { message?: string } }) => {
-  //         this.addingCategory   = false;
-  //         this.addCategoryError = err?.error?.message ?? 'Failed to add category.';
-  //       }
-  //     });
-  // }
-
-  // deleteCategory(id: number): void {
-  //   if (!confirm('Delete this category? Products in this category will be uncategorised.')) return;
-  //   this.shopSvc.deleteCategory(id)
-  //     .pipe(takeUntil(this.destroy$))
-  //     .subscribe({
-  //       next:  () => this.loadCategories(),
-  //       error: (err: { error?: { message?: string } }) =>
-  //         console.error('Delete failed:', err?.error?.message ?? err)
-  //     });
-  // }
 
   // Featured
   get availableToFeature(): ProductListItem[] {

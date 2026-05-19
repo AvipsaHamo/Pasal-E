@@ -1,6 +1,7 @@
 <!-- src/app/navbar/navbar.component.html -->
-<nav class="navbar">
 
+<!-- ── Desktop Sidebar ── -->
+<nav class="navbar">
   <!-- Brand -->
   <div class="nav-brand">
     <div class="nav-logo">
@@ -13,7 +14,7 @@
   <ul class="nav-links">
     <li>
       <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
-         <img src="assets/icons/dashboardicon.svg" alt="Dashboard" class="nav-icon" />
+        <img src="assets/icons/dashboardicon.svg" alt="Dashboard" class="nav-icon" />
         <span>Dashboard</span>
       </a>
     </li>
@@ -29,19 +30,6 @@
         <span>Orders</span>
       </a>
     </li>
-
-    <!-- forecast page commented out for now -->
-    <!-- <li>
-      <a routerLink="/foresight" routerLinkActive="active" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-        </svg>
-        <span>Foresight</span>
-      </a>
-    </li> -->
     <li>
       <a routerLink="/your-shop" routerLinkActive="active" class="nav-item">
         <img src="assets/icons/shopicon.svg" alt="Your Shop" class="nav-icon" />
@@ -61,5 +49,24 @@
       <span>Log Out</span>
     </button>
   </div>
+</nav>
 
+<!-- ── Mobile Bottom Tab Bar ── -->
+<nav class="mobile-navbar">
+  <a routerLink="/dashboard" routerLinkActive="active" class="mobile-tab">
+    <img src="assets/icons/dashboardicon.svg" alt="Dashboard" />
+    <span>Dashboard</span>
+  </a>
+  <a routerLink="/inventory" routerLinkActive="active" class="mobile-tab">
+    <img src="assets/icons/box.svg" alt="Inventory" />
+    <span>Inventory</span>
+  </a>
+  <a routerLink="/orders" routerLinkActive="active" class="mobile-tab">
+    <img src="assets/icons/ordericon.svg" alt="Orders" />
+    <span>Orders</span>
+  </a>
+  <a routerLink="/your-shop" routerLinkActive="active" class="mobile-tab">
+    <img src="assets/icons/shopicon.svg" alt="Your Shop" />
+    <span>Your Shop</span>
+  </a>
 </nav>

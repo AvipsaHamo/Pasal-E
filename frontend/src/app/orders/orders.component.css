@@ -391,3 +391,168 @@
   font-weight: 600;
   color: #888;
 }
+
+@media (max-width: 768px) {
+
+  .orders-page {
+    padding: 28px 12px 24px;
+  }
+
+  /* Header: title left, controls right */
+  .orders-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .orders-title {
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .header-controls {
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  /* Smaller filter button — icon only on mobile */
+  .filter-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    gap: 4px;
+  }
+
+  .filter-btn span {
+    display: none;
+  }
+
+  .filter-btn .chevron {
+    display: none;
+  }
+
+  /* Smaller search */
+  .search-wrap input {
+    width: 130px;
+    font-size: 12px;
+    padding: 8px 12px 8px 34px;
+  }
+
+  .search-wrap svg {
+    left: 10px;
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Table header — hide contact, show fewer columns */
+  .table-header {
+    grid-template-columns: 0.6fr 1.4fr 1fr 0.8fr 0.8fr;
+    padding: 0 12px 8px;
+    font-size: 12px;
+  }
+
+  /* Hide Contact column header */
+  .table-header .col-contact {
+    display: none;
+  }
+
+  /* Order rows */
+  .order-row {
+    grid-template-columns: 0.6fr 1.4fr 1fr 0.8fr 0.8fr;
+    padding: 14px 12px;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  /* Hide contact cell in rows */
+  .order-row .col-contact {
+    display: none;
+  }
+
+  .status-badge {
+    font-size: 10px;
+    padding: 3px 7px;
+  }
+
+  .view-btn {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  /* Expanded detail */
+  .order-detail {
+    padding: 0 12px 16px;
+  }
+
+  .detail-title {
+    font-size: 16px;
+    margin-top: 14px;
+    margin-bottom: 12px;
+  }
+
+  /* Detail table scrollable horizontally */
+  .detail-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 12px;
+  }
+
+  .detail-table thead th {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  .detail-table tbody td {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  /* Footer: stack vertically — total on top, customer info below, buttons at end */
+   /* Footer: stack vertically as a single column */
+  .detail-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  /* Total: right-aligned, after table */
+  .footer-right {
+    align-items: flex-end;
+    width: 100%;
+    gap: 12px;
+    order: 1;
+  }
+
+  .total-amount {
+    font-size: 15px;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  /* Customer info: below total */
+  .customer-info {
+    order: 2;
+    width: 100%;
+  }
+
+  .customer-info p {
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+
+  /* Status buttons come last, full width row */
+  .status-actions {
+    order: 3;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .status-btn {
+    flex: 1;
+    padding: 8px 6px;
+    font-size: 11px;
+    text-align: center;
+  }
+}

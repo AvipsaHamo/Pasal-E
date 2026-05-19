@@ -282,6 +282,14 @@ html, body {
   text-align: center;
 }
 
+.auth-right {
+  order: 2;
+}
+
+.auth-left {
+  order: 1;
+}
+
 /* ── Spinner ───────────────────────────────────────────────────────────── */
 @keyframes spin { to { transform: rotate(360deg); } }
 .spinner {
@@ -296,8 +304,103 @@ html, body {
 
 /* ── Responsive ────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .auth-layout { flex-direction: column; }
-  .auth-left   { flex: none; padding: 40px 32px 32px; align-items: center; text-align: center; }
-  .auth-right  { border-radius: 32px 32px 0 0; padding: 40px 32px; }
-  .brand-name  { font-size: 40px; }
+  .auth-layout {
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--cream);   /* top area is cream */
+  }
+
+  /* Brand panel — top, cream background */
+  .auth-right {
+    order: 1;
+    flex: none;
+    background: var(--cream);
+    border-radius: 0;
+    padding: 52px 32px 36px;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .brand-logo {
+    width: 200px;
+    margin-top: 20px;
+    margin-bottom: 16px;
+  }
+
+  .brand-name {
+    font-size: 48px;
+    color: var(--olive);
+  }
+
+  .brand-tagline {
+    font-size: 14px;
+    color: var(--olive-mid);
+  }
+
+  /* Form card — bottom, olive background, rounded top corners */
+  .auth-left {
+    order: 2;
+    flex: 1;
+    background: var(--olive);
+    border-radius: 32px 32px 0 0;
+    padding: 44px 28px 48px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-group {
+    gap: 20px;
+    max-width: 80%;
+  }
+
+  /* Inputs: keep cream background, adjust padding */
+  .input-wrap input {
+    padding: 18px 18px 18px 56px;
+    font-size: 14px;
+    background: var(--cream-input);
+    color: var(--olive-dark);
+    border-radius: var(--radius);
+  }
+
+  .input-wrap input::placeholder {
+    color: var(--text-muted);
+  }
+
+  /* Forgot password link — cream colored on olive bg */
+  .forgot-link a {
+    color: var(--cream-input);
+    font-size: 14px;
+  }
+
+  /* Login button */
+  .btn-primary {
+    font-size: 20px;
+    padding: 16px;
+  }
+
+  /* Auth link at bottom */
+  .auth-link {
+    color: var(--cream-input);
+    font-size: 14px;
+  }
+
+  .auth-link a {
+    color: var(--cream);
+  }
+
+  /* Error banner */
+  .error-banner {
+    font-size: 13px;
+  }
+}
+
+/* ── Very small phones (≤ 390px) ── */
+@media (max-width: 390px) {
+  .auth-right { padding: 40px 24px 28px; }
+  .auth-left  { padding: 36px 20px 40px; }
+  .brand-name { font-size: 40px; }
+  .brand-logo { width: 110px; }
 }

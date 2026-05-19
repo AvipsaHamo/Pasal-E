@@ -1,11 +1,9 @@
-<!-- src/app/dashboard/dashboard.component.html -->
 <div class="dashboard-page" (click)="closeDropdowns()">
 
-  <!-- ── Title Row ─────────────────────────────────────────────────────── -->
+  <!-- ── Title Row ── -->
   <div class="dash-header">
     <h1 class="dash-title">Dashboard</h1>
 
-    <!-- Summary period dropdown -->
     <div class="period-wrap" (click)="$event.stopPropagation()">
       <button class="period-btn" (click)="showSummaryDropdown = !showSummaryDropdown">
         <span>{{ summaryPeriodLabel }}</span>
@@ -24,76 +22,80 @@
     </div>
   </div>
 
-  <!-- ── Summary Cards ─────────────────────────────────────────────────── -->
+  <!-- ── Summary Cards ── -->
   <div class="cards-row">
 
     <!-- Revenue -->
     <div class="summary-card">
       <div class="card-top">
-        <span class="card-label">Revenue</span>
         <div class="card-icon">
           <img src="assets/icons/revenueicon.svg" alt="Revenue" />
         </div>
+        <span class="card-label">Revenue</span>
       </div>
-      @if (summaryLoading) {
-        <div class="card-skeleton"></div>
-      } @else if (summary) {
-        <div class="card-value">Rs {{ summary.revenue.toLocaleString() }}</div>
-        <div class="card-delta" [class.positive]="isDeltaPositive(summary.revenueDelta)"
-          [class.negative]="!isDeltaPositive(summary.revenueDelta)">
-          {{ formatDelta(summary.revenueDelta) }} {{ deltaLabel }}
-        </div>
-      }
+      <div class="card-body">
+        @if (summaryLoading) {
+          <div class="card-skeleton"></div>
+        } @else if (summary) {
+          <div class="card-value">Rs {{ summary.revenue.toLocaleString() }}</div>
+          <div class="card-delta" [class.positive]="isDeltaPositive(summary.revenueDelta)"
+            [class.negative]="!isDeltaPositive(summary.revenueDelta)">
+            {{ formatDelta(summary.revenueDelta) }} {{ deltaLabel }}
+          </div>
+        }
+      </div>
     </div>
 
     <!-- Total Customers -->
     <div class="summary-card">
       <div class="card-top">
-        <span class="card-label">Total Customers</span>
         <div class="card-icon">
           <img src="assets/icons/customericon.svg" alt="Total Customers" />
         </div>
+        <span class="card-label">Total Customers</span>
       </div>
-      @if (summaryLoading) {
-        <div class="card-skeleton"></div>
-      } @else if (summary) {
-        <div class="card-value">{{ summary.totalCustomers.toLocaleString() }}</div>
-        <div class="card-delta" [class.positive]="isDeltaPositive(summary.customersDelta)"
-          [class.negative]="!isDeltaPositive(summary.customersDelta)">
-          {{ formatDelta(summary.customersDelta) }} {{ deltaLabel }}
-        </div>
-      }
+      <div class="card-body">
+        @if (summaryLoading) {
+          <div class="card-skeleton"></div>
+        } @else if (summary) {
+          <div class="card-value">{{ summary.totalCustomers.toLocaleString() }}</div>
+          <div class="card-delta" [class.positive]="isDeltaPositive(summary.customersDelta)"
+            [class.negative]="!isDeltaPositive(summary.customersDelta)">
+            {{ formatDelta(summary.customersDelta) }} {{ deltaLabel }}
+          </div>
+        }
+      </div>
     </div>
 
     <!-- Total Orders -->
     <div class="summary-card">
       <div class="card-top">
-        <span class="card-label">Total Orders</span>
         <div class="card-icon">
           <img src="assets/icons/totalordericon.svg" alt="Total Orders" />
         </div>
+        <span class="card-label">Total Orders</span>
       </div>
-      @if (summaryLoading) {
-        <div class="card-skeleton"></div>
-      } @else if (summary) {
-        <div class="card-value">{{ summary.totalOrders.toLocaleString() }}</div>
-        <div class="card-delta" [class.positive]="isDeltaPositive(summary.ordersDelta)"
-          [class.negative]="!isDeltaPositive(summary.ordersDelta)">
-          {{ formatDelta(summary.ordersDelta) }} {{ deltaLabel }}
-        </div>
-      }
+      <div class="card-body">
+        @if (summaryLoading) {
+          <div class="card-skeleton"></div>
+        } @else if (summary) {
+          <div class="card-value">{{ summary.totalOrders.toLocaleString() }}</div>
+          <div class="card-delta" [class.positive]="isDeltaPositive(summary.ordersDelta)"
+            [class.negative]="!isDeltaPositive(summary.ordersDelta)">
+            {{ formatDelta(summary.ordersDelta) }} {{ deltaLabel }}
+          </div>
+        }
+      </div>
     </div>
 
   </div>
 
-  <!-- ── Income vs Expense Chart ───────────────────────────────────────── -->
+  <!-- ── Income vs Expense Chart ── -->
   <div class="chart-section">
     <div class="chart-header">
       <h2 class="chart-title">Income vs Expense</h2>
 
       <div class="chart-filters" (click)="$event.stopPropagation()">
-
-        <!-- Year dropdown -->
         <div class="filter-wrap">
           <button class="filter-btn" (click)="showYearDropdown = !showYearDropdown">
             <span>{{ selectedYear }}</span>
@@ -111,7 +113,6 @@
           }
         </div>
 
-        <!-- Month dropdown -->
         <div class="filter-wrap">
           <button class="filter-btn" (click)="showMonthDropdown = !showMonthDropdown">
             <span>{{ selectedMonthName }}</span>
@@ -128,13 +129,10 @@
             </div>
           }
         </div>
-
       </div>
     </div>
 
-    <!-- Chart card -->
     <div class="chart-card">
-      <!-- Legend -->
       <div class="chart-legend">
         <span class="legend-item">
           <span class="legend-dot legend-income"></span> Income
@@ -143,8 +141,6 @@
           <span class="legend-dot legend-expense"></span> Expense
         </span>
       </div>
-
-      <!-- Canvas -->
       <div class="chart-wrap">
         @if (chartLoading) {
           <div class="chart-loader">Loading chart...</div>

@@ -1,7 +1,14 @@
-<!-- src/app/auth/after-signup/after-signup.component.html -->
 <div class="auth-layout">
 
-  <!-- Left: Form -->
+  <!-- Brand panel — first in DOM so it appears on TOP on mobile -->
+  <div class="auth-right">
+    <img class="brand-logo" src="assets/icons/pasal-e-logo.svg" alt="Pasal-E Logo"
+      onerror="this.style.display='none'" />
+    <div class="brand-name">Pasal-E</div>
+    <div class="brand-tagline">"Build, run, and grow your store."</div>
+  </div>
+
+  <!-- Form panel — second in DOM, appears on BOTTOM on mobile -->
   <div class="auth-left">
     <div class="form-group">
 
@@ -53,14 +60,6 @@
       </button>
 
     </div>
-  </div>
-
-  <!-- Right: Brand -->
-  <div class="auth-right">
-    <img class="brand-logo" src="assets/icons/pasal-e-logo.svg" alt="Pasal-E Logo"
-      onerror="this.style.display='none'" />
-    <div class="brand-name">Pasal-E</div>
-    <div class="brand-tagline">"Build, run, and grow your store."</div>
   </div>
 
 </div>

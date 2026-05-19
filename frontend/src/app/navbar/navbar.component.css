@@ -1,5 +1,6 @@
 /* src/app/navbar/navbar.component.css */
 
+/* ── Desktop Sidebar ── */
 .navbar {
   width: 300px;
   min-width: 220px;
@@ -67,7 +68,7 @@
   font-family: 'Poppins', sans-serif;
   font-size: 18px;
   font-weight: 450;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255,255,255,0.65);
   text-decoration: none;
   cursor: pointer;
   transition: background 0.18s, color 0.18s;
@@ -112,6 +113,72 @@
 }
 
 .logout-btn:hover {
-  background: rgba(255, 80, 80, 0.15);
+  background: rgba(255,80,80,0.15);
   color: #ff8080;
+}
+
+/* Hide mobile bar on desktop */
+.mobile-navbar { display: none; }
+
+/* ── Mobile Bottom Tab Bar (≤ 768px) ── */
+@media (max-width: 768px) {
+
+  /* Hide the entire desktop sidebar */
+  .navbar { display: none; }
+
+  /* Show mobile bar */
+  .mobile-navbar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: #708848;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
+    padding: 10px 8px 10px;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .mobile-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 10px 20px;
+    border-radius: 14px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    transition: background 0.18s, color 0.18s;
+    min-width: 72px;
+  }
+
+  .mobile-tab img,
+  .mobile-tab svg {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: brightness(0) invert(0.9);
+    transition: filter 0.18s;
+  }
+
+  .mobile-tab.active {
+    background: #94b560bf;
+    color: #ffffff;
+  }
+
+  .mobile-tab.active img,
+  .mobile-tab.active svg {
+    filter: brightness(0) invert(1);
+  }
 }
