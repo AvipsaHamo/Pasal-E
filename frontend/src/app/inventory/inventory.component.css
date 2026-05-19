@@ -467,6 +467,12 @@
   display: table; /* override flex */
 }
 
+.cat-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .cat-window-table thead th {
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
@@ -848,8 +854,12 @@
     border-radius: 0;
   }
 
-  .cat-window-header {
+    .cat-window-header {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
     padding: 20px 20px 16px;
+    gap: 12px;
   }
 
   .cat-window-body {
@@ -858,17 +868,36 @@
 
   .cat-window-title {
     font-size: 20px;
+    padding-top: 4px;
+  }
+
+  .cat-header-right {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
   }
 
   /* Add category modal — full width, bottom sheet style */
-  .add-cat-modal {
-    top: auto;
-    bottom: 0;
-    left: 0;
-    transform: none;
-    width: 100%;
-    border-radius: 24px 24px 0 0;
-    padding: 28px 24px 40px;
+  .add-cat-window-btn {
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 20px;
+  }
+
+  .cat-window-header .panel-back-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #888;
+    font-size: 11px;
+    font-weight: 600;
+    gap: 4px;
+  }
+
+  .cat-window-header .panel-back-btn:hover {
+    background: none;
+    color: #4a5c24;
   }
 
   /* Delete confirm modal — centered, full width */

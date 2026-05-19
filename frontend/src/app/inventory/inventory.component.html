@@ -272,23 +272,23 @@
 
   <div class="category-window" (click)="$event.stopPropagation()">
 
-    <div class="cat-window-header">
-      <div class="panel-title-row">
+<div class="cat-window-header">
   <h2 class="cat-window-title">Shop Category</h2>
-  <button class="panel-back-btn" (click)="closeCategoryWindow()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
-      <path d="M19 12H5M12 5l-7 7 7 7"/>
-    </svg>
-    Back to Inventory
-  </button>
+  <div class="cat-header-right">
+    <button class="panel-back-btn" (click)="closeCategoryWindow()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+      Back to Inventory
+    </button>
+    <button class="add-cat-window-btn" (click)="openAddCategoryModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Add Category
+    </button>
+  </div>
 </div>
-      <button class="add-cat-window-btn" (click)="openAddCategoryModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
-        Add Category
-      </button>
-    </div>
 
     <div class="cat-window-body">
       <!-- Category table -->
