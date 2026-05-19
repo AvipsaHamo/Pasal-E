@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using PasalE.Api.Configuration;
 using PasalE.Api.Data;
 using PasalE.Api.Middleware;
+using PasalE.Api.Models;
 using System.Text;
 using System.Text.Json;
 
@@ -121,4 +122,98 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+if (app.Environment.IsDevelopment())
+{
+    await SeedDemoStorefrontAsync(app.Services);
+}
+
 app.Run();
+
+static async Task SeedDemoStorefrontAsync(IServiceProvider services)
+{
+    using var scope = services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    if (await db.Shops.AnyAsync(s => s.Subdomain == "demo"))
+    {
+        return;
+    }
+
+    var owner = await db.Owners.FirstOrDefaultAsync(o => o.Email == "demo@pasal-e.local");
+    if (owner is null)
+    {
+        owner = new Owner
+        {
+            FirstName = "Demo",
+            LastName = "Shop",
+            Email = "demo@pasal-e.local",
+            AuthProvider = "local"
+        };
+        db.Owners.Add(owner);
+        await db.SaveChangesAsync();
+    }
+
+    var shop = new Shop
+    {
+        OwnerId = owner.OwnerId,
+        ShopName = "demo",
+        BrandName = "Demo Market",
+        Currency = "NPR",
+        Subdomain = "demo",
+        SubdomainStatus = "approved",
+        Theme = "Light",
+        Colour = "Green",
+        LogoImage = null,
+        BannerImage = null
+    };
+    db.Shops.Add(shop);
+    await db.SaveChangesAsync();
+
+    var groceries = new Category { ShopId = shop.ShopId, Name = "Groceries" };
+    var fresh = new Category { ShopId = shop.ShopId, Name = "Fresh Produce" };
+    db.Categories.AddRange(groceries, fresh);
+    await db.SaveChangesAsync();
+
+    var rice = new Product
+    {
+        ShopId = shop.ShopId,
+        CategoryId = groceries.CategoryId,
+        Name = "Premium Rice",
+        Description = "A local staple for everyday meals.",
+        Stock = 25,
+        SellingPrice = 1200,
+        OnlineAvailable = true
+    };
+
+    var lentils = new Product
+    {
+        ShopId = shop.ShopId,
+        CategoryId = groceries.CategoryId,
+        Name = "Masoor Dal",
+        Description = "Protein-rich lentils for quick cooking.",
+        Stock = 40,
+        SellingPrice = 180,
+        OnlineAvailable = true
+    };
+
+    var apples = new Product
+    {
+        ShopId = shop.ShopId,
+        CategoryId = fresh.CategoryId,
+        Name = "Fresh Apples",
+        Description = "Crisp seasonal apples.",
+        Stock = 18,
+        SellingPrice = 300,
+        OnlineAvailable = true
+    };
+
+    db.Products.AddRange(rice, lentils, apples);
+    await db.SaveChangesAsync();
+
+    db.FeaturedProducts.AddRange(
+        new FeaturedProduct { ShopId = shop.ShopId, ProductId = rice.ProductId, SortOrder = 1 },
+        new FeaturedProduct { ShopId = shop.ShopId, ProductId = apples.ProductId, SortOrder = 2 }
+    );
+
+    await db.SaveChangesAsync();
+}

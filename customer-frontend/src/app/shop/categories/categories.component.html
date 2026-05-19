@@ -1,0 +1,39 @@
+<div class="page-container">
+  <h1 class="page-title">Explore Categories</h1>
+
+  @if (loading) {
+    <div class="categories-grid">
+      @for (_ of [1,2,3,4,5,6,7,8]; track $index) {
+        <div class="cat-card skeleton">
+          <div class="cat-circle skeleton-circle"></div>
+          <div class="skeleton-text"></div>
+        </div>
+      }
+    </div>
+  } @else if (error) {
+    <div class="state-msg error">{{ error }}</div>
+  } @else if (categories.length === 0) {
+    <div class="state-msg">No categories yet.</div>
+  } @else {
+    <div class="categories-grid">
+      @for (cat of categories; track cat.categoryId) {
+        <a class="cat-card" [routerLink]="['/categories', cat.categoryId]">
+          <div class="cat-circle">
+            @if (cat.image) {
+              <img [src]="cat.image" [alt]="cat.name" />
+            } @else {
+              <div class="cat-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+              </div>
+            }
+          </div>
+          <span class="cat-name">{{ cat.name }}</span>
+        </a>
+      }
+    </div>
+  }
+</div>

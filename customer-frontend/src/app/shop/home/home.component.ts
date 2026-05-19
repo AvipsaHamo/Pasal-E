@@ -5,13 +5,14 @@ import { RouterLink } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CustomerShopService, StorefrontProduct } from '../../core/services/shop.service';
+import { CartService } from '../../core/services/cart.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, OnDestroy {
   featured:       StorefrontProduct[] = [];
@@ -19,7 +20,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   featuredError   = '';
   private destroy$ = new Subject<void>();
 
-  constructor(public shopSvc: CustomerShopService) {}
+  constructor(public shopSvc: CustomerShopService, private cartSvc: CartService) {}
 
   ngOnInit(): void {
     this.loadFeatured();
@@ -42,8 +43,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   addToCart(product: StorefrontProduct): void {
-    this.shopSvc.incrementCart();
-    // Cart functionality to be implemented
+    const price = product.sellingPrice ?? product.variations?.[0]?.sellingPrice ?? 0;
+    const variation = product.variations?.[0];
+    this.cartSvc.addItem({
+      productId: product.productId,
+      name: product.name,
+      image: product.image,
+      price,
+      variationId: variation?.variationId,
+      variationName: variation?.name
+    }, 1);
   }
 
   formatPrice(price?: number): string {

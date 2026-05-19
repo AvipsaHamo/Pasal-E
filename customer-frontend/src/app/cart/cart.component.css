@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+.cart-page {
+  padding: 40px 60px 140px;
+  background: var(--c-bg-page, #f2f8f0);
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+.cart-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--c-text-secondary, #4a7c3f);
+  margin-bottom: 32px;
+}
+
+/* Empty state */
+.empty-cart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 80px 20px;
+  text-align: center;
+}
+.empty-cart svg { width: 64px; height: 64px; stroke: var(--c-primary, #4a7c3f); opacity: 0.3; }
+.empty-cart p   { font-size: 16px; font-weight: 500; color: var(--c-text-secondary, #4a7c3f); }
+.shop-btn {
+  padding: 12px 28px;
+  background: var(--c-primary, #4a7c3f);
+  color: var(--c-text-on-primary, #fff);
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.18s;
+}
+.shop-btn:hover { opacity: 0.85; }
+
+/* Cart items */
+.cart-items { display: flex; flex-direction: column; gap: 0; }
+
+.cart-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--c-border, #e0e0e0);
+}
+
+.item-img-wrap {
+  width: 110px;
+  height: 110px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--c-primary-muted, #f0f4f0);
+  flex-shrink: 0;
+}
+.item-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.item-img-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+.item-img-placeholder svg { width: 32px; height: 32px; stroke: var(--c-primary, #4a7c3f); opacity: 0.4; }
+
+.item-info { flex: 1; }
+.item-name   { font-size: 16px; font-weight: 700; color: var(--c-text-primary, #111); margin-bottom: 4px; }
+.item-variant{ font-size: 13px; font-weight: 500; color: var(--c-text-secondary, #555); margin-bottom: 14px; }
+
+/* Qty controls — matching Figma */
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: fit-content;
+  border: 1.5px solid var(--c-border, #d0d0d0);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.qty-btn {
+  width: 36px; height: 36px;
+  background: var(--c-bg-card, #fff);
+  border: none; cursor: pointer;
+  font-size: 18px; font-weight: 400;
+  color: var(--c-text-primary, #111);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.qty-btn:hover { background: var(--c-primary-muted, #f0f4f0); }
+.qty-num {
+  min-width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 600;
+  color: var(--c-text-primary, #111);
+  border-left: 1.5px solid var(--c-border, #d0d0d0);
+  border-right: 1.5px solid var(--c-border, #d0d0d0);
+  background: var(--c-bg-card, #fff);
+}
+
+.item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.item-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c-text-primary, #111);
+}
+.remove-btn {
+  background: none; border: none; cursor: pointer; padding: 4px;
+  border-radius: 6px; transition: background 0.15s; display: flex;
+}
+.remove-btn:hover { background: rgba(192,57,43,0.08); }
+.remove-btn svg { width: 18px; height: 18px; stroke: #c0392b; }
+
+/* Sticky footer */
+.cart-footer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--c-bg-page, #f2f8f0);
+  border-top: 1.5px solid var(--c-border, #d0d0d0);
+  padding: 0;
+  z-index: 50;
+}
+
+.footer-inner {
+  max-width: 100%;
+  padding: 16px 60px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.total-label  { font-size: 16px; font-weight: 500; color: var(--c-text-primary, #111); }
+.total-amount { font-size: 20px; font-weight: 800; color: var(--c-text-primary, #111); }
+
+.checkout-btn {
+  display: block;
+  width: 100%;
+  padding: 17px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.checkout-btn:hover { background: #333; }
+
+@media (max-width: 600px) {
+  .cart-page { padding: 20px 16px 140px; }
+  .footer-inner { padding: 14px 16px; }
+}

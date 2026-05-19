@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CustomerShopService } from '../core/services/shop.service';
+import { CartService } from '../core/services/cart.service';
 
 @Component({
   selector: 'app-customer-navbar',
@@ -11,5 +12,8 @@ import { CustomerShopService } from '../core/services/shop.service';
   styleUrl: './customer-navbar.component.css'
 })
 export class CustomerNavbarComponent {
-  constructor(public shopSvc: CustomerShopService) {}
+  constructor(
+    public shopSvc: CustomerShopService,
+    public cartSvc: CartService
+  ) {}
 }

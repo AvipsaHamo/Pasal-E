@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ThemeService } from '../../theme/theme.service';
 
@@ -17,9 +18,41 @@ export interface StorefrontProduct {
   productId:     number;
   name:          string;
   image?:        string;
+  description?:  string;
   sellingPrice?: number;
   stock:         number;
-  variations:    { variationId: number; name?: string; sellingPrice?: number }[];
+  variations:    StorefrontVariation[];
+}
+
+export interface StorefrontVariation {
+  variationId:   number;
+  name?:         string;
+  image?:        string;
+  sellingPrice?: number;
+}
+
+export interface StorefrontCategory {
+  categoryId: number;
+  name:       string;
+  image?:     string;
+}
+
+export interface PlaceOrderPayload {
+  firstName:   string;
+  lastName:    string;
+  phone:       string;
+  email?:      string;
+  address:     string;
+  landmark?:   string;
+  paymentType: string;
+  items: {
+    productId:    number;
+    variationId?: number;
+    quantity:     number;
+    price:        number;
+    productName:  string;
+    variationName?: string;
+  }[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -28,7 +61,6 @@ export class CustomerShopService {
 
   readonly shopName  = signal<string>('');
   readonly shopInfo  = signal<PublicShopInfo | null>(null);
-  readonly cartCount = signal<number>(0);
   readonly loading   = signal<boolean>(true);
   readonly error     = signal<string>('');
 
@@ -56,22 +88,30 @@ export class CustomerShopService {
     });
   }
 
-  getFeatured() {
+  getFeatured(): Observable<StorefrontProduct[]> {
     return this.http.get<StorefrontProduct[]>(`${this.base}/${this.shopName()}/featured`);
   }
 
-  getProducts(categoryId?: number, search?: string) {
-    const params: Record<string, string> = {};
-    if (categoryId) params['categoryId'] = String(categoryId);
-    if (search)     params['search']      = search;
-    return this.http.get<StorefrontProduct[]>(`${this.base}/${this.shopName()}/products`, { params });
+  getCategories(): Observable<StorefrontCategory[]> {
+    return this.http.get<StorefrontCategory[]>(`${this.base}/${this.shopName()}/categories`);
   }
 
-  getCategories() {
-    return this.http.get<{ categoryId: number; name: string; image?: string }[]>(
-      `${this.base}/${this.shopName()}/categories`);
+  getProducts(categoryId?: number, search?: string, sort?: string): Observable<StorefrontProduct[]> {
+    let params = new HttpParams();
+    if (categoryId) params = params.set('categoryId', categoryId);
+    if (search)     params = params.set('search', search);
+    if (sort)       params = params.set('sort', sort);
+    return this.http.get<StorefrontProduct[]>(
+      `${this.base}/${this.shopName()}/products`, { params });
   }
 
-  incrementCart(): void { this.cartCount.update(n => n + 1); }
-  decrementCart(): void { this.cartCount.update(n => Math.max(0, n - 1)); }
+  getProduct(productId: number): Observable<StorefrontProduct> {
+    return this.http.get<StorefrontProduct>(
+      `${this.base}/${this.shopName()}/products/${productId}`);
+  }
+
+  placeOrder(payload: PlaceOrderPayload): Observable<{ orderId: number; message: string }> {
+    return this.http.post<{ orderId: number; message: string }>(
+      `${this.base}/${this.shopName()}/orders`, payload);
+  }
 }
