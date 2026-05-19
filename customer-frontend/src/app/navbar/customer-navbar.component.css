@@ -87,8 +87,61 @@
   display: flex; align-items: center; justify-content: center;
 }
 
+/* Hide desktop nav links on mobile */
 @media (max-width: 640px) {
+  .nav-links { display: none; }
   .customer-nav { padding: 0 16px; }
-  .nav-link { padding: 8px 10px; font-size: 13px; }
   .shop-name { font-size: 17px; }
+}
+
+/* Bottom nav — mobile only */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--c-nav-bg, #ffffff);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.10);
+    padding: 10px 0 20px;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    color: var(--c-nav-text, #555);
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 16px;
+    border-radius: 8px;
+    transition: color 0.18s;
+  }
+
+  .bottom-nav-item svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+  }
+
+  .bottom-nav-item.active {
+    color: var(--c-nav-text-active, #2f5227);
+    font-weight: 600;
+  }
+
+  /* Add padding to page content so bottom nav doesn't cover it */
+  body { padding-bottom: 80px; }
 }

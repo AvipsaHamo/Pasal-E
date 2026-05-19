@@ -159,7 +159,22 @@
 }
 .checkout-btn:hover { background: #333; }
 
+:host-context(html[data-theme='dark']) .checkout-btn {
+  background: #ffffff;
+  color: #111827;
+}
+:host-context(html[data-theme='dark']) .checkout-btn:hover {
+  background: #f3f4f6;
+}
+:host-context(html[data-theme='dark']) .checkout-btn:disabled {
+  background: #6b7280;
+  color: #e5e7eb;
+}
+
 @media (max-width: 600px) {
-  .cart-page { padding: 20px 16px 140px; }
+  .cart-page { padding: 20px 16px 140px;
+.cart-footer{margin-bottom: 90px;}
+
   .footer-inner { padding: 14px 16px; }
+}
 }

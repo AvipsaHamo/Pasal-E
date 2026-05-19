@@ -1,0 +1,210 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+.checkout-page {
+  padding: 40px 60px 60px;
+  background: var(--c-bg-page, #f2f8f0);
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ── Success screen ── */
+.success-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 16px;
+  text-align: center;
+}
+.success-icon {
+  width: 80px; height: 80px;
+  background: var(--c-primary-muted, #e8f3e6);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.success-icon svg { width: 40px; height: 40px; stroke: var(--c-primary, #4a7c3f); }
+.success-title { font-size: 28px; font-weight: 700; color: var(--c-text-primary, #111); }
+.success-sub   { font-size: 15px; color: var(--c-text-secondary, #4a7c3f); }
+.continue-btn  {
+  padding: 12px 28px;
+  background: var(--c-primary, #4a7c3f);
+  color: var(--c-text-on-primary, #fff);
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px; font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.18s;
+  margin-top: 8px;
+}
+.continue-btn:hover { opacity: 0.85; }
+
+/* ── Layout ── */
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 48px;
+  align-items: start;
+}
+/* ── Back + title ── */
+.back-row { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+.back-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: none; border: none; cursor: pointer;
+  text-decoration: none; transition: background 0.15s;
+}
+.back-btn:hover { background: var(--c-primary-muted, #e8f3e6); }
+.back-btn svg   { width: 22px; height: 22px; stroke: var(--c-text-primary, #111); }
+.page-title     { font-size: 28px; font-weight: 700; color: var(--c-text-secondary, #4a7c3f); }
+
+/* ── Section titles ── */
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c-text-secondary, #4a7c3f);
+  margin-bottom: 16px;
+}
+
+/* ── Fields ── */
+.name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field-group { margin-bottom: 14px; }
+.field-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-text-primary, #333);
+  margin-bottom: 6px;
+}
+.field-group input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--c-bg-card, #fff);
+  border: 1.5px solid var(--c-border, #d0d0d0);
+  border-radius: 28px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: var(--c-text-primary, #111);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.field-group input:focus   { border-color: var(--c-primary, #4a7c3f); }
+.field-group input.invalid { border-color: #c0392b; }
+.field-group input::placeholder { color: #b0b8a0; }
+.field-error { font-size: 12px; color: #c0392b; margin-top: -10px; margin-bottom: 10px; }
+
+/* ── Payment options — checkbox style matching Figma ── */
+.payment-options { display: flex; flex-direction: column; gap: 14px; margin-bottom: 6px; }
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--c-text-primary, #111);
+  user-select: none;
+}
+.payment-option input[type="radio"] { display: none; }
+.radio-box {
+  width: 22px; height: 22px;
+  border: 2px solid var(--c-border, #ccc);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+.payment-option input:checked + .radio-box {
+  background: var(--c-primary, #4a7c3f);
+  border-color: var(--c-primary, #4a7c3f);
+}
+.payment-option input:checked + .radio-box::after {
+  content: '';
+  width: 5px; height: 9px;
+  border: 2px solid #fff;
+  border-top: none; border-left: none;
+  transform: rotate(45deg) translateY(-1px);
+  display: block;
+}
+
+/* ── Summary card ── */
+.summary-title { font-size: 22px; font-weight: 700; color: var(--c-text-secondary, #4a7c3f); margin-bottom: 16px; }
+
+.summary-card {
+  background: var(--c-bg-card, #fff);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.summary-items { display: flex; flex-direction: column; gap: 12px; min-height: 160px; }
+.summary-item  { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.summary-item-info { display: flex; flex-direction: column; gap: 2px; }
+.s-name    { font-size: 14px; font-weight: 600; color: var(--c-text-primary, #111); }
+.s-variant { font-size: 12px; color: var(--c-text-secondary, #555); }
+.s-qty     { font-size: 12px; color: #888; }
+.s-price   { font-size: 14px; font-weight: 600; color: var(--c-text-primary, #111); white-space: nowrap; }
+
+.summary-divider { height: 1px; background: var(--c-border, #e0e0e0); margin: 16px 0; }
+
+.summary-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.total-label { font-size: 16px; font-weight: 500; color: var(--c-text-primary, #111); }
+.total-val   { font-size: 22px; font-weight: 800; color: var(--c-text-primary, #111); }
+
+.order-error {
+  background: rgba(192,57,43,.08);
+  border: 1.5px solid #c0392b;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #c0392b;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.place-order-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.place-order-btn:hover:not(:disabled) { background: #333; }
+.place-order-btn:disabled { background: #999; cursor: not-allowed; }
+
+/* ── Responsive Media Queries ── */
+@media (max-width: 900px) {
+  .checkout-page {
+    padding: 23px 23px 900px;
+  }
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile phone breakpoint - add margin to avoid navbar coverage */
+@media (max-width: 640px) {
+  .checkout-page {
+    margin-top: 80px;
+  }
+}
+
+/* Dark theme */
+:host-context(html[data-theme='dark']) .place-order-btn {
+  background: #ffffff;
+  color: #111827;
+}
+:host-context(html[data-theme='dark']) .place-order-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+:host-context(html[data-theme='dark']) .place-order-btn:disabled {
+  background: #6b7280;
+  color: #e5e7eb;
+}

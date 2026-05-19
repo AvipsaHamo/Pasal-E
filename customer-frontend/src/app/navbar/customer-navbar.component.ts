@@ -9,7 +9,7 @@ import { CartService } from '../core/services/cart.service';
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './customer-navbar.component.html',
-  styleUrl: './customer-navbar.component.css'
+  styleUrls: ['./customer-navbar.component.css']
 })
 export class CustomerNavbarComponent {
   constructor(

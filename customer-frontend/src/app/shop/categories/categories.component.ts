@@ -10,7 +10,7 @@ import { CustomerShopService, StorefrontCategory } from '../../core/services/sho
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './categories.component.html',
-  styleUrls: ['./categories.component.css']
+  styleUrls: ['./categories.component.css'],
 })
 export class CategoriesComponent implements OnInit, OnDestroy {
   categories: StorefrontCategory[] = [];
